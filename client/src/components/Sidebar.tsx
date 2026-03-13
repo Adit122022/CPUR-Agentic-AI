@@ -1,7 +1,6 @@
-import { Brain, Twitter, Youtube, FileText, Link as LinkIcon, Hash, LogOut, X } from "lucide-react";
+import { Brain, Twitter, Youtube, FileText, Link as LinkIcon, Hash, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { Button } from "./Button";
+import { UserButton, useUser } from "@clerk/clerk-react";
 
 interface SidebarProps {
     isOpen: boolean;
@@ -10,7 +9,8 @@ interface SidebarProps {
 
 export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     const location = useLocation();
-    const { logout, username, email } = useAuth();
+    const { user } = useUser();
+    
     const links = [
         { name: "All Content", icon: <Hash className="w-5 h-5" />, path: "/dashboard" },
         { name: "Tweets", icon: <Twitter className="w-5 h-5" />, path: "/dashboard?type=twitter" },
@@ -24,82 +24,86 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             {/* Mobile Overlay */}
             {isOpen && (
                 <div
-                    className="fixed inset-0 bg-black/50 z-20 md:hidden"
+                    className="fixed inset-0 bg-black/50 z-20 md:hidden backdrop-blur-sm"
                     onClick={onClose}
                 />
             )}
 
             <div className={`
-                fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 
-                transform transition-transform duration-200 ease-in-out
+                fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-100 
+                transform transition-transform duration-300 cubic-bezier(0.4, 0, 0.2, 1)
                 ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-                md:translate-x-0 md:static md:h-screen
+                md:translate-x-0 md:static md:h-screen shadow-xl md:shadow-none
             `}>
                 <div className="flex flex-col h-full">
-                    {/* Header & Profile */}
-                    <div className="p-6 border-b border-gray-100">
-                        <div className="flex items-center justify-between mb-6">
-                            <div className="flex items-center gap-2">
-                                <Brain className="w-8 h-8 text-purple-600" />
-                                <span className="text-xl font-bold">Omoide (思い出)</span>
+                    {/* Header */}
+                    <div className="p-6">
+                        <div className="flex items-center justify-between mb-8">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-indigo-600 rounded-lg shadow-lg shadow-indigo-200">
+                                    <Brain className="w-6 h-6 text-white" />
+                                </div>
+                                <span className="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+                                    Omoide
+                                </span>
                             </div>
-                            <button onClick={onClose} className="md:hidden text-gray-500 hover:text-gray-700">
+                            <button onClick={onClose} className="md:hidden text-gray-400 hover:text-indigo-600 transition-colors">
                                 <X className="w-6 h-6" />
                             </button>
                         </div>
 
-                        {/* Profile Section */}
-                        {username && (
-                            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-lg shrink-0">
-                                    {username.charAt(0).toUpperCase()}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-semibold text-gray-900 truncate" title={username}>
-                                        {username}
-                                    </p>
-                                    {email && (
-                                        <p className="text-xs text-gray-500 truncate" title={email}>
-                                            {email}
-                                        </p>
-                                    )}
-                                </div>
+                        {/* Profile Section with Clerk UserButton */}
+                        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:bg-gray-100 transition-colors group">
+                            <UserButton 
+                                appearance={{
+                                    elements: {
+                                        userButtonAvatarBox: "w-10 h-10 ring-2 ring-indigo-100 group-hover:ring-indigo-200 transition-all",
+                                    }
+                                }}
+                            />
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-gray-900 truncate">
+                                    {user?.fullName || user?.username || "Recollector"}
+                                </p>
+                                <p className="text-xs text-gray-500 truncate font-medium">
+                                    {user?.primaryEmailAddress?.emailAddress}
+                                </p>
                             </div>
-                        )}
+                        </div>
                     </div>
 
                     {/* Navigation */}
-                    <nav className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
-                        {links.slice(1).map((link) => {
-                            const isActive = location.pathname === link.path && location.search === (link.path.split("?")[1] ? `?${link.path.split("?")[1]}` : "");
+                    <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-2">
+                        {links.map((link) => {
+                            // Logic to determine if link is active
+                            const isActive = location.pathname === "/dashboard" && (
+                                link.name === "All Content" ? !location.search : location.search.includes(link.path.split("=")[1])
+                            );
+                            
                             return (
                                 <Link
                                     key={link.name}
                                     to={link.path}
                                     onClick={() => window.innerWidth < 768 && onClose()}
-                                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-sm font-medium ${isActive
-                                        ? "bg-purple-50 text-purple-700"
-                                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-semibold text-sm ${isActive
+                                        ? "bg-indigo-50 text-indigo-700 shadow-sm shadow-indigo-100"
+                                        : "text-gray-500 hover:bg-gray-50 hover:text-indigo-600"
                                         }`}
                                 >
-                                    {link.icon}
+                                    <span className={`${isActive ? "text-indigo-600" : "text-gray-400"}`}>
+                                        {link.icon}
+                                    </span>
                                     <span>{link.name}</span>
                                 </Link>
                             );
                         })}
                     </nav>
 
-                    {/* Logout Footer */}
-                    <div className="p-4 border-t border-gray-100">
-                        <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={logout}
-                            className="w-full py-2 justify-start font-bold text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-100"
-                            startIcon={<LogOut className="w-4 h-4" />}
-                        >
-                            <span className="font-bold">Log Out</span>
-                        </Button>
+                    {/* Bottom Info */}
+                    <div className="p-6 border-t border-gray-50">
+                       <p className="text-[10px] text-center font-bold uppercase tracking-widest text-gray-400">
+                            Version 2.0 • Recollections
+                       </p>
                     </div>
                 </div>
             </div>

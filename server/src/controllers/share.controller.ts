@@ -1,17 +1,21 @@
-import type{ Request, Response } from "express";
+import { getAuth } from "@clerk/express";
+import type { Request, Response } from "express";
 import { LinkModel } from "../model/LinkModel.js";
 import ContentModel from "../model/ContentModel.js";
 import UserModel from "../model/UserModel.js";
 import { CatchError } from "../lib/globalErrorFunctions.js";
-import crypto from "crypto"; // Built-in Node tool for random strings
-import type { AuthRequest } from "../middleware/AuthMiddleware.js";
+import crypto from "crypto";
 
 // 1. Logic to turn sharing ON or OFF
-export const shareContent = async (req: AuthRequest, res: Response) => {
+export const shareContent = async (req: Request, res: Response) => {
     try {
+        const { userId } = getAuth(req);
         const { share } = req.body; // Expecting { share: true } or false
-        const userId = req.user.id;
-        console.log("User Id --> ",userId)
+        console.log("User Id --> ", userId);
+
+        if (!userId) {
+            return res.status(401).json({ message: "User not authenticated" });
+        }
 
         if (share) {
             // Check if link already exists
@@ -45,12 +49,12 @@ export const getSharedBrain = async (req: Request, res: Response) => {
             return res.status(404).json({ message: "Brain not found or link expired" });
         }
 
-        // Fetch content and the username
+        // Fetch content
         const content = await ContentModel.find({ userId: link.userId });
-        const user = await UserModel.findOne({ _id: link.userId });
-
+        
+        // Note: With Clerk, we might not have a local UserModel with the same userId.
+        // For now, we'll return the content. Username retrieval might need Clerk Backend SDK.
         res.status(200).json({
-            username: user?.username,
             content: content
         });
     } catch (error) {

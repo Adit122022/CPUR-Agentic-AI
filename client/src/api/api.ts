@@ -6,33 +6,21 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
-// Request interceptor to add token
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`; // Authorization: Bearer <token>
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+// We will use a helper to set the token before requests in components
+// or use a hook that provides an authenticated axios instance.
+// For now, we'll keep the interceptor logic but it needs to be dynamic.
+// Since getToken() is asynchronous and depends on the Clerk context, 
+// a custom hook for API calls is preferred.
 
 export const endpoints = {
-  auth: {
-    signup: "/auth/signup",
-    signin: "/auth/signin",
-  },
   content: {
     add: "/content/",
     get: "/content/",
-    delete: "/content/", // + contentId in body for DELETE? Or query param? Backend README says body.
+    delete: "/content/",
   },
   share: {
     share: "/brain/share",
-    get: "/brain/", // + shareLink
+    get: "/brain/",
   },
 };
 
