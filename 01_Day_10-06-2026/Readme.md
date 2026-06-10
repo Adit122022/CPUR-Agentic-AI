@@ -1,11 +1,11 @@
-# 🚀 Day 1: Python ka Shubh Aarambh (Intro to Python)
+# <span style="color: rgb(0, 120, 215);">🚀 Day 1: Python ka Shubh Aarambh (Intro to Python)</span>
 
 > [!NOTE]
 > **Welcome to Day 1, mere dost!** Aaj hum Python ka dissection karenge. Tension nahi lene ka, sab cover hoga, woh bhi ekdum mast style me! 😎
 
 ---
 
-## 🎬 Python Ka Code Kaam Kaise Karta Hai? (Behind the scenes)
+## <span style="color: rgb(255, 87, 51);">🎬 Python Ka Code Kaam Kaise Karta Hai? (Behind the scenes)</span>
 
 Jab tum Python ka code likhte ho, toh peeche ek chamatkar hota hai. Tum code likhte ho English me, par tumhara computer sirf `0` aur `1` (Binary) samajhta hai. Beech me yeh sab hota hai:
 
@@ -16,7 +16,7 @@ Jab tum Python ka code likhte ho, toh peeche ek chamatkar hota hai. Tum code lik
 
 ---
 
-## 🧊 Q1. Set vs Frozen Set in Python?
+## <span style="color: rgb(0, 188, 212);">🧊 Q1. Set vs Frozen Set in Python?</span>
 
 Dono me kya farq hai? Chalo dekhte hain:
 
@@ -28,7 +28,7 @@ Dono me kya farq hai? Chalo dekhte hain:
 
 ---
 
-## 🐍 History of Python
+## <span style="color: rgb(46, 204, 113);">🐍 History of Python</span>
 
 Bhai, Python 1989 (Christmas ki chhuttiyo me bore hote hue) me **Guido van Rossum** ne banaya tha.
 
@@ -42,7 +42,7 @@ Bhai, Python 1989 (Christmas ki chhuttiyo me bore hote hue) me **Guido van Rossu
 
 ---
 
-## 🤔 Programming Kya Hai?
+## <span style="color: rgb(155, 89, 182);">🤔 Programming Kya Hai?</span>
 
 Programming bas computer ko gaaliyo ki jagah instructions dena hai ki _"Bhai mere ye kaam karke de, warna main system tod dunga"_.
 
@@ -51,7 +51,7 @@ _Aur gyaan batorna hai?_ 👉 [What is Programming? - Codecademy](https://www.co
 
 ---
 
-## 📉 Low-Level vs High-Level Languages 📈
+## <span style="color: rgb(230, 126, 34);">📉 Low-Level vs High-Level Languages 📈</span>
 
 | Language Type  | Kya Hota Hai Ye?                                                                       | Execution Speed | Examples                   |
 | :------------- | :------------------------------------------------------------------------------------- | :-------------- | :------------------------- |
@@ -63,7 +63,7 @@ _Aur gyaan batorna hai?_ 👉 [What is Programming? - Codecademy](https://www.co
 
 ---
 
-## ⚖️ C Language Mid-Level Kyu Hai?
+## <span style="color: rgb(218, 165, 32);">⚖️ C Language Mid-Level Kyu Hai?</span>
 
 Kyunki C language **beech ka bandar** hai! 🐒
 
@@ -72,7 +72,7 @@ Kyunki C language **beech ka bandar** hai! 🐒
 
 ---
 
-## 🎯 Python Kyu Banaya? (Purpose of Python)
+## <span style="color: rgb(231, 76, 60);">🎯 Python Kyu Banaya? (Purpose of Python)</span>
 
 Guido bhai ko ek aisi language chahiye thi jo **C jaisi powerful** ho, par **ABC language jaisi padhne me aasan** ho. Python isliye banaya gaya taaki developers ka dimag code ke syntax likhne se zyada **Logic** lagane me use ho.
 
@@ -80,16 +80,15 @@ Guido bhai ko ek aisi language chahiye thi jo **C jaisi powerful** ho, par **ABC
 
 ---
 
-## 🤖 AI / Gen AI / Machine Learning ka Rishta
+## <span style="color: rgb(52, 152, 219);">🤖 AI / Gen AI / Machine Learning ka Rishta</span>
 
 Samjho, AI ek bada sa universe hai, aur baaki sab uske chhote-chhote planet:
-
 
 ![Alt text](/01_Day_10-06-2026/media/ai.png)
 
 ---
 
-## 🎭 OOPS Kya Bala Hai?
+## <span style="color: rgb(255, 20, 147);">🎭 OOPS Kya Bala Hai?</span>
 
 OOPs yaani **Object-Oriented Programming System**. Ye programming ka ek style jaha hum real-world cheezon ko "Objects" maan kar code likhte hain.
 
@@ -107,45 +106,51 @@ Isme kuch fancy features hote hain jaise:
 
 ---
 
-## 🖨️ `01_basic.py` Ka Postmortem (Print Function & File Analysis)
+## <span style="color: rgb(255, 140, 0);">📓 Google Colab & Jupyter Notebooks</span>
 
-Humne code me in-depth explore kiya:
+Class me humne **Google Colab** use kiya tha. Google Colab free me cloud par Jupyter Notebooks chalane ka mast jugaad hai. Na koi setup, na laptop hang hone ki tension!
 
-- 🟢 **Basic Print:** `print("Hello")` - Seedha screen pe dikhane ke liye.
-- 🟢 **Multiline Print in Single Function:** Ek hi `print()` me alag-alag lines mein kaise print karein? Bas `\n` (newline character) laga do! Jaise `print("Line 1\nLine 2")`.
-- 🟢 **The `end` Parameter:** Agar tum print ke baad agli line me nahi jana chahte, toh `end=" "` laga do. Ye newline ko overwrite karke space daal dega!
-- 🟢 **The `sep` Parameter:** Agar tum `print("A", "B", sep="-")` likhte ho, toh output me dono ke beech space ki jagah dash aayega: `A-B`. File me humne `chr(92)` (backslash) use kiya tha as a separator.
-- 🟢 **`\n` (Newline) & `\t` (Tab):** Strings ke andar nayi line aur tab (bada space) dene ke liye.
-- 🟢 **Raw String (`r`):** Agar tumhara irada hai ki `\n` waisa ka waisa print ho aur newline act na kare, toh string ke aage 'r' (Raw) laga do. Example: `print(r"\n")` -> Isko bolte hain escape sequences ki dhajjiyan udana! 😂
-- 🟢 **Object Inspection:** `dir()` (saari properties dikhata hai), `help()` (poori janam kundali print karta hai), aur `__doc__` (documentation string batata hai).
+Humare `NoteBook` folder ke andar ek file hai `02_After_Break.ipynb`, jisme humne class ke baad ye sab seekha:
+
+- 📥 <span style="color: rgb(100, 149, 237);">**Input Functions:**</span> `input()` kaise kaam karta hai aur `split()` se ek sath alag-alag values kaise len.
+- ➕ <span style="color: rgb(100, 149, 237);">**Airthmetic Operators:**</span> `+`, `-`, `*`, `/`, `%` (Remainder) aur `//` (Floor division). Humne rectangle aur square ka area/diff nikala.
+- 🤔 <span style="color: rgb(100, 149, 237);">**Logical Operators:**</span> AND, OR, NOT.
+- ⚖️ <span style="color: rgb(100, 149, 237);">**Relational Operators:**</span> `<`, `>`, `==`, `!=` etc.
+
+> [!TIP]
+> Jupyter Notebook ya Google Colab data science walo ke liye swarg hai. Ek cell me code likho, chalao, aur turant output dekho!
 
 ---
 
-## 🎁 Baaki Ke Topics (Bonus Round!)
+## <span style="color: rgb(3, 201, 169);">🎁 Extra Gyaan (Bonus Round!)</span>
 
 > [!NOTE]  
-> Yahan kuch extra gyaan hai jo interview me kaam aa sakta hai.
+> Yahan kuch choti-choti magar moti baatein hain jo interview me kaam aa sakti hain. Humne isko tod diya hai taaki easily padha jaa sake.
 
-- 🌟 **Features of Python:** Easy to learn (bacchon ka khel hai), Free and Open-Source (muft, muft, muft!), Object-Oriented, aur bahot saari in-built libraries milti hain.
-- 💼 **Applications of Python:** AI and ML models banane me, Web Development (Django/Flask se website banane me), Data Analysis me, aur automation/scripting me.
-- 🛠️ **Installing Python & VS Code/Jupyter Setup:**
-  - Seedha python.org pe jao, install karo _(Add to PATH tick karna mat bhoolna, warna raat bhar rote rahoge)_.
-  - VS Code me Extensions me jaake "Python" search karke install karo.
-  - Jupyter Notebook data science walo ke liye swarg hai, direct line-by-line chala ke output dekh sakte ho.
-- 📦 **Variables & Naming Rules:** Variable ek dabba hai jisme data rakhte hain.
-  - _Rules:_ Variable number se shuru nahi ho sakta (`1name` ❌, `name1` ✅), spaces nahi chalte, special characters allowed nahi hain sivaaye underscore (`_`) ke.
-- 🔢 **Integer, Float, String, Boolean:**
-  - _Integer:_ Pura number bina decimal ke (e.g., `5`, `100`, `-10`)
-  - _Float:_ Decimal wala number (e.g., `3.14`, `2.5`)
-  - _String:_ Text, quotes ke andar (e.g., `"Aditya"`)
-  - _Boolean:_ Sach ya Jhooth (`True` ya `False`, bas!)
-- 🪄 **Dynamic Typing in Python:** Tumhe datatypes batane ki zaroorat nahi padti! `x = 5` likho toh Python maan leta hai `int` hai. Agli line me `x = "Hello"` kar do, Python chup chap string maan lega, koi nakhre nahi!
-- 🗣️ **Input / Output Statements:** User se value lene ke liye `input("Enter name: ")` aur kuch dikhane ke liye `print()`. Simple.
-- 🔄 **Type Conversion (Typecasting):** Ek datatype ko dusre me badalna zabardasti. Jaise `str(5)` string `"5"` ban jayega, aur `int("10")` number `10` ban jayega.
-- ✍️ **String Formatting Basics:** Strings ke andar variable ki value ghusana. F-strings sabse best tareeka hai: `name="Aditya"` -> `print(f"Mera naam {name} hai")`. Ekdum clean!
+### 🌟 <span style="color: rgb(72, 201, 176);">Python Ki Khaasiyat & Upyog</span>
+
+- **Features:** Easy to learn (bacchon ka khel hai), Free & Open-Source (muft, muft, muft!), Object-Oriented, aur isme bahot saari in-built libraries milti hain.
+- **Applications:** AI/ML models banane me, Web Development (Django/Flask) me, aur Data Analysis me.
+- **Installation:** Seedha python.org pe jao, install karo _(Add to PATH tick karna mat bhoolna)_. VS Code me Python extension daal lena.
+
+### 📦 <span style="color: rgb(72, 201, 176);">Variables & Datatypes</span>
+
+- **Naming Rules:** Variable ek dabba hai jisme data rakhte hain. Rule: Number se shuru nahi ho sakta (`1name` ❌, `name1` ✅), spaces nahi chalte, special characters allowed nahi sivaaye underscore (`_`) ke.
+- **Datatypes:**
+  - **Integer:** Pura number (e.g., `5`, `-10`)
+  - **Float:** Decimal wala number (e.g., `3.14`)
+  - **String:** Text, quotes ke andar (e.g., `"Aditya"`)
+  - **Boolean:** Sach ya Jhooth (`True` ya `False`)
+- **Dynamic Typing:** Tumhe type batane ki zaroorat nahi! `x = 5` likho toh Python maan leta hai `int` hai.
+
+### 🗣️ <span style="color: rgb(72, 201, 176);">Input/Output & Formatting</span>
+
+- **I/O Statements:** User se value lene ke liye `input()` aur dikhane ke liye `print()`.
+- **Typecasting (Type Conversion):** Ek datatype ko dusre me badalna (Jaise `str(5)` banega `"5"`).
+- **String Formatting:** F-strings sabse best tareeka hai: `print(f"Mera naam {name} hai")`. Ekdum clean!
 
 ---
 
-<div align="center">
-  <b>Bhai log, Day 1 me yahi sab bhasad machayi thi. Happy Coding! 💻🎉</b>
+<div align="center" style="font-size: 24px; font-weight: bold; color: rgb(255, 136, 0); margin-top: 20px; padding: 10px; border: 2px dashed rgb(255, 136, 0); border-radius: 10px; background-color: rgba(255, 136, 0, 0.1);">
+  Bhai log, Day 1 me yahi sab bhasad machayi thi. Happy Coding! 💻🎉
 </div>
