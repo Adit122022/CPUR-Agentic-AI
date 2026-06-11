@@ -5,6 +5,7 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 ## 📅 Table of Contents
 
 - [Day 1: Python Introduction & Variables & Data Types](#day-1-python-introduction--variables--data-types)
+- [Day 2: Python Fundamentals & Operators](#day-02---python-fundamentals--operators)
 
 ---
 
@@ -25,5 +26,27 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 
 - 👨💻 [**Lecture Codes**](./01_Day_10-06-2026/01_basic.py)
 - 📖 [**Notes/Slides & Articles/Blogs Link**](./01_Day_10-06-2026/Readme.md)
+
+</details>
+
+<br>
+
+# Day 02 - Python Fundamentals & Operators
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 02 Details</summary>
+
+## 📚 [ Day 2: Python Fundamentals & Operators](./02_Day_11-06-2026)
+
+### 💻 [**2.1 - Theoretical Concepts**](./02_Day_11-06-2026/Readme.md)
+
+> **`Topics Covered:` Python Fundamentals & Operators -** Dynamic typing in Python, Input / Output Statements, Type Conversion, String formatting basics, Operators (Arithmetic, Logical, Relational, Bitwise, Membership, and Identity), Operator Precedence Table, Data Structures (Basic intro to `set`, `frozenset`, `list`, `tuple`, `dict`).
+
+### 💻 [**2.2 - Practical Implementations**](./02_Day_11-06-2026/day2_tutorial.ipynb)
+
+> **`Topics Covered:` Practical Concepts Covered -** A comprehensive tutorial notebook covering Python operators, dynamic typing, type conversion, basic I/O, string formatting, and simple collections.
+
+- 👨💻 [**Tutorial Notebook**](./02_Day_11-06-2026/day2_tutorial.ipynb)
+- 📖 [**Notes/Slides & Articles/Blogs Link**](./02_Day_11-06-2026/Readme.md)
 
 </details>
