@@ -121,4 +121,16 @@ All the practice questions and the University Management System project have bee
 
 - 📓 [Day 2 Tutorial Notebook](./NoteBook/02_Notebook.ipynb)
 
+---
+
+## 📝 Asif Sir's Classroom Notes
+
+> *In-class notes and live demonstrations shared by our instructor during the session.*
+
+| Resource | Link |
+|----------|------|
+| 🖊️ **Asif Sir's Colab Notebook — Day 2** | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17kU9_MfY3SQHAyFHc5gJs111yAUgrktJ?usp=sharing) |
+
+---
+
 Maje karo aur Happy Coding! 😎🔥

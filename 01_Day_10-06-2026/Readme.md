@@ -151,6 +151,16 @@ Humare `NoteBook` folder ke andar ek file hai `02_After_Break.ipynb`, jisme humn
 
 ---
 
+## 📝 Asif Sir's Classroom Notes
+
+> *In-class notes and live demonstrations shared by our instructor during the session.*
+
+| Resource | Link |
+|----------|------|
+| 🖊️ **Asif Sir's Colab Notebook — Day 1** | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1L-RQpJhFqRN5d-aknZgM2-Wga-wGCA86?usp=sharing) |
+
+---
+
 <div align="center" style="font-size: 24px; font-weight: bold; color: rgb(255, 136, 0); margin-top: 20px; padding: 10px; border: 2px dashed rgb(255, 136, 0); border-radius: 10px; background-color: rgba(255, 136, 0, 0.1);">
   Bhai log, Day 1 me yahi sab bhasad machayi thi. Happy Coding! 💻🎉
 </div>

@@ -318,4 +318,14 @@ Runs < 50    ──► "OR Mehnat KAro! 💪"
 
 ---
 
+## 📝 Asif Sir's Classroom Notes
+
+> *In-class notes and live demonstrations shared by our instructor during the session.*
+
+| Resource | Link |
+|----------|------|
+| 🖊️ **Asif Sir's Colab Notebook — Day 3** | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1kyG7u7rEDZzlD0j2LqoYgZNOg1M2SFFf?usp=sharing) |
+
+---
+
 *Banaya with 💙 aur thodi si chai ☕ | CPUR Agentic AI Course | Day 3*

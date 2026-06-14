@@ -2,6 +2,19 @@
 
 Welcome to the repository for my in-house internship on **Agentic AI** at Career Point University. This repository documents my daily progress, theoretical learnings, and practical code implementations throughout the internship.
 
+## 📊 Quick Reference — All Days at a Glance
+
+| Day | Date | Topics | 📁 Repo | 📝 Asif Sir's Notes |
+|-----|------|--------|---------|----------------------|
+| [Day 01](./01_Day_10-06-2026) | 10 Jun 2026 | Python Intro, Variables & Data Types | [📂 View](./01_Day_10-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1L-RQpJhFqRN5d-aknZgM2-Wga-wGCA86?usp=sharing) |
+| [Day 02](./02_Day_11-06-2026) | 11 Jun 2026 | Python Fundamentals & Operators | [📂 View](./02_Day_11-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17kU9_MfY3SQHAyFHc5gJs111yAUgrktJ?usp=sharing) |
+| [Day 03](./03_Day_12-06-2026) | 12 Jun 2026 | Loops & Pattern Programming | [📂 View](./03_Day_12-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1kyG7u7rEDZzlD0j2LqoYgZNOg1M2SFFf?usp=sharing) |
+| [Day 04](./04_Day_13-06-2026) | 13 Jun 2026 | Data Structures — List, Tuple, Set, FrozenSet, Dict | [📂 View](./04_Day_13-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1QyVILZ0REu9eB-QB8EEBn6DcPkOLLptY?usp=sharing) |
+
+> 📝 **Asif Sir's Notes** — These are the live in-class Google Colab notebooks shared by our instructor during each session.
+
+---
+
 ## 📅 Table of Contents
 
 - [Day 1: Python Introduction & Variables & Data Types](#day-1-python-introduction--variables--data-types)

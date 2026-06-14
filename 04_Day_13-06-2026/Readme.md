@@ -624,6 +624,16 @@ print(d)  # {'naam': 'Karan'}  ← Sirf last wala bachega!
 
 ---
 
+## 📝 Asif Sir's Classroom Notes
+
+> *In-class notes and live demonstrations shared by our instructor during the session.*
+
+| Resource | Link |
+|----------|------|
+| 🖊️ **Asif Sir's Colab Notebook — Day 4** | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1QyVILZ0REu9eB-QB8EEBn6DcPkOLLptY?usp=sharing) |
+
+---
+
 ## 🔗 Resources
 
 - 📓 Main Notebook: [04_Day.ipynb](Notebook/04_Day.ipynb)
