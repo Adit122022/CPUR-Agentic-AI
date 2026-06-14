@@ -11,7 +11,7 @@
 04_Day_13-06-2026/
 │
 ├── 📓 Notebook/
-│   └── 04_Day.ipynb     ← Aaj ka Gyaan — List, Tuple aur unke jugaad
+│   └── 04_Day.ipynb     ← Aaj ka Gyaan — List, Tuple, Set, FrozenSet, Dict!
 │
 └── 📄 Readme.md         ← Ye document jo tu abhi padh raha hai 🤓
 ```
@@ -21,17 +21,15 @@
 ## 🎯 Aaj Ka Agenda (What's Cooking Today? 🍳)
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                                                             │
-│   DATA STRUCTURES IN PYTHON  📦                             │
-│                                                             │
-│   ┌──────────┐   ┌──────────┐   ┌──────────┐              │
-│   │   LIST   │   │  TUPLE   │   │ Coming   │              │
-│   │  [mutable│   │(immutable│   │  Soon... │              │
-│   │  wala 😈]│   │  wala😇] │   │  (Dict,  │              │
-│   └──────────┘   └──────────┘   │   Set)   │              │
-│                                  └──────────┘              │
-└─────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────┐
+│                  DATA STRUCTURES IN PYTHON  📦                          │
+│                                                                        │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌────────┐  │
+│  │   LIST   │  │  TUPLE   │  │   SET    │  │FROZENSET │  │  DICT  │  │
+│  │ [mutable │  │(immutable│  │ {unique  │  │(immutable│  │{key:val│  │
+│  │  wala 😈]│  │  wala 😇]│  │ wala 🎲} │  │  set 🔒} │  │  📖}   │  │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘  └────────┘  │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -281,28 +279,248 @@ for l, tu in zip(stri, t):
 
 ---
 
+## 🎲 Part 3: SET — "No Duplicates Club 🚫👯"
+
+### Set Kya Hai?
+- **Unordered** → Elements ka koi fixed order nahi (random print hoga! 🎲)
+- **Mutable** → Add/remove kar sakte ho
+- **Unique Values** → Duplicates automatic remove ho jaate hain! 🧹
+- **Not Indexed** → `s[0]` nahi chalega ❌ (position nahi hoti)
+
+> **Desi Example:** Tera WhatsApp group jisme ek hi number ek baar add ho sakta hai 📱
+
+### Set Banane Ka Tarika:
+```python
+s1 = {10, 20, 30, 10, 40}   # Duplicate 10 auto-remove!
+print(s1)                    # {40, 10, 20, 30} ← order kuch bhi!
+
+# Empty set banana
+s = set()    # ✅ Sahi tarika
+s = {}       # ❌ Yeh dict banta hai! (Trap hai bhai 😅)
+```
+
+---
+
+## 🔧 Set Methods — "Sab Ka Kaam Alag Alag"
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                   SET METHODS CHEATSHEET                     │
+├─────────────────┬────────────────────────────────────────────┤
+│    METHOD       │         KYA KARTA HAI?                     │
+├─────────────────┼────────────────────────────────────────────┤
+│  add(val)       │  Ek element add karo 📌                    │
+│  update([...])  │  Multiple elements ek saath add karo ➕    │
+│  remove(val)    │  Element hatao — nahi mila toh ERROR 💥    │
+│  discard(val)   │  Element hatao — nahi mila toh KUCH NAHI 😌│
+│  pop()          │  Random ek element nikaal do 🎲            │
+│  clear()        │  Sab kuch saaf! ☢️                         │
+│  union(s2)      │  Dono sets mile — sab unique (A ∪ B) 🤝   │
+│  intersection   │  Sirf common elements (A ∩ B) 🎯          │
+│  difference     │  A mein jo B mein nahi (A - B) ➖         │
+└─────────────────┴────────────────────────────────────────────┘
+```
+
+### Set Operations — "Math Wala Jugaad! 🧮"
+```python
+s1 = {10, 20, 30}
+s2 = {20, 30, 40, 50}
+
+# Union — dono ke sab elements (unique)
+print(s1 | s2)              # {10, 20, 30, 40, 50}
+print(s1.union(s2))         # Same result
+
+# Intersection — sirf common wale
+print(s1 & s2)              # {20, 30}
+print(s1.intersection(s2))  # Same result
+
+# Difference — s1 mein hai par s2 mein nahi
+print(s1 - s2)              # {10}
+print(s1.difference(s2))    # Same result
+```
+
+### remove() vs discard() — "Ek Katil, Ek Seedha Banda 😂"
+```python
+s1 = {10, 20, 30}
+
+s1.remove(99)   # ❌ KeyError! Element nahi hai toh maar dega!
+s1.discard(99)  # ✅ Kuch nahi hoga — silent rahega 😇
+```
+
+---
+
+## ❄️ Part 4: FROZEN SET — "Set Ka Bada Bhai Jo Change Nahi Hota 😤"
+
+### Frozen Set Kya Hai?
+- **Immutable** → Ek baar bana, phir change nahi! (Tuple ki tarah)
+- **Unique Values** → Set ki tarah duplicates nahi
+- **Unordered** → Random order
+- **Hashable** → Dictionary key ban sakta hai! (Normal set nahi ban sakta 🔑)
+
+### Frozen Set Banane Ka Tarika:
+```python
+f1 = frozenset((10, 20, 30, 40, 50, "Hello"))  # Tuple se
+f2 = frozenset([10, 20, 20, 30])               # List se (duplicates remove!)
+
+print(f1)  # frozenset({10, 20, 30, 40, 50, 'Hello'})
+print(f2)  # frozenset({10, 20, 30})
+```
+
+### Frozen Set mein Kya Allowed Hai, Kya Nahi:
+```python
+f1 = frozenset({10, 20, 30})
+
+# ✅ Yeh sab chalega:
+print(len(f1))         # 3
+print(10 in f1)        # True
+print(f1 | {40, 50})   # Union (naya frozenset milega)
+
+# ❌ Yeh nahi chalega (woh deta hai error! 😂):
+f1.add(99)     # AttributeError!
+f1.remove(10)  # AttributeError!
+f1.update([5]) # AttributeError!
+```
+
+### Set vs Frozen Set Comparison:
+```
+┌─────────────────────┬────────────────────┬────────────────────┐
+│     Feature         │       SET 🎲        │   FROZEN SET ❄️     │
+├─────────────────────┼────────────────────┼────────────────────┤
+│ Mutable?            │  ✅ Haan!           │  ❌ Nahi!           │
+│ Syntax              │  {1, 2, 3}         │  frozenset(...)    │
+│ Unique?             │  ✅ Haan            │  ✅ Haan            │
+│ Ordered?            │  ❌ Nahi            │  ❌ Nahi            │
+│ add/remove?         │  ✅ Kar sakte       │  ❌ Nahi hoga       │
+│ Dict Key ban sakta? │  ❌ Nahi (unhash.)  │  ✅ Haan! (hash.)   │
+│ Set Operations?     │  ✅ Sab chalti      │  ✅ Sab chalti      │
+└─────────────────────┴────────────────────┴────────────────────┘
+```
+
+---
+
+## 📖 Part 5: DICTIONARY — "Python Ka Google Maps 🗺️"
+
+### Dictionary Kya Hai?
+- **Key-Value Pairs** → Har cheez naam se milti hai (key → value)
+- **Mutable** → Change kar sakte ho
+- **Ordered** → Python 3.7+ mein insertion order maintain hoti hai ✅
+- **No Duplicate Keys** → Same key dobara doge toh purani value replace ho jaayegi!
+- **Fastest Lookup** → O(1) time — seedha naam se dhundho! 🚀
+
+> **Desi Example:** Teri maa ka masale ka dabba — "Haldi" bolo, haldi milegi; "Namak" bolo, namak milega 🧂
+
+### Dictionary Banane Ka Tarika:
+```python
+# Normal way — {key: value}
+d1 = {
+    "naam":  "Aditya",
+    "age":   20,
+    "city":  "Kota"
+}
+
+# Mixed key types allowed!
+d2 = {
+    "Kota": (1, 2),    # String key → Tuple value
+    2:      "AHHH!"    # Int key → String value
+}
+
+# Accessing values
+print(d1["naam"])   # "Aditya"  ← Direct access
+print(d2["Kota"])   # (1, 2)
+```
+
+---
+
+## 🔧 Dictionary Methods — "Sab Kaam Ek Jagah"
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│               DICTIONARY METHODS CHEATSHEET                  │
+├─────────────────┬────────────────────────────────────────────┤
+│    METHOD       │         KYA KARTA HAI?                     │
+├─────────────────┼────────────────────────────────────────────┤
+│  keys()         │  Saare keys ki list deta hai 🔑            │
+│  values()       │  Saari values ki list deta hai 💰          │
+│  items()        │  (key, value) pairs deta hai (tuple) 📦    │
+│  get(key)       │  Key se value lo — KeyError nahi aayega ✅ │
+│  pop(key)       │  Key-value nikaal ke delete karo 💥        │
+│  popitem()      │  Last inserted pair nikaal lo (LIFO) 🔄    │
+│  update({...})  │  Naya data merge karo ya update karo 🔄    │
+│  clear()        │  Sab kuch saaf! ☢️                         │
+└─────────────────┴────────────────────────────────────────────┘
+```
+
+### Dictionary Access — "get() vs [] — Kaunsa Better?"
+```python
+d1 = {"naam": "Aditya", "age": 20}
+
+# Direct access — risky!
+print(d1["naam"])       # "Aditya" ✅
+print(d1["phone"])      # KeyError! 💀 (key nahi hai toh maar dega)
+
+# get() — safe wala!
+print(d1.get("naam"))        # "Aditya" ✅
+print(d1.get("phone"))       # None (error nahi aayega 😌)
+print(d1.get("phone", "N/A")) # "N/A" ← Default value doge
+```
+
+### Dictionary Traversal — "Loop Lagao!"
+```python
+d1 = {"naam": "Aditya", "age": 20, "city": "Kota"}
+
+# Sirf keys
+for k in d1.keys():
+    print(k)          # naam, age, city
+
+# Sirf values
+for v in d1.values():
+    print(v)          # Aditya, 20, Kota
+
+# Key aur Value dono — sabse zyada use hota hai! 😎
+for k, v in d1.items():
+    print(f"{k} → {v}")
+# naam → Aditya
+# age  → 20
+# city → Kota
+```
+
+### Nested Dictionary — "Dictionary Andar Dictionary! 🤯"
+```python
+students = {
+    "Aditya": {"age": 20, "marks": 95},
+    "Rohit":  {"age": 21, "marks": 88}
+}
+
+# Access nested value
+print(students["Aditya"]["marks"])  # 95
+```
+
+### pop() vs popitem():
+```python
+d = {"a": 1, "b": 2, "c": 3}
+
+d.pop("b")      # Specific key hata do → {"a": 1, "c": 3}
+d.popitem()     # Last wala pair hata do → {"a": 1} (LIFO)
+```
+
+---
+
 ## 🧠 Aaj Ka Mind Map
 
 ```
-                    DATA STRUCTURES
-                         │
-           ┌─────────────┼─────────────┐
-           │             │             │
-          LIST         TUPLE        (Coming)
-           │             │             │
-      ┌────┴────┐    ┌───┴───┐    Dict, Set
-      │         │    │       │
-   Mutable   Methods Immutable Packing/
-   Ordered   galore  Ordered  Unpacking
-      │
-   ┌──┴──────────────────────┐
-   │                         │
-  Copy                   Slicing
-   │                         │
-  ┌┴──────────┐          ┌───┴────────┐
-  │  Shallow  │ Deep     │ Forward   │Backward
-  │  copy()   │ copy     │  [0,1,2]  │[-1,-2,-3]
-  └───────────┘          └────────────┘
+                         DATA STRUCTURES
+                               │
+          ┌──────────┬─────────┼──────────┬──────────┐
+          │          │         │          │          │
+        LIST       TUPLE      SET     FROZENSET    DICT
+          │          │         │          │          │
+      Mutable    Immutable  Mutable    Immutable  Mutable
+      Ordered    Ordered    Unordered  Unordered  Ordered
+      Indexed    Indexed    Unique     Unique     Key:Value
+          │          │         │          │          │
+        Copy      Packing   add/remove  (readonly)  keys()
+       Methods  Unpacking  union/inter  set ops    values()
+      Slicing                                      items()
 ```
 
 ---
@@ -310,28 +528,108 @@ for l, tu in zip(stri, t):
 ## 💡 Aaj Ki Seekh (Today's Wisdom)
 
 > 1. **List** — Badalne wala data ke liye (shopping cart, to-do list)
-> 2. **Tuple** — Fixed data ke liye (coordinates, DB records)  
-> 3. **`=`** se copy mat karo! Warna `l1` bhi rota hai 😭
-> 4. **Deep copy** import karke use karo — professional rehna chahiye!
-> 5. **`any()` and `all()`** — Logic gates Python mein! 🔌
+> 2. **Tuple** — Fixed data ke liye (coordinates, DB records)
+> 3. **Set** — Duplicates hatane ke liye best! Jab uniqueness chahiye 🎯
+> 4. **Frozen Set** — Set ka immutable bhai — dict key ban sakta hai!
+> 5. **Dictionary** — Real world mapping — naam se dhundho, O(1) mein milega! 🗺️
+> 6. **`=`** se copy mat karo! Warna `l1` bhi rota hai 😭
+> 7. **Deep copy** import karke use karo — professional rehna chahiye!
+> 8. **`any()` and `all()`** — Logic gates Python mein! 🔌
 
 ---
 
-## 🤣 Fun Moment of the Day
+## 🔥 Tricks & Debatable Questions — "Yeh Socho, Debate Karo!"
+
+> *Yeh woh cheezein hain jo class mein seedha nahi bataate — khud sochna padta hai!* 🧠
+
+---
+
+### ❓ Q1: `sorted()` ka return type hamesha `list` kyon hota hai?
 
 ```python
-# Class mein yeh code likha tha (haath kaan pakad lo) 😂
-l1 = [10, 20, [40, 50z    # ← yahan 'z' slip ho gayi keyboard se
-l2 = l1.copy()
-# Jupyter ne ek second nahi socha aur error de diya... RIP 😅
+t = (3, 1, 2)       # Tuple
+s = {30, 10, 20}    # Set
+
+print(sorted(t))    # [1, 2, 3] ← List!
+print(sorted(s))    # [10, 20, 30] ← List!
+print(type(sorted(t)))  # <class 'list'>
 ```
+
+**Debate:** `sorted()` tuple pe lagao, set pe lagao — result hamesha `list` kyon?
+
+> **Reason:** `sorted()` ek *naya* sorted collection banata hai. Python ka design decision hai ki sorted output hamesha **`list`** ho — kyunki:
+> - `tuple` immutable hai, toh usse modify nahi kar sakte
+> - `set` unordered hai, sorted tuple nahi ban sakta logically
+> - `list` sabse flexible output type hai 🎯
+>
+> Agar tuple chahiye? `tuple(sorted(t))` karo! 😎
+
+---
+
+### ❓ Q2: `{}` — Dict banta hai ya Set? 🤔
+
+```python
+a = {}       # Kya hai yeh?
+print(type(a))  # <class 'dict'>  ← DICT! Trap! 😅
+
+b = {1, 2, 3}   # Yeh set hai ✅
+c = set()       # Empty set ka sahi tarika ✅
+```
+
+**Debate:** Python ne `{}` ko dict kyun diya, set kyun nahi?
+
+> **Reason:** Dict Python 2.2 se hai, Set baad mein aaya. History ki wajah se `{}` dict ki legacy hai! 🏛️
+
+---
+
+### ❓ Q3: Kya `list` ko Dictionary key bana sakte hain?
+
+```python
+d = {}
+
+d[[1, 2]] = "value"     # ❌ TypeError: unhashable type: 'list'
+d[(1, 2)] = "value"     # ✅ Tuple — hashable hai!
+d[frozenset([1,2])] = "value"  # ✅ FrozenSet bhi hashable hai!
+```
+
+**Rule:** Sirf **hashable** (immutable) objects dict key ban sakte hain.
+`list` → ❌ | `tuple` → ✅ | `set` → ❌ | `frozenset` → ✅
+
+---
+
+### ❓ Q4: `remove()` aur `discard()` — same kaam, different attitude 😂
+
+```python
+s = {10, 20, 30}
+
+s.remove(99)   # 💀 KeyError — "99 nahi mila, ab maar deta hoon!"
+s.discard(99)  # 😌 Kuch nahi hua — "theek hai bhai, nahi hai toh nahi"
+```
+
+**Debate:** Toh `remove()` use kab karein?
+> Jab guarantee ho ki element **exist karta hai** — tabhi `remove()` use karo.
+> Uncertainty mein hamesha `discard()` safer hai! ✅
+
+---
+
+### ❓ Q5: `dict` mein same key dobara doge toh kya hoga?
+
+```python
+d = {"naam": "Aditya", "naam": "Rohit", "naam": "Karan"}
+print(d)  # {'naam': 'Karan'}  ← Sirf last wala bachega!
+```
+
+**Trap:** Python error nahi deta — **silently** purani value replace ho jaati hai! 🚨
+> Real projects mein yeh bug dhundna bahut mushkil hota hai. Hamesha unique keys use karo!
 
 ---
 
 ## 🔗 Resources
 
 - 📓 Main Notebook: [04_Day.ipynb](Notebook/04_Day.ipynb)
+- 🐍 Python Docs — Sets: https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset
+- 🐍 Python Docs — Dicts: https://docs.python.org/3/library/stdtypes.html#mapping-types-dict
 
 ---
 
-*Banaya with 💙, thodi bewakoofi 😂 aur bohot saari chai ☕ | CPUR Agentic AI Course | Day 4*
+*Banaya with 💙, thodi bewakoofi 😂 aur ek bekar si coffee ☕ — jo "Chota Chatri" lunch pe leke aayi thi... shukriya bhi nahi kahunga 😂 | CPUR Agentic AI Course | Day 4*
