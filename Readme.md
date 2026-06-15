@@ -10,6 +10,7 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 | [Day 02](./02_Day_11-06-2026) | 11 Jun 2026 | Python Fundamentals & Operators | [📂 View](./02_Day_11-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17kU9_MfY3SQHAyFHc5gJs111yAUgrktJ?usp=sharing) |
 | [Day 03](./03_Day_12-06-2026) | 12 Jun 2026 | Loops & Pattern Programming | [📂 View](./03_Day_12-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1kyG7u7rEDZzlD0j2LqoYgZNOg1M2SFFf?usp=sharing) |
 | [Day 04](./04_Day_13-06-2026) | 13 Jun 2026 | Data Structures — List, Tuple, Set, FrozenSet, Dict | [📂 View](./04_Day_13-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1QyVILZ0REu9eB-QB8EEBn6DcPkOLLptY?usp=sharing) |
+| [Day 05](./05_Day_15-06-2026) | 15 Jun 2026 | Functions, Lambda, Recursion & File Handling | [📂 View](./05_Day_15-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1p3TG0-egCWU8wl6kY1_mLx2c0IDNj01D?usp=sharing) |
 
 > 📝 **Asif Sir's Notes** — These are the live in-class Google Colab notebooks shared by our instructor during each session.
 
@@ -21,6 +22,7 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 - [Day 2: Python Fundamentals & Operators](#day-02---python-fundamentals--operators)
 - [Day 3: Loops & Pattern Programming](#day-03---loops--pattern-programming)
 - [Day 4: Data Structures — List, Tuple, Set, FrozenSet, Dict](#day-04---data-structures--list-tuple-set-frozenset-dict)
+- [Day 5: Functions, Lambda, Recursion & File Handling](#day-05---functions-lambda-recursion--file-handling)
 
 ---
 
@@ -108,5 +110,28 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 
 - 👨‍💻 [**Lecture Notebook**](./04_Day_13-06-2026/Notebook/04_Day.ipynb)
 - 📖 [**Notes/Slides & Articles/Blogs Link**](./04_Day_13-06-2026/Readme.md)
+
+</details>
+
+<br>
+
+# Day 05 - Functions, Lambda, Recursion & File Handling
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 05 Details</summary>
+
+## 📚 [Day 5: Functions & File Handling](./05_Day_15-06-2026)
+
+### 💻 [**5.1 - Theoretical Concepts**](./05_Day_15-06-2026/Readme.md)
+
+> **`Topics Covered:` Functions & File Handling -** What are functions and their advantages, Defining functions with `def`, Function parameters (positional, default, `*args`, `**kwargs`), Lambda / Anonymous functions, Types of functions (built-in vs user-defined), Recursive functions with base cases, Generator functions with `yield`, Scientific Calculator project, and an introduction to File Handling.
+
+### 💻 [**5.2 - Practical Implementations**](./05_Day_15-06-2026/Notebook/Function.ipynb)
+
+> **`Topics Covered:` Practical Concepts Covered -** Hands-on notebook covering function definitions, lambda expressions, variable-length arguments, recursive sum/factorial/digit-sum implementations, generator functions, and an in-class calculator built using lambda and match-case.
+
+- 👨‍💻 [**Lecture Notebook**](./05_Day_15-06-2026/Notebook/Function.ipynb)
+- 🧮 [**Scientific Calculator**](./05_Day_15-06-2026/Scientific_Calculator/index.html)
+- 📖 [**Notes/Slides & Articles/Blogs Link**](./05_Day_15-06-2026/Readme.md)
 
 </details>
