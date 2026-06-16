@@ -270,12 +270,6 @@ print("Counting up to 5:", tuple(count_up_to(5)))
 
 ---
 
-## 🧮 Scientific Calculator
-
-> A fully functional **Scientific Calculator** web app built using Python concepts practiced today, implemented as an interactive HTML/JS calculator.
-
-- 🧮 [**Open Scientific Calculator**](Scientific_Calculator/index.html)
-
 **Features:**
 - ➕ Basic arithmetic operations (+, −, ×, ÷)
 - 🔬 Scientific functions (sin, cos, tan, log, sqrt, power)
@@ -383,7 +377,6 @@ calculator()
 ## 🔗 Resources
 
 - 📓 Main Notebook: [Function.ipynb](Notebook/Function.ipynb)
-- 🧮 Scientific Calculator: [index.html](Scientific_Calculator/index.html)
 - 🐍 Python Docs — Functions: https://docs.python.org/3/tutorial/controlflow.html#defining-functions
 - 🐍 Python Docs — Lambda: https://docs.python.org/3/reference/expressions.html#lambda
 - 🐍 Python Docs — Generators: https://docs.python.org/3/howto/functional.html#generators
