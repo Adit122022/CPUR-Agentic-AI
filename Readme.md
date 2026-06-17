@@ -11,7 +11,8 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 | [Day 03](./01_Phase/03_Day_12-06-2026) | 12 Jun 2026 | Loops & Pattern Programming | [📂 View](./01_Phase/03_Day_12-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1kyG7u7rEDZzlD0j2LqoYgZNOg1M2SFFf?usp=sharing) |
 | [Day 04](./01_Phase/04_Day_13-06-2026) | 13 Jun 2026 | Data Structures — List, Tuple, Set, FrozenSet, Dict | [📂 View](./01_Phase/04_Day_13-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1QyVILZ0REu9eB-QB8EEBn6DcPkOLLptY?usp=sharing) |
 | [Day 05](./01_Phase/05_Day_15-06-2026) | 15 Jun 2026 | Functions, Lambda, Recursion & File Handling | [📂 View](./01_Phase/05_Day_15-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1p3TG0-egCWU8wl6kY1_mLx2c0IDNj01D?usp=sharing) |
-| [Day 06](./02_Phase/06_Day_16-06-2026) | 16 Jun 2026 | _Coming Soon_ | [📂 View](./02_Phase/06_Day_16-06-2026) | — |
+| [Day 06](./02_Phase/06_Day_16-06-2026) | 16 Jun 2026 | Data Science Lifecycle & NumPy Fundamentals | [📂 View](./02_Phase/06_Day_16-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/12NsDMHqx4-EueHisRD-u82WA_rdddmT5?usp=sharing) |
+| [Day 07](./02_Phase/07_Day_17-06-2026) | 17 Jun 2026 | Pandas — Series & DataFrame | [📂 View](./02_Phase/07_Day_17-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1PGMhHbqM5V9pZ9LVRGAzSZ13sptPWUkW?usp=sharing) |
 
 > 📝 **Asif Sir's Notes** — These are the live in-class Google Colab notebooks shared by our instructor during each session.
 
@@ -24,7 +25,8 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 - [Day 3: Loops & Pattern Programming](#day-03---loops--pattern-programming)
 - [Day 4: Data Structures — List, Tuple, Set, FrozenSet, Dict](#day-04---data-structures--list-tuple-set-frozenset-dict)
 - [Day 5: Functions, Lambda, Recursion & File Handling](#day-05---functions-lambda-recursion--file-handling)
-- [Day 6: Coming Soon](#day-06---coming-soon)
+- [Day 6: Data Science Lifecycle & NumPy Fundamentals](#day-06---data-science-lifecycle--numpy-fundamentals)
+- [Day 7: Pandas — Series & DataFrame](#day-07---pandas--series--dataframe)
 
 ---
 
@@ -140,15 +142,49 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 
 <br>
 
-# Day 06 - Coming Soon
+# Day 06 - Data Science Lifecycle & NumPy Fundamentals
 
 <details>
 <summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 06 Details</summary>
 
-## 📚 [Day 6: Coming Soon](./02_Phase/06_Day_16-06-2026)
+## 📚 [Day 6: Data Science Lifecycle & NumPy](./02_Phase/06_Day_16-06-2026)
 
-> Content for Day 06 will be added soon.
+### 💻 [**6.1 - Theoretical Concepts**](./02_Phase/06_Day_16-06-2026/Readme.md)
 
-- 📖 [**Notes/Slides & Articles/Blogs Link**](./02_Phase/06_Day_16-06-2026)
+> **`Topics Covered:` Data Science Lifecycle & NumPy -** The 9-step Data Science Lifecycle (Problem Understanding, Data Collection, Data Cleaning, EDA, Visualization, Model Building, Evaluation, Deployment, Monitoring), Introduction to NumPy, NumPy vs Python Lists, Installing & Importing NumPy, 1D/2D/3D Array creation, Array attributes (ndim, shape, size, dtype, itemsize), Mathematical operations & Broadcasting, Array creation functions (zeros, ones, arange, linspace, eye, random), 1D/2D/3D Array Slicing & Indexing Cheat Sheet, and Aggregation Functions (sum, mean, median, std, var).
+
+### 💻 [**6.2 - Practical Implementations**](./02_Phase/06_Day_16-06-2026/NoteBook/)
+
+> **`Topics Covered:` Practical Concepts Covered -** Hands-on notebooks covering Data Science Lifecycle theory with real-world examples, NumPy array creation and manipulation, element-wise operations, broadcasting, 2D/3D slicing, and aggregation functions with student marks analysis and multiplication table.
+
+- 📓 [**Data Science Lifecycle Notebook**](./02_Phase/06_Day_16-06-2026/NoteBook/06_DataScience.ipynb)
+- 📓 [**NumPy Notebook**](./02_Phase/06_Day_16-06-2026/NoteBook/06_NumPY.ipynb)
+- 📖 [**Notes/Slides & Articles/Blogs Link**](./02_Phase/06_Day_16-06-2026/Readme.md)
+- 🖊️ **Asif Sir's Notes:** [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/12NsDMHqx4-EueHisRD-u82WA_rdddmT5?usp=sharing)
+
+</details>
+
+<br>
+
+# Day 07 - Pandas — Series & DataFrame
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 07 Details</summary>
+
+## 📚 [Day 7: Pandas — Panel Data](./02_Phase/07_Day_17-06-2026)
+
+### 💻 [**7.1 - Theoretical Concepts**](./02_Phase/07_Day_17-06-2026/Readme.md)
+
+> **`Topics Covered:` Pandas Library -** Introduction to Pandas & why it's used in Data Science, Main data structures (Series and DataFrame), Creating Series from List/Tuple/Dictionary/NumPy Array, Custom Index & Label-based access, Series Attributes (index, values, dtype, shape, size, ndim, name), Aggregation Functions on Series, Creating DataFrames from Dictionary/CSV, DataFrame Attributes (index, columns, dtypes, shape, size, ndim, values, axes), Viewing methods (head, tail, sample, info, describe), Column & Row Selection, loc[] and iloc[] methods, Filtering with boolean indexing, Sorting, Data Transformation, and reading real-world CSV datasets.
+
+### 💻 [**7.2 - Practical Implementations**](./02_Phase/07_Day_17-06-2026/)
+
+> **`Topics Covered:` Practical Concepts Covered -** Hands-on notebooks covering NumPy indexing revision, Pandas Series creation and operations, DataFrame creation, viewing, filtering, sorting, loc/iloc selection, column/row operations, aggregation, and loading real CSV data (wed17.csv) for real-world analysis.
+
+- 📓 [**NumPy Revision Notebook**](./02_Phase/07_Day_17-06-2026/07_Numpy.ipynb)
+- 📓 [**Pandas Notebook**](./02_Phase/07_Day_17-06-2026/07_pandas.ipynb)
+- 📂 [**Dataset Folder**](./02_Phase/07_Day_17-06-2026/DataSet/)
+- 📖 [**Notes/Slides & Articles/Blogs Link**](./02_Phase/07_Day_17-06-2026/Readme.md)
+- 🖊️ **Asif Sir's Notes:** [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1PGMhHbqM5V9pZ9LVRGAzSZ13sptPWUkW?usp=sharing)
 
 </details>
