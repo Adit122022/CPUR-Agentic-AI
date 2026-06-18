@@ -13,6 +13,7 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 | [Day 05](./01_Phase/05_Day_15-06-2026) | 15 Jun 2026 | Functions, Lambda, Recursion & File Handling | [📂 View](./01_Phase/05_Day_15-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1p3TG0-egCWU8wl6kY1_mLx2c0IDNj01D?usp=sharing) |
 | [Day 06](./02_Phase/06_Day_16-06-2026) | 16 Jun 2026 | Data Science Lifecycle & NumPy Fundamentals | [📂 View](./02_Phase/06_Day_16-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/12NsDMHqx4-EueHisRD-u82WA_rdddmT5?usp=sharing) |
 | [Day 07](./02_Phase/07_Day_17-06-2026) | 17 Jun 2026 | Pandas — Series & DataFrame | [📂 View](./02_Phase/07_Day_17-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1PGMhHbqM5V9pZ9LVRGAzSZ13sptPWUkW?usp=sharing) |
+| [Day 08](./02_Phase/08_Day_18-06-2026) | 18 Jun 2026 | Pandas Data Loading & Matplotlib Visualizations | [📂 View](./02_Phase/08_Day_18-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1nSzhlttcrtst9JEA5kkvfiDbAcaF8Klc?usp=sharing) |
 
 > 📝 **Asif Sir's Notes** — These are the live in-class Google Colab notebooks shared by our instructor during each session.
 
@@ -27,6 +28,7 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 - [Day 5: Functions, Lambda, Recursion & File Handling](#day-05---functions-lambda-recursion--file-handling)
 - [Day 6: Data Science Lifecycle & NumPy Fundamentals](#day-06---data-science-lifecycle--numpy-fundamentals)
 - [Day 7: Pandas — Series & DataFrame](#day-07---pandas--series--dataframe)
+- [Day 8: Pandas Data Loading & Matplotlib Visualizations](#day-08---pandas-data-loading--matplotlib-visualizations)
 
 ---
 
@@ -186,5 +188,30 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 - 📂 [**Dataset Folder**](./02_Phase/07_Day_17-06-2026/DataSet/)
 - 📖 [**Notes/Slides & Articles/Blogs Link**](./02_Phase/07_Day_17-06-2026/Readme.md)
 - 🖊️ **Asif Sir's Notes:** [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1PGMhHbqM5V9pZ9LVRGAzSZ13sptPWUkW?usp=sharing)
+
+</details>
+
+<br>
+
+# Day 08 - Pandas Data Loading & Matplotlib Visualizations
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 08 Details</summary>
+
+## 📚 [Day 8: Pandas Data Loading & Matplotlib Visualizations](./02_Phase/08_Day_18-06-2026)
+
+### 💻 [**8.1 - Theoretical Concepts**](./02_Phase/08_Day_18-06-2026/Readme.md)
+
+> **`Topics Covered:` Pandas Data Loading & Matplotlib Visualizations -** Loading data from multiple formats (CSV, Excel, JSON, TSV, XML, HTML, SQL), custom delimiters, handling headers and missing values, parsing dates, indexing columns. Matplotlib basics (line plots, bar charts, horizontal bars), line customizing (colors, styles, markers), chart borders, and transparency.
+
+### 💻 [**8.2 - Practical Implementations**](./02_Phase/08_Day_18-06-2026/Notebook/)
+
+> **`Topics Covered:` Practical Concepts Covered -** Programmatic splitting of combined files, Pandas loading examples, DataFrame viewing methods (head, tail, sample, info, describe), Matplotlib plotting configurations, custom bar chart colors, and Titanic survival stats bar plotting.
+
+- 📓 [**Pandas Loading Notebook**](./02_Phase/08_Day_18-06-2026/Notebook/08_pandas.ipynb)
+- 📓 [**Matplotlib Plotting Notebook**](./02_Phase/08_Day_18-06-2026/Notebook/08_matplotlib.ipynb)
+- 📂 [**Dataset Folder**](./02_Phase/08_Day_18-06-2026/DataSet/)
+- 📖 [**Notes/Slides & Articles/Blogs Link**](./02_Phase/08_Day_18-06-2026/Readme.md)
+- 🖊️ **Asif Sir's Notes:** [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1nSzhlttcrtst9JEA5kkvfiDbAcaF8Klc?usp=sharing)
 
 </details>
