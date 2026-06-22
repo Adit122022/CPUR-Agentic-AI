@@ -14,6 +14,7 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 | [Day 06](./02_Phase/06_Day_16-06-2026) | 16 Jun 2026 | Data Science Lifecycle & NumPy Fundamentals | [📂 View](./02_Phase/06_Day_16-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/12NsDMHqx4-EueHisRD-u82WA_rdddmT5?usp=sharing) |
 | [Day 07](./02_Phase/07_Day_17-06-2026) | 17 Jun 2026 | Pandas — Series & DataFrame | [📂 View](./02_Phase/07_Day_17-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1PGMhHbqM5V9pZ9LVRGAzSZ13sptPWUkW?usp=sharing) |
 | [Day 08](./02_Phase/08_Day_18-06-2026) | 18 Jun 2026 | Pandas Data Loading & Matplotlib Visualizations | [📂 View](./02_Phase/08_Day_18-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1nSzhlttcrtst9JEA5kkvfiDbAcaF8Klc?usp=sharing) |
+| [Day 10](./02_Phase/10_Day_20-06-2026) | 20 Jun 2026 | Exploratory Data Analysis (EDA) & Data Cleaning | [📂 View](./02_Phase/10_Day_20-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/11VB8J5-GxWqQB1rBtQEnt5Uv9DzeGQjU?usp=sharing) |
 
 > 📝 **Asif Sir's Notes** — These are the live in-class Google Colab notebooks shared by our instructor during each session.
 
@@ -29,6 +30,7 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 - [Day 6: Data Science Lifecycle & NumPy Fundamentals](#day-06---data-science-lifecycle--numpy-fundamentals)
 - [Day 7: Pandas — Series & DataFrame](#day-07---pandas--series--dataframe)
 - [Day 8: Pandas Data Loading & Matplotlib Visualizations](#day-08---pandas-data-loading--matplotlib-visualizations)
+- [Day 10: Exploratory Data Analysis (EDA) & Data Cleaning](#day-10---exploratory-data-analysis-eda--data-cleaning)
 
 ---
 
@@ -215,3 +217,32 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 - 🖊️ **Asif Sir's Notes:** [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1nSzhlttcrtst9JEA5kkvfiDbAcaF8Klc?usp=sharing)
 
 </details>
+
+<br>
+
+# Day 10 - Exploratory Data Analysis (EDA) & Data Cleaning
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 10 Details</summary>
+
+## 📚 [Day 10: Exploratory Data Analysis (EDA) & Data Cleaning](./02_Phase/10_Day_20-06-2026)
+
+### 💻 [**10.1 - Theoretical Concepts**](./02_Phase/10_Day_20-06-2026/Readme.md)
+
+> **`Topics Covered:` Exploratory Data Analysis (EDA) & Data Cleaning -** Standard 15-step EDA workflow (loading, checking shape, columns, types, null handling, duplicate cleaning, stats summary, outlier checking via IQR, univariate/bivariate visualizations, correlations, and feature engineering), dataset practice orders.
+
+### 💻 [**10.2 - Practical Implementations**](./02_Phase/10_Day_20-06-2026/Notebook/)
+
+> **`Topics Covered:` Practical Concepts Covered -** Programmatic implementation of the 15-step EDA on Titanic dataset, Student Academic Performance, Mall Customers, and Netflix Movies and TV Shows. Visualizations with styled Matplotlib and Seaborn plots.
+
+- 📓 [**Titanic Analysis Notebook**](./02_Phase/10_Day_20-06-2026/Notebook/10_Analysis.ipynb)
+- 📓 [**Student Performance Notebook**](./02_Phase/10_Day_20-06-2026/Notebook/dataset_Student.ipynb)
+- 📓 [**Mall Customer Analysis (Ayan)**](./02_Phase/10_Day_20-06-2026/Notebook/mall_customer_dataset_analysis-ayan.ipynb)
+- 📓 [**Mall Customer Data Notebook**](./02_Phase/10_Day_20-06-2026/Notebook/mall_data.ipynb)
+- 📓 [**Netflix Data Analysis Notebook**](./02_Phase/10_Day_20-06-2026/Notebook/netflix_data.ipynb)
+- 📂 [**Dataset Folder**](./02_Phase/DataSet/)
+- 📖 [**Notes/Slides & Articles/Blogs Link**](./02_Phase/10_Day_20-06-2026/Readme.md)
+- 🖊️ **Asif Sir's Notes:** [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/11VB8J5-GxWqQB1rBtQEnt5Uv9DzeGQjU?usp=sharing)
+
+</details>
+
