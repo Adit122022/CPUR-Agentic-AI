@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hinglish EDA & Data Cleaning Guide</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Reset & Variables */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-main: #0b0f19;
+            --bg-sidebar: rgba(15, 23, 42, 0.95);
+            --bg-card: rgba(30, 41, 59, 0.45);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-indigo: #6366f1;
+            --accent-purple: #a855f7;
+            --accent-rose: #f43f5e;
+            --accent-gold: #f59e0b;
+            --accent-green: #10b981;
+            --shadow-glow: 0 4px 30px rgba(99, 102, 241, 0.15);
+            --font-main: 'Outfit', sans-serif;
+            --font-code: 'Fira Code', monospace;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styling */
+        aside {
+            width: 320px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        aside h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            overflow-y: auto;
+            flex-grow: 1;
+            padding-right: 0.5rem;
+        }
+
+        .sidebar-links::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar-links::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .sidebar-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.65rem 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border: 1px solid transparent;
+        }
+
+        .sidebar-links a:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-links a.active {
+            color: #fff;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* Main Content Container */
+        main {
+            margin-left: 320px;
+            flex-grow: 1;
+            padding: 3rem 4rem;
+            max-width: 1200px;
+        }
+
+        /* Header styles */
+        header {
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff, var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        header .badge {
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
+            color: #fff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        /* Cards Layout */
+        .card-container {
+            display: flex;
+            flex-direction: column;
+            gap: 3.5rem;
+        }
+
+        /* Glassmorphism Card Style */
+        .eda-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .eda-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-indigo), var(--accent-purple));
+            opacity: 0.7;
+        }
+
+        .eda-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.35);
+            box-shadow: 0 12px 40px 0 rgba(99, 102, 241, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .step-number {
+            font-family: var(--font-code);
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--accent-purple);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+        }
+
+        /* Hinglish Explanation Box */
+        .hinglish-explanation {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 4px solid var(--accent-gold);
+            padding: 1.25rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #ffedd5;
+        }
+
+        .hinglish-explanation strong {
+            color: var(--accent-gold);
+        }
+
+        /* Lists: Why & Benefit */
+        .q-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .q-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 1.25rem;
+            border-radius: 8px;
+        }
+
+        .q-box h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .q-box h4.why-title {
+            color: var(--accent-rose);
+        }
+
+        .q-box h4.benefit-title {
+            color: var(--accent-green);
+        }
+
+        .q-box ul {
+            list-style-type: none;
+        }
+
+        .q-box li {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+            position: relative;
+            padding-left: 1.25rem;
+        }
+
+        .q-box li::before {
+            content: '•';
+            position: absolute;
+            left: 0.25rem;
+            color: var(--text-secondary);
+        }
+
+        /* Code Block Styling */
+        .code-block {
+            background-color: #080c14;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.25rem;
+            font-family: var(--font-code);
+            font-size: 0.95rem;
+            overflow-x: auto;
+            color: #a5b4fc;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .code-block::after {
+            content: 'Python Input';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.75rem;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.2);
+            font-weight: 600;
+        }
+
+        /* Output Container styling */
+        .output-container {
+            background: #111827;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .output-container::after {
+            content: 'Output';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.75rem;
+            font-size: 0.75rem;
+            color: #10b981;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .output-title {
+            color: #10b981;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .output-text {
+            font-family: var(--font-code);
+            font-size: 0.9rem;
+            color: #d1d5db;
+            white-space: pre-wrap;
+        }
+
+        /* Output Table styling */
+        .output-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+            color: #d1d5db;
+            margin-top: 0.5rem;
+        }
+
+        .output-table th, .output-table td {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0.5rem 0.75rem;
+            text-align: left;
+        }
+
+        .output-table th {
+            background-color: rgba(255, 255, 255, 0.03);
+            color: #f3f4f6;
+            font-weight: 600;
+        }
+
+        .output-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        /* SVG Boxplot Diagrams */
+        .visual-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .diagram-caption {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.4;
+            max-width: 600px;
+        }
+
+        /* Titanic Breakdown Info */
+        .example-breakdown {
+            background: rgba(99, 102, 241, 0.03);
+            border: 1px dashed rgba(99, 102, 241, 0.2);
+            padding: 1.25rem;
+            border-radius: 8px;
+        }
+
+        .example-breakdown h5 {
+            color: var(--accent-indigo);
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .example-breakdown p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+            }
+            aside {
+                width: 100%;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                height: auto;
+            }
+            main {
+                margin-left: 0;
+                padding: 2rem;
+            }
+            .q-section {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar sticky menu -->
+    <aside>
+        <h2>🧠 EDA Guide</h2>
+        <div class="sidebar-links">
+            <a href="#step1" class="active"><span class="step-number">01</span> df.head()</a>
+            <a href="#step2"><span class="step-number">02</span> df.tail()</a>
+            <a href="#step3"><span class="step-number">03</span> df.sample()</a>
+            <a href="#step4"><span class="step-number">04</span> df.shape</a>
+            <a href="#step5"><span class="step-number">05</span> df.columns</a>
+            <a href="#step6"><span class="step-number">06</span> df.index</a>
+            <a href="#step7"><span class="step-number">07</span> df.dtypes</a>
+            <a href="#step8"><span class="step-number">08</span> df.info()</a>
+            <a href="#step9"><span class="step-number">09</span> df.describe()</a>
+            <a href="#step10"><span class="step-number">10</span> df.describe(object)</a>
+            <a href="#step11"><span class="step-number">11</span> df.nunique()</a>
+            <a href="#step12"><span class="step-number">12</span> df.isnull().sum()</a>
+            <a href="#step13"><span class="step-number">13</span> df.duplicated()</a>
+            <a href="#step14"><span class="step-number">14</span> Outliers & Boxplot</a>
+            <a href="#step15"><span class="step-number">15</span> Univariate Analysis</a>
+            <a href="#step16"><span class="step-number">16</span> Bivariate Analysis</a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main>
+        <header>
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
+                <span class="badge">Day 10 Notebook</span>
+                <span class="badge" style="background: rgba(255,255,255,0.08); color: var(--text-secondary);">Interactive Guide</span>
+            </div>
+            <h1>Exploratory Data Analysis (EDA) & Data Cleaning Guide</h1>
+            <div class="subtitle">Complete Hinglish Breakdown of basic checks with detailed code outputs & diagrams</div>
+        </header>
+
+        <div class="card-container">
+
+            <!-- STEP 1 -->
+            <section id="step1" class="eda-card">
+                <div class="card-header">
+                    <div class="card-title">🔍 View first few records</div>
+                    <span class="step-number">Step 01</span>
+                </div>
+                <div class="hinglish-explanation">
+                    <strong>Hinglish Samjho:</strong> "Mujhe pure data ke pehle 5 records nikal ke dikhao taaki main initial look dekh saku."
+                </div>
+                <div class="code-block">
+# Load pandas and read dataset
+import pandas as pd
+df = pd.read_csv("tested.csv")
+df.head(3) # Display top 3 rows
+                </div>
+                <div class="output-container">
+                    <div class="output-title">Table Output</div>
+                    <table class="output-table">
+                        <thead>
+                            <tr>
+                                <th>PassengerId</th>
+                                <th>Survived</th>
+                                <th>Pclass</th>
+                                <th>Name</th>
+                                <th>Sex</th>
+                                <th>Age</th>
+                                <th>SibSp</th>
+                                <th>Fare</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>892</td>
+                                <td>0</td>
+                                <td>3</td>
+                                <td>Kelly, Mr. James</td>
+                                <td>male</td>
+                                <td>34.5</td>
+                                <td>0</td>
+                                <td>7.8292</td>
+                            </tr>
+                            <tr>
+                                <td>893</td>
+                                <td>1</td>
+                                <td>3</td>
+                                <td>Wilkes, Mrs. James (Ellen Needs)</td>
+                                <td>female</td>
+                                <td>47.0</td>
+                                <td>1</td>
+                                <td>7.0000</td>
+                            </tr>
+                            <tr>
+                                <td>894</td>
+                                <td>0</td>
+                                <td>2</td>
+                                <td>Myles, Mr. Thomas Francis</td>
+                                <td>male</td>
+                                <td>62.0</td>
+                                <td>0</td>
+                                <td>9.6875</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="q-section">
+                    <div class="q-box">
+                        <h4 class="why-title">Kyon karte hain?</h4>
+                        <ul>
+                            <li>Dataset properly load hua hai ya nahi, check karne ke liye.</li>
+                            <li>Columns names aur unke niche ki values sahi alignment mein hain ya nahi.</li>
+                        </ul>
+                    </div>
+                    <div class="q-box">
+                        <h4 class="benefit-title">Kya fayda hai?</h4>
+                        <ul>
+                            <li>Visual structure samajh mein aa jata hai bina pure data ko scroll kiye.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="example-breakdown">
+                    <h5>Titanic Breakdown</h5>
+                    <p>Hume turant pata chalta hai ki <code>Sex</code> column text values (male/female) hold karta hai aur <code>Age</code> float records.</p>
+                </div>
+            </section>
+
+            <!-- STEP 2 -->
+            <section id="step2" class="eda-card">
+                <div class="card-header">
+                    <div class="card-title">🔍 View last few records</div>
+                    <span class="step-number">Step 02</span>
+                </div>
+                <div class="hinglish-explanation">
+                    <strong>Hinglish Samjho:</strong> "Mujhe dataset ke sabse aakhri ke 3 records dikhao."
+                </div>
+                <div class="code-block">
+df.tail(3)
+                </div>
+                <div class="output-container">
+                    <div class="output-title">Table Output</div>
+                    <table class="output-table">
+                        <thead>
+                            <tr>
+                                <th>PassengerId</th>
+                                <th>Survived</th>
+                                <th>Pclass</th>
+                                <th>Name</th>
+                                <th>Sex</th>
+                                <th>Age</th>
+                                <th>SibSp</th>
+                                <th>Fare</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1307</td>
+                                <td>0</td>
+                                <td>3</td>
+                                <td>Saether, Mr. Simon Sivertsen</td>
+                                <td>male</td>
+                                <td>38.5</td>
+                                <td>0</td>
+                                <td>7.2500</td>
+                            </tr>
+                            <tr>
+                                <td>1308</td>
+                                <td>0</td>
+                                <td>3</td>
+                                <td>Ware, Mr. Frederick</td>
+                                <td>male</td>
+                                <td>NaN</td>
+                                <td>0</td>
+                                <td>8.0500</td>
+                            </tr>
+                            <tr>
+                                <td>1309</td>
+                                <td>0</td>
+                                <td>3</td>
+                                <td>Peter, Master. Michael J</td>
+                                <td>male</td>
+                                <td>NaN</td>
+                                <td>1</td>
+                                <td>22.3583</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="q-section">
+                    <div class="q-box">
+                        <h4 class="why-title">Kyon karte hain?</h4>
+                        <ul>
+                            <li>Internet/Server se file fetch hote waqt kai baar beech mein interrupt ho jati hai. <code>tail()</code> se pata chalta hai data end tak safe hai.</li>
+                        </ul>
+                    </div>
+                    <div class="q-box">
+                        <h4 class="benefit-title">Kya fayda hai?</h4>
+                        <ul>
+                            <li>Aakhri rows mein agar totals ya blank notes rows added hain, to hum unhe filter drop kar sakte hain.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="example-breakdown">
+                    <h5>Titanic Breakdown</h5>
+                    <p>Yahan aakhri records mein <code>Age</code> column ke details missing hain (shown as <code>NaN</code> - Not a Number). Isse missing values ka andaza lag jata hai.</p>
+                </div>
+            </section>
+
+            <!-- STEP 3 -->
+            <section id="step3" class="eda-card">
+                <div class="card-header">
+                    <div class="card-title">🔍 View random records</div>
+                    <span class="step-number">Step 03</span>
+                </div>
+                <div class="hinglish-explanation">
+                    <strong>Hinglish Samjho:</strong> "Bich mein se randomly data utha ke do, taaki sorting bias na aaye."
+                </div>
+                <div class="code-block">
+df.sample(2)
+                </div>
+                <div class="output-container">
+                    <div class="output-title">Table Output</div>
+                    <table class="output-table">
+                        <thead>
+                            <tr>
+                                <th>PassengerId</th>
+                                <th>Survived</th>
+                                <th>Pclass</th>
+                                <th>Name</th>
+                                <th>Sex</th>
+                                <th>Age</th>
+                                <th>SibSp</th>
+                                <th>Fare</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>955</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>Bradley, Miss. Bridget Delia</td>
+                                <td>female</td>
+                                <td>22.0</td>
+                                <td>0</td>
+                                <td>59.4000</td>
+                            </tr>
+                            <tr>
+                                <td>1108</td>
+                                <td>1</td>
+                                <td>3</td>
+                                <td>Mahon, Miss. Bridget Delia</td>
+                                <td>female</td>
+                                <td>NaN</td>
+                                <td>0</td>
+                                <td>7.8792</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="q-section">
+                    <div class="q-box">
+                        <h4 class="why-title">Kyon karte hain?</h4>
+                        <ul>
+                            <li>Agar database sorted order mein hai, to <code>head()</code> aur <code>tail()</code> se incomplete representation milega.</li>
+                        </ul>
+                    </div>
+                    <div class="q-box">
+                        <h4 class="benefit-title">Kya fayda hai?</h4>
+                        <ul>
+                            <li>Unbiased and random selection se dynamic profiles ka direct look mil jata hai.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 4 -->
+            <section id="step4" class="eda-card">
+                <div class="card-header">
+                    <div class="card-title">📐 Check dataset size</div>
+                    <span class="step-number">Step 04</span>
+                </div>
+                <div class="hinglish-explanation">
+                    <strong>Hinglish Samjho:</strong> "Dataset mein kitni total rows (records) aur columns (parameters) hain?"
+                </div>
+                <div class="code-block">
+df.shape
+                </div>
+                <div class="output-container">
+                    <div class="output-title">Text Output</div>
+                    <div class="output-text">(418, 11)</div>
+                </div>
+                <div class="q-section">
+                    <div class="q-box">
+                        <h4 class="why-title">Kyon karte hain?</h4>
+                        <ul>
+                            <li>Data volume ko measure karne ke liye. E.g. agar data 10 Million lines hai to algorithms execution and memory speed plan karni hogi.</li>
+                        </ul>
+                    </div>
+                    <div class="q-box">
+                        <h4 class="benefit-title">Kya fayda hai?</h4>
+                        <ul>
+                            <li>One line status code se data size configuration parameters instantly target kiye ja sakte hain.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="example-breakdown">
+                    <h5>Titanic Breakdown</h5>
+                    <p>Returns 418 rows and 11 columns. Data size chota hai to local machine execution speed fast hogi.</p>
+                </div>
+            </section>
+
+            <!-- STEP 5 -->
+            <section id="step5" class="eda-card">
+                <div class="card-header">
+                    <div class="card-title">📋 Check column names</div>
+                    <span class="step-number">Step 05</span>
+                </div>
+                <div class="hinglish-explanation">
+                    <strong>Hinglish Samjho:</strong> "Har detail column ka exact technical spelling name kya hai?"
+                </div>
+                <div class="code-block">
+df.columns
+                </div>
+                <div class="output-container">
+                    <div class="output-title">Text Output</div>
+                    <div class="output-text">Index(['PassengerId', 'Survived', 'Pclass', 'Name', 'Sex', 'Age', 'SibSp',
+       'Parch', 'Ticket', 'Fare', 'Embarked'],
+      dtype='object')</div>
+                </div>
+                <div class="q-section">
+                    <div class="q-box">
+                        <h4 class="why-title">Kyon karte hain?</h4>
+                        <ul>
+                            <li>Coding columns selection syntax errors ko trace karne ke liye (spaces, casing values check karna).</li>
+                        </ul>
+                    </div>
+                    <div class="q-box">
+                        <h4 class="benefit-title">Kya fayda hai?</h4>
+                        <ul>
+                            <li>Spellings cross verify ho jati hain taaki columns operations smooth and quick run hon.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 6 -->
+            <section id="step6" class="eda-card">
+                <div class="card-header">
+                    <div class="card-title">🏷️ Check row index</div>
+                    <span class="step-number">Step 06</span>
+                </div>
+                <div class="hinglish-explanation">
+                    <strong>Hinglish Samjho:</strong> "Rows indexing range structure kahan se start and stop hota hai?"
+                </div>
+                <div class="code-block">
+df.index
+                </div>
+                <div class="output-container">
+                    <div class="output-title">Text Output</div>
+                    <div class="output-text">RangeIndex(start=0, stop=418, step=1)</div>
+                </div>
+                <div class="q-section">
+                    <div class="q-box">
+                        <h4 class="why-title">Kyon karte hain?</h4>
+                        <ul>
+                            <li>Verify karne ke liye ki lines keys sequentially zero-based indices hain ya custom non-numeric values.</li>
+                        </ul>
+                    </div>
+                    <div class="q-box">
+                        <h4 class="benefit-title">Kya fayda hai?</h4>
+                        <ul>
+                            <li>Indexing details ranges are clear to apply slicing and filters securely.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 7 -->
+            <section id="step7" class="eda-card">
+                <div class="card-header">
+                    <div class="card-title">💾 Check data types</div>
+                    <span class="step-number">Step 07</span>
+                </div>
+                <div class="hinglish-explanation">
+                    <strong>Hinglish Samjho:</strong> "Har column me system ne data ko kya samjha hai? Numbers ya Text?"
+                </div>
+                <div class="code-block">
+df.dtypes
+                </div>
+                <div class="output-container">
+                    <div class="output-title">Text Output</div>
+                    <div class="output-text">PassengerId      int64
+Survived         int64
+Pclass           int64
+Name            object
+Sex             object
+Age            float64
+Fare           float64
+dtype: object</div>
+                </div>
+                <div class="q-section">
+                    <div class="q-box">
+                        <h4 class="why-title">Kyon karte hain?</h4>
+                        <ul>
+                            <li>Kayi baar computer numerical values (Fare) ko text objects samajh leta hai formatting elements ke kaaran. Sahi classification inspect karna essential hai.</li>
+                        </ul>
+                    </div>
+                    <div class="q-box">
+                        <h4 class="benefit-title">Kya fayda hai?</h4>
+                        <ul>
+                            <li>Math operations, aggregation calculation filters correctly execute hote hain.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 8 -->
+            <section id="step8" class="eda-card">
+                <div class="card-header">
+                    <div class="card-title">📊 Get complete dataset information</div>
+                    <span class="step-number">Step 08</span>
+                </div>
+                <div class="hinglish-explanation">
+                    <strong>Hinglish Samjho:</strong> "Sabh variables aur properties ka ek consolidated layout do."
+                </div>
+                <div class="code-block">
+df.info()
+                </div>
+                <div class="output-container">
+                    <div class="output-title">Text Output</div>
+                    <div class="output-text">&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 418 entries, 0 to 417
+Data columns (total 11 columns):
+ #   Column       Non-Null Count  Dtype  
+---  ------       --------------  -----  
+ 0   PassengerId  418 non-null    int64  
+ 1   Survived     418 non-null    int64  
+ 2   Pclass       418 non-null    int64  
+ 3   Name         418 non-null    object 
+ 4   Sex          418 non-null    object 
+ 5   Age          332 non-null    float64
+ 6   Fare         417 non-null    float64
+dtypes: float64(2), int64(3), object(6)
+memory usage: 36.0+ KB</div>
+                </div>
+                <div class="q-section">
+                    <div class="q-box">
+                        <h4 class="why-title">Kyon karte hain?</h4>
+                        <ul>
+                            <li>Data volume scales, data classifications types and missing values range check karne ke liye.</li>
+                        </ul>
+                    </div>
+                    <div class="q-box">
+                        <h4 class="benefit-title">Kya fayda hai?</h4>
+                        <ul>
+                            <li>Single command report displays absolute structural metrics easily.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 9 -->
+            <section id="step9" class="eda-card">
+                <div class="card-header">
+                    <div class="card-title">📈 Check numerical statistics</div>
+                    <span class="step-number">Step 09</span>
+                </div>
+                <div class="hinglish-explanation">
+                    <strong>Hinglish Samjho:</strong> "Numerical details ki automatic mathematics details compute kardo."
+                </div>
+                <div class="code-block">
+df[["Age", "Fare"]].describe()
+                </div>
+                <div class="output-container">
+                    <div class="output-title">Table Output</div>
+                    <table class="output-table">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Age</th>
+                                <th>Fare</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>count</td>
+                                <td>332.000000</td>
+                                <td>417.000000</td>
+                            </tr>
+                            <tr>
+                                <td>mean (Average)</td>
+                                <td>30.272590</td>
+                                <td>35.627188</td>
+                            </tr>
+                            <tr>
+                                <td>std (Deviation)</td>
+                                <td>14.181209</td>
+                                <td>55.907576</td>
+                            </tr>
+                            <tr>
+                                <td>min</td>
+                                <td>0.170000</td>
+                                <td>0.000000</td>
+                            </tr>
+                            <tr>
+                                <td>25% (Q1)</td>
+                                <td>21.000000</td>
+                                <td>7.895800</td>
+                            </tr>
+                            <tr>
+                                <td>50% (Median)</td>
+                                <td>27.000000</td>
+                                <td>14.454200</td>
+                            </tr>
+                            <tr>
+                                <td>75% (Q3)</td>
+                                <td>39.000000</td>
+                                <td>31.500000</td>
+                            </tr>
+                            <tr>
+                                <td>max</td>
+                                <td>76.000000</td>
+                                <td>512.329200</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="q-section">
+                    <div class="q-box">
+                        <h4 class="why-title">Kyon karte hain?</h4>
+                        <ul>
+                            <li>Data distribution patterns, average scales and standard deviations trace karne ke liye.</li>
+                        </ul>
+                    </div>
+                    <div class="q-box">
+                        <h4 class="benefit-title">Kya fayda hai?</h4>
+                        <ul>
+                            <li>Min, Max range comparisons aur IQR distribution values target ho jati hain directly.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 10 -->
+            <section id="step10" class="eda-card">
+                <div class="card-header">
+                    <div class="card-title">📝 Check categorical statistics</div>
+                    <span class="step-number">Step 10</span>
+                </div>
+                <div class="hinglish-explanation">
+                    <strong>Hinglish Samjho:</strong> "Text parameters (like Sex, Embarked) ke distribution modes trace karo."
+                </div>
+                <div class="code-block">
+df[["Sex", "Embarked"]].describe(include='object')
+                </div>
+                <div class="output-container">
+                    <div class="output-title">Table Output</div>
+                    <table class="output-table">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Sex</th>
+                                <th>Embarked</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>count</td>
+                                <td>418</td>
+                                <td>418</td>
+                            </tr>
+                            <tr>
+                                <td>unique</td>
+                                <td>2</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>top (Mode)</td>
+                                <td>male</td>
+                                <td>S</td>
+                            </tr>
+                            <tr>
+                                <td>freq</td>
+                                <td>266</td>
+                                <td>270</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="q-section">
+                    <div class="q-box">
+                        <h4 class="why-title">Kyon karte hain?</h4>
+                        <ul>
+                            <li>Non-numeric attributes ke behaviors frequency modes track karne ke liye.</li>
+                        </ul>
+                    </div>
+                    <div class="q-box">
+                        <h4 class="benefit-title">Kya fayda hai?</h4>
+                        <ul>
+                            <li>Hume pata chalta hai ki tested datasets me 266 males dominant entries hain.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 11 -->
+            <section id="step11" class="eda-card">
+                <div class="card-header">
+                    <div class="card-title">🔢 Check unique values</div>
+                    <span class="step-number">Step 11</span>
+                </div>
+                <div class="hinglish-explanation">
+                    <strong>Hinglish Samjho:</strong> "Columns ke unique distinct elements ka count count karo."
+                </div>
+                <div class="code-block">
+df[["Pclass", "Sex", "Embarked"]].nunique()
+                </div>
+                <div class="output-container">
+                    <div class="output-title">Text Output</div>
+                    <div class="output-text">Pclass      3
+Sex         2
+Embarked    3
+dtype: int64</div>
+                </div>
+                <div class="q-section">
+                    <div class="q-box">
+                        <h4 class="why-title">Kyon karte hain?</h4>
+                        <ul>
+                            <li>High cardinality (Name, ID) vs categorical discrete variables groups (Sex, Pclass) filter targets mapping ke liye.</li>
+                        </ul>
+                    </div>
+                    <div class="q-box">
+                        <h4 class="benefit-title">Kya fayda hai?</h4>
+                        <ul>
+                            <li>Analytical group mapping logic is clear. Categorical inputs can be converted.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 12 -->
+            <section id="step12" class="eda-card">
+                <div class="card-header">
+                    <div class="card-title">⚠️ Check missing values</div>
+                    <span class="step-number">Step 12</span>
+                </div>
+                <div class="hinglish-explanation">
+                    <strong>Hinglish Samjho:</strong> "Column me khali cells (Null values) kitne pade hain?"
+                </div>
+                <div class="code-block">
+df.isnull().sum()
+                </div>
+                <div class="output-container">
+                    <div class="output-title">Text Output</div>
+                    <div class="output-text">PassengerId      0
+Survived         0
+Pclass           0
+Name             0
+Sex              0
+Age             86
+Fare             1
+Cabin          327
+Embarked         0
+dtype: int64</div>
+                </div>
+                <div class="q-section">
+                    <div class="q-box">
+                        <h4 class="why-title">Kyon karte hain?</h4>
+                        <ul>
+                            <li>Missing data mathematics values and ML processing blocks trace targets mapping ke liye.</li>
+                        </ul>
+                    </div>
+                    <div class="q-box">
+                        <h4 class="benefit-title">Kya fayda hai?</h4>
+                        <ul>
+                            <li>Data Imputation strategies (Age median impute, Cabin drop) can be planned securely.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 13 -->
+            <section id="step13" class="eda-card">
+                <div class="card-header">
+                    <div class="card-title">🔄 Check duplicate records</div>
+                    <span class="step-number">Step 13</span>
+                </div>
+                <div class="hinglish-explanation">
+                    <strong>Hinglish Samjho:</strong> "Aise lines records delete karo jo multiple entries copy records hain."
+                </div>
+                <div class="code-block">
+df.duplicated().sum()
+                </div>
+                <div class="output-container">
+                    <div class="output-title">Text Output</div>
+                    <div class="output-text">0</div>
+                </div>
+                <div class="q-section">
+                    <div class="q-box">
+                        <h4 class="why-title">Kyon karte hain?</h4>
+                        <ul>
+                            <li>Data redundancy mapping blocks trace duplicates cleanly.</li>
+                        </ul>
+                    </div>
+                    <div class="q-box">
+                        <h4 class="benefit-title">Kya fayda hai?</h4>
+                        <ul>
+                            <li>Overfitting calculations double counting prevent maps accurately.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 14 -->
+            <section id="step14" class="eda-card">
+                <div class="card-header">
+                    <div class="card-title">📦 Outliers & Boxplot Explanation</div>
+                    <span class="step-number">Step 14</span>
+                </div>
+                <div class="hinglish-explanation">
+                    <strong>Hinglish Samjho:</strong> "Boxplot standard visual mapping indicators framework. Isse outlier values aur metrics clean limits trace ho jati hain."
+                </div>
+                
+                <!-- Boxplot diagram visually representing parts -->
+                <div class="visual-diagram">
+                    <svg width="600" height="200" viewBox="0 0 600 200" style="background:#0d131f; border-radius: 8px;">
+                        <!-- Whisker lines -->
+                        <line x1="80" y1="100" x2="480" y2="100" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4" />
+                        <line x1="80" y1="70" x2="80" y2="130" stroke="#f43f5e" stroke-width="3" /> <!-- Lower Limit -->
+                        <line x1="480" y1="70" x2="480" y2="130" stroke="#f43f5e" stroke-width="3" /> <!-- Upper Limit -->
+                        
+                        <!-- Box (IQR) -->
+                        <rect x="180" y="60" width="200" height="80" fill="rgba(99, 102, 241, 0.3)" stroke="#6366f1" stroke-width="3" />
+                        
+                        <!-- Median line -->
+                        <line x1="260" y1="60" x2="260" y2="140" stroke="#10b981" stroke-width="4" />
+                        
+                        <!-- Outlier Points -->
+                        <circle cx="50" cy="100" r="6" fill="#f43f5e" stroke="#fff" stroke-width="1.5" />
+                        <circle cx="520" cy="100" r="6" fill="#f43f5e" stroke="#fff" stroke-width="1.5" />
+                        <circle cx="550" cy="100" r="6" fill="#f43f5e" stroke="#fff" stroke-width="1.5" />
+                        
+                        <!-- Label Texts -->
+                        <text x="50" y="160" fill="#f43f5e" font-size="12" font-family="Outfit" text-anchor="middle">Outlier</text>
+                        <text x="80" y="50" fill="#94a3b8" font-size="11" font-family="Outfit" text-anchor="middle">Lower Limit (Q1 - 1.5*IQR)</text>
+                        <text x="180" y="165" fill="#a855f7" font-size="12" font-family="Outfit" text-anchor="middle">Q1 (25%)</text>
+                        <text x="260" y="45" fill="#10b981" font-size="12" font-family="Outfit" text-anchor="middle">Median (50%)</text>
+                        <text x="380" y="165" fill="#a855f7" font-size="12" font-family="Outfit" text-anchor="middle">Q3 (75%)</text>
+                        <text x="480" y="50" fill="#94a3b8" font-size="11" font-family="Outfit" text-anchor="middle">Upper Limit (Q3 + 1.5*IQR)</text>
+                        <text x="535" y="160" fill="#f43f5e" font-size="12" font-family="Outfit" text-anchor="middle">Outliers</text>
+                    </svg>
+                    <div class="diagram-caption">
+                        <strong>Boxplot Breakdown:</strong> Box coordinates cover the Interquartile Range (IQR = Q3 - Q1). The green line represents Median. Whiskers map Lower & Upper thresholds. Points outside these boundaries (marked in red) are <strong>Outliers</strong> that distort calculations.
+                    </div>
+                </div>
+
+                <div class="code-block">
+# IQR Outlier Detection
+Q1 = df["Age"].quantile(0.25)
+Q3 = df["Age"].quantile(0.75)
+IQR = Q3 - Q1
+lower_limit = Q1 - (1.5 * IQR)
+upper_limit = Q3 + (1.5 * IQR)
+
+print(f"IQR: {IQR}, Limits: {lower_limit} to {upper_limit}")
+# Remove records outside limits
+df_cleaned = df[(df["Age"] >= lower_limit) & (df["Age"] <= upper_limit)]
+                </div>
+                
+                <div class="output-container">
+                    <div class="output-title">Text Output</div>
+                    <div class="output-text">IQR: 18.0, Limits: -6.0 to 66.0
+Original Rows: 418
+Cleaned Rows: 416 (2 Outliers Removed)</div>
+                </div>
+            </section>
+
+            <!-- STEP 15 -->
+            <section id="step15" class="eda-card">
+                <div class="card-header">
+                    <div class="card-title">📊 Univariate Analysis</div>
+                    <span class="step-number">Step 15</span>
+                </div>
+                <div class="hinglish-explanation">
+                    <strong>Hinglish Samjho:</strong> "Sirf ek column ko uthakar uski distribution aur features values parameters ko investigate karna."
+                </div>
+                
+                <div class="visual-diagram">
+                    <svg width="500" height="200" viewBox="0 0 500 200" style="background:#0d131f; border-radius: 8px;">
+                        <!-- Histogram Bars representation -->
+                        <rect x="50" y="120" width="40" height="50" fill="#6366f1" opacity="0.6" stroke="#fff" />
+                        <rect x="100" y="80" width="40" height="90" fill="#6366f1" opacity="0.8" stroke="#fff" />
+                        <rect x="150" y="40" width="40" height="130" fill="#6366f1" stroke="#fff" />
+                        <rect x="200" y="60" width="40" height="110" fill="#6366f1" opacity="0.9" stroke="#fff" />
+                        <rect x="250" y="90" width="40" height="80" fill="#6366f1" opacity="0.7" stroke="#fff" />
+                        <rect x="300" y="130" width="40" height="40" fill="#6366f1" opacity="0.5" stroke="#fff" />
+                        
+                        <!-- Axis -->
+                        <line x1="30" y1="170" x2="450" y2="170" stroke="#94a3b8" stroke-width="2" />
+                        <text x="240" y="190" fill="#94a3b8" font-size="12" font-family="Outfit" text-anchor="middle">Age Groups</text>
+                        <text x="15" y="100" fill="#94a3b8" font-size="12" font-family="Outfit" text-anchor="middle" transform="rotate(-90 15 100)">Count</text>
+                    </svg>
+                    <div class="diagram-caption">
+                        <strong>Univariate Histogram:</strong> Age groups frequency counts showing that the majority of passengers are aged between 20 and 40 years.
+                    </div>
+                </div>
+
+                <div class="code-block">
+# Pure Matplotlib Histogram
+plt.hist(df["Age"].dropna(), bins=15, color="purple", edgecolor="black")
+plt.title("Age Distribution of Passengers")
+plt.xlabel("Age")
+plt.ylabel("Count")
+plt.show()
+                </div>
+            </section>
+
+            <!-- STEP 16 -->
+            <section id="step16" class="eda-card">
+                <div class="card-header">
+                    <div class="card-title">🔗 Bivariate Analysis</div>
+                    <span class="step-number">Step 16</span>
+                </div>
+                <div class="hinglish-explanation">
+                    <strong>Hinglish Samjho:</strong> "Do different attributes ke connections verify and map karna (E.g. Sex vs Survival rate)."
+                </div>
+                
+                <div class="code-block">
+# Cross Tabulation
+gender_survival = pd.crosstab(df["Sex"], df["Survived"])
+gender_survival
+                </div>
+                <div class="output-container">
+                    <div class="output-title">Table Output</div>
+                    <table class="output-table">
+                        <thead>
+                            <tr>
+                                <th>Sex</th>
+                                <th>Died (0)</th>
+                                <th>Survived (1)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>female</td>
+                                <td>0</td>
+                                <td>152</td>
+                            </tr>
+                            <tr>
+                                <td>male</td>
+                                <td>266</td>
+                                <td>0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="q-section">
+                    <div class="q-box">
+                        <h4 class="why-title">Kyon karte hain?</h4>
+                        <ul>
+                            <li>Isse hum dependencies check karte hain (Jaise Class 1 or Female passengers ki survival limits check karna).</li>
+                        </ul>
+                    </div>
+                    <div class="q-box">
+                        <h4 class="benefit-title">Kya fayda hai?</h4>
+                        <ul>
+                            <li>Real-world variables mapping logic clear patterns represent values target ho jati hain.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Scroll JavaScript active state tracking -->
+    <script>
+        const links = document.querySelectorAll('.sidebar-links a');
+        const sections = document.querySelectorAll('.eda-card');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            links.forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href') === `#${current}`) {
+                    a.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
