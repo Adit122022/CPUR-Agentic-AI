@@ -14,7 +14,11 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 | [Day 06](./02_Phase/06_Day_16-06-2026) | 16 Jun 2026 | Data Science Lifecycle & NumPy Fundamentals | [📂 View](./02_Phase/06_Day_16-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/12NsDMHqx4-EueHisRD-u82WA_rdddmT5?usp=sharing) |
 | [Day 07](./02_Phase/07_Day_17-06-2026) | 17 Jun 2026 | Pandas — Series & DataFrame | [📂 View](./02_Phase/07_Day_17-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1PGMhHbqM5V9pZ9LVRGAzSZ13sptPWUkW?usp=sharing) |
 | [Day 08](./02_Phase/08_Day_18-06-2026) | 18 Jun 2026 | Pandas Data Loading & Matplotlib Visualizations | [📂 View](./02_Phase/08_Day_18-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1nSzhlttcrtst9JEA5kkvfiDbAcaF8Klc?usp=sharing) |
+| [Day 09](./02_Phase/09_Day_19-06-2026) | 19 Jun 2026 | Data Visualization with Matplotlib & Data Cleaning / EDA | [📂 View](./02_Phase/09_Day_19-06-2026) | - |
 | [Day 10](./02_Phase/10_Day_20-06-2026) | 20 Jun 2026 | Exploratory Data Analysis (EDA) & Data Cleaning | [📂 View](./02_Phase/10_Day_20-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/11VB8J5-GxWqQB1rBtQEnt5Uv9DzeGQjU?usp=sharing) |
+| [Day 11](./02_Phase/11_Day_22-06-2026) | 22 Jun 2026 | Introduction to Machine Learning & IPL Match Dataset EDA | [📂 View](./02_Phase/11_Day_22-06-2026) | https://colab.research.google.com/drive/1K2AEoIgpRydSxbCAEFsxOWzYt_nDZDue?usp=sharing |
+| [Day 12](./02_Phase/12_Day_23-06-2026) | 23 Jun 2026 | Regression in Machine Learning | [📂 View](./02_Phase/12_Day_23-06-2026) | https://colab.research.google.com/drive/17RYisUMcj33UQPcVmpWrF3QcOWy_0OAQ?usp=sharing |
+| [Day 13](./02_Phase/13_Day_24-06-2026) | 24 Jun 2026 | Classification in Machine Learning | [📂 View](./02_Phase/13_Day_24-06-2026) | - |
 
 > 📝 **Asif Sir's Notes** — These are the live in-class Google Colab notebooks shared by our instructor during each session.
 
@@ -30,7 +34,11 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 - [Day 6: Data Science Lifecycle & NumPy Fundamentals](#day-06---data-science-lifecycle--numpy-fundamentals)
 - [Day 7: Pandas — Series & DataFrame](#day-07---pandas--series--dataframe)
 - [Day 8: Pandas Data Loading & Matplotlib Visualizations](#day-08---pandas-data-loading--matplotlib-visualizations)
+- [Day 9: Data Visualization with Matplotlib & Data Cleaning / EDA](#day-09---data-visualization-with-matplotlib--data-cleaning--eda)
 - [Day 10: Exploratory Data Analysis (EDA) & Data Cleaning](#day-10---exploratory-data-analysis-eda--data-cleaning)
+- [Day 11: Introduction to Machine Learning & IPL Match Dataset EDA](#day-11---introduction-to-machine-learning--ipl-match-dataset-eda)
+- [Day 12: Regression in Machine Learning](#day-12---regression-in-machine-learning)
+- [Day 13: Classification in Machine Learning](#day-13---classification-in-machine-learning)
 
 ---
 
@@ -220,6 +228,29 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 
 <br>
 
+# Day 09 - Data Visualization with Matplotlib & Data Cleaning / EDA
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 09 Details</summary>
+
+## 📚 [Day 9: Data Visualization with Matplotlib & Data Cleaning / EDA](./02_Phase/09_Day_19-06-2026)
+
+### 💻 [**9.1 - Theoretical Concepts**](./02_Phase/09_Day_19-06-2026/Readme.md)
+
+> **`Topics Covered:` Data Visualization & Cleaning -** Matplotlib advanced plotting (Pie charts, Donut charts, Histograms, Scatter plots, Subplots, Saving plots), Data Cleaning foundations, Missing value imputation (mean/median/mode/forward-fill/backward-fill), Duplicates detection/removal, and Outlier detection using the IQR (Interquartile Range) method and boxplot visualizations.
+
+### 💻 [**9.2 - Practical Implementations**](./02_Phase/09_Day_19-06-2026/Notebook/)
+
+> **`Topics Covered:` Practical Concepts Covered -** Implementing pie & donut charts, normal distribution histograms, customized scatter plots, matplotlib subplots, basic data cleaning, handling missing values, and detecting/removing outliers on sample datasets.
+
+- 📓 [**Matplotlib Visualizations Notebook**](./02_Phase/09_Day_19-06-2026/Notebook/09_matplotlib.ipynb)
+- 📓 [**Practice Notebook**](./02_Phase/09_Day_19-06-2026/Notebook/09_Practice.ipynb)
+- 📖 [**Notes/Slides & Articles/Blogs Link**](./02_Phase/09_Day_19-06-2026/Readme.md)
+
+</details>
+
+<br>
+
 # Day 10 - Exploratory Data Analysis (EDA) & Data Cleaning
 
 <details>
@@ -243,6 +274,79 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 - 📂 [**Dataset Folder**](./02_Phase/DataSet/)
 - 📖 [**Notes/Slides & Articles/Blogs Link**](./02_Phase/10_Day_20-06-2026/Readme.md)
 - 🖊️ **Asif Sir's Notes:** [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/11VB8J5-GxWqQB1rBtQEnt5Uv9DzeGQjU?usp=sharing)
+
+</details>
+
+<br>
+
+# Day 11 - Introduction to Machine Learning & IPL Match Dataset EDA
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 11 Details</summary>
+
+## 📚 [Day 11: Introduction to Machine Learning & IPL Match Dataset EDA](./02_Phase/11_Day_22-06-2026)
+
+### 💻 [**11.1 - Theoretical Concepts**](./02_Phase/11_Day_22-06-2026/Readme.md)
+
+> **`Topics Covered:` Machine Learning & IPL EDA -** What is Machine Learning (AI vs ML vs DL), Core components of ML (Features, Labels, Training/Testing sets), Types of ML (Supervised, Unsupervised, Reinforcement Learning), Modeling concepts (Overfitting vs Underfitting), Classification metrics (Accuracy, Precision, Recall, F1-Score, Confusion Matrix), and Regression metrics (MSE).
+
+### 💻 [**11.2 - Practical Implementations**](./02_Phase/11_Day_22-06-2026/Notebook/)
+
+> **`Topics Covered:` Practical Concepts Covered -** Comprehensive Exploratory Data Analysis on the historical IPL matches dataset (2008-2024), missing value cleaning/imputation, analyzing wins per team, toss analysis, and top player performance visualization.
+
+- 📓 [**IPL Dataset Notebook**](./02_Phase/11_Day_22-06-2026/Notebook/IPL-DataSet.ipynb)
+- 📓 [**IPL Capstone Project Notebook**](./02_Phase/11_Day_22-06-2026/Notebook/IPL_Capstone_Project.ipynb)
+- 📖 [**Notes/Slides & Articles/Blogs Link**](./02_Phase/11_Day_22-06-2026/Readme.md)
+
+</details>
+
+<br>
+
+# Day 12 - Regression in Machine Learning
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 12 Details</summary>
+
+## 📚 [Day 12: Regression in Machine Learning](./02_Phase/12_Day_23-06-2026)
+
+### 💻 [**12.1 - Theoretical Concepts**](./02_Phase/12_Day_23-06-2026/Readme.md)
+
+> **`Topics Covered:` Regression Analysis -** What is Regression, Types of Regression (Simple Linear, Multiple Linear, Polynomial, Regularized - Ridge/Lasso, Support Vector, Decision Tree, Random Forest), Simple and Multiple Linear Regression math ($y = mX+c$, coefficients, intercept), and feature correlation heatmaps.
+
+### 💻 [**12.2 - Practical Implementations**](./02_Phase/12_Day_23-06-2026/Notebook/)
+
+> **`Topics Covered:` Practical Concepts Covered -** Simple Linear Regression model fitting in Python using Scikit-Learn, Multiple Linear Regression, King County house price prediction case study, and Student Marks prediction model validation.
+
+- 📓 [**Introduction to ML Notebook**](./02_Phase/12_Day_23-06-2026/Notebook/01_Ml.ipynb)
+- 📓 [**House Price Prediction Model**](./02_Phase/12_Day_23-06-2026/Notebook/02_House_model.ipynb)
+- 📓 [**Student Marks Regression Notebook**](./02_Phase/12_Day_23-06-2026/Notebook/03_Student_Marks.ipynb)
+- 📂 [**Dataset Folder**](./02_Phase/12_Day_23-06-2026/data/)
+- 📖 [**Notes/Slides & Articles/Blogs Link**](./02_Phase/12_Day_23-06-2026/Readme.md)
+
+</details>
+
+<br>
+
+# Day 13 - Classification in Machine Learning
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 13 Details</summary>
+
+## 📚 [Day 13: Classification in Machine Learning](./02_Phase/13_Day_24-06-2026)
+
+### 💻 [**13.1 - Theoretical Concepts**](./02_Phase/13_Day_24-06-2026/Notebook/13_Classification_ML.ipynb)
+
+> **`Topics Covered:` Classification Algorithms -** Introduction to Classification task in ML, Binary vs Multi-class Classification, Logistic Regression algorithm, Decision Tree Classifier, model fitting and predicting probabilities (`predict_proba()`), and evaluation using classification accuracy.
+
+### 💻 [**13.2 - Practical Implementations**](./02_Phase/13_Day_24-06-2026/Notebook/)
+
+> **`Topics Covered:` Practical Concepts Covered -** Hands-on implementation of Logistic Regression for Student Marks (Pass/Fail) prediction and Loan Approval classification, Decision Tree Classifier for Iris flower classification, and user input predictions.
+
+- 📓 [**Classification & Logistic Regression Notebook**](./02_Phase/13_Day_24-06-2026/Notebook/13_Classification_ML.ipynb)
+- 📓 [**Loan Approval Dataset Notebook**](./02_Phase/13_Day_24-06-2026/Notebook/Loan_Approval_DataSet.ipynb)
+- 📓 [**Decision Tree Notebook**](./02_Phase/13_Day_24-06-2026/Notebook/Decision_tree.ipynb)
+- 📓 [**Iris Flower Classifier Notebook**](./02_Phase/13_Day_24-06-2026/Notebook/Iris_.ipynb)
+- 📂 [**Dataset Folder**](./02_Phase/13_Day_24-06-2026/DataSet/)
 
 </details>
 
