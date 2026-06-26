@@ -18,7 +18,8 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 | [Day 10](./02_Phase/10_Day_20-06-2026) | 20 Jun 2026 | Exploratory Data Analysis (EDA) & Data Cleaning          | [📂 View](./02_Phase/10_Day_20-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/11VB8J5-GxWqQB1rBtQEnt5Uv9DzeGQjU?usp=sharing) |
 | [Day 11](./02_Phase/11_Day_22-06-2026) | 22 Jun 2026 | Introduction to Machine Learning & IPL Match Dataset EDA | [📂 View](./02_Phase/11_Day_22-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1K2AEoIgpRydSxbCAEFsxOWzYt_nDZDue?usp=sharing) |
 | [Day 12](./02_Phase/12_Day_23-06-2026) | 23 Jun 2026 | Regression in Machine Learning                           | [📂 View](./02_Phase/12_Day_23-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17RYisUMcj33UQPcVmpWrF3QcOWy_0OAQ?usp=sharing) |
-| [Day 13](./02_Phase/13_Day_24-06-2026) | 24 Jun 2026 | Classification in Machine Learning                       | [📂 View](./02_Phase/13_Day_24-06-2026) | -                                                                                                                                                           |
+| [Day 13](./02_Phase/13_Day_24-06-2026) | 24 Jun 2026 | Classification in Machine Learning                       | [📂 View](./02_Phase/13_Day_24-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1bplpnlu6J44DjcYLfoaLOKUiK5AlU3kj?usp=sharing) |
+| [Day 14](./02_Phase/14_Day_25-06-2026) | 25 Jun 2026 | Model Evaluation & Classification Metrics               | [📂 View](./02_Phase/14_Day_25-06-2026) | -                                                                                                                                                           |
 
 > 📝 **Asif Sir's Notes** — These are the live in-class Google Colab notebooks shared by our instructor during each session.
 
@@ -39,6 +40,7 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 - [Day 11: Introduction to Machine Learning & IPL Match Dataset EDA](#day-11---introduction-to-machine-learning--ipl-match-dataset-eda)
 - [Day 12: Regression in Machine Learning](#day-12---regression-in-machine-learning)
 - [Day 13: Classification in Machine Learning](#day-13---classification-in-machine-learning)
+- [Day 14: Model Evaluation & Classification Metrics](#day-14---model-evaluation--classification-metrics)
 
 ---
 
@@ -334,7 +336,7 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 
 ## 📚 [Day 13: Classification in Machine Learning](./02_Phase/13_Day_24-06-2026)
 
-### 💻 [**13.1 - Theoretical Concepts**](./02_Phase/13_Day_24-06-2026/Notebook/13_Classification_ML.ipynb)
+### 💻 [**13.1 - Theoretical Concepts**](./02_Phase/13_Day_24-06-2026/Readme.md)
 
 > **`Topics Covered:` Classification Algorithms -** Introduction to Classification task in ML, Binary vs Multi-class Classification, Logistic Regression algorithm, Decision Tree Classifier, model fitting and predicting probabilities (`predict_proba()`), and evaluation using classification accuracy.
 
@@ -349,5 +351,30 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 - 📂 [**Dataset Folder**](./02_Phase/13_Day_24-06-2026/DataSet/)
 - 🚀 [**Assignment — Credit Score Prediction Model**](./02_Phase/13_Day_24-06-2026/Assignment/)
 - 📓 [**Assignment Notebook**](./02_Phase/13_Day_24-06-2026/Assignment/Credit_Score_Prediction_Model.ipynb)
+
+</details>
+
+<br>
+
+# Day 14 - Model Evaluation & Classification Metrics
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 14 Details</summary>
+
+## 📚 [Day 14: Model Evaluation & Classification Metrics](./02_Phase/14_Day_25-06-2026)
+
+### 💻 [**14.1 - Theoretical Concepts**](./02_Phase/14_Day_25-06-2026/Readme.md)
+
+> **`Topics Covered:` Model Evaluation & Classification Metrics -** Why evaluate models, Train-Test split concept, Overfitting, Accuracy score and its limitations, Confusion Matrix (TP, TN, FP, FN), Precision, Recall, and F1-Score.
+
+### 💻 [**14.2 - Practical Implementations**](./02_Phase/14_Day_25-06-2026/Notebook/)
+
+> **`Topics Covered:` Practical Concepts Covered -** Train-test split implementation, model training & evaluation, Confusion Matrix computation, Precision, Recall, and F1-Score calculations using sklearn vs manual formulas.
+
+- 📓 [**Model Evaluation & Metrics Notebook**](./02_Phase/14_Day_25-06-2026/Notebook/14_Classification_ML.ipynb)
+- 📓 [**Credit Score Prediction Model Notebook**](./02_Phase/14_Day_25-06-2026/Notebook/Credit_Score_Prediction_Model.ipynb)
+- 📓 [**Decision Tree Notebook**](./02_Phase/14_Day_25-06-2026/Notebook/Decision_tree.ipynb)
+- 📓 [**Boilerplate Code Notebook**](./02_Phase/14_Day_25-06-2026/Notebook/BoilerPlate.ipynb)
+- 📂 [**Dataset Folder**](./02_Phase/14_Day_25-06-2026/DataSet/)
 
 </details>
