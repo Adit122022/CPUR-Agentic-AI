@@ -1,0 +1,8 @@
+{
+  "name": "StoryScape AI",
+  "description": "Turn your imagination into living, beautifully illustrated stories in seconds using generative AI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
