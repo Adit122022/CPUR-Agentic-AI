@@ -20,6 +20,10 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 | [Day 12](./02_Phase/12_Day_23-06-2026) | 23 Jun 2026 | Regression in Machine Learning                           | [📂 View](./02_Phase/12_Day_23-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17RYisUMcj33UQPcVmpWrF3QcOWy_0OAQ?usp=sharing) |
 | [Day 13](./02_Phase/13_Day_24-06-2026) | 24 Jun 2026 | Classification in Machine Learning                       | [📂 View](./02_Phase/13_Day_24-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1bplpnlu6J44DjcYLfoaLOKUiK5AlU3kj?usp=sharing) |
 | [Day 14](./02_Phase/14_Day_25-06-2026) | 25 Jun 2026 | Model Evaluation & Classification Metrics               | [📂 View](./02_Phase/14_Day_25-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Wwl8u3bl88FzbDoccz6XJ0t0UHs_GUuv?usp=sharing)  |
+| [Day 15](./03_Phase/15_Day_26-06-2026) | 26 Jun 2026 | Introduction to Generative AI & Large Language Models    | [📂 View](./03_Phase/15_Day_26-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1YkZzqprLk3q1wGMRT7-8I69cZdCAAJD9?usp=sharing) |
+| [Day 16](./03_Phase/16_Day_29-06-2026) | 29 Jun 2026 | APIs & Generative AI Integration                          | [📂 View](./03_Phase/16_Day_29-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1DzZ-nK9NRtZsPHz1sOaYw56CrjYuehtZ?usp=sharing) |
+| [Day 17](./03_Phase/17_Day_30-06-2026) | 30 Jun 2026 | Deep Learning & Artificial Neural Networks                | [📂 View](./03_Phase/17_Day_30-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1kTD0xPAXOnMhnYWakYbD67NFcy1PZ2K0?usp=sharing#scrollTo=ncD2OSPcsNj8) |
+
 
 > 📝 **Asif Sir's Notes** — These are the live in-class Google Colab notebooks shared by our instructor during each session.
 
@@ -41,6 +45,10 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 - [Day 12: Regression in Machine Learning](#day-12---regression-in-machine-learning)
 - [Day 13: Classification in Machine Learning](#day-13---classification-in-machine-learning)
 - [Day 14: Model Evaluation & Classification Metrics](#day-14---model-evaluation--classification-metrics)
+- [Day 15: Introduction to Generative AI & Large Language Models (LLMs)](#day-15---introduction-to-generative-ai--large-language-models-llms)
+- [Day 16: APIs (Application Programming Interfaces) & Gen AI Integration](#day-16---apis-application-programming-interfaces--gen-ai-integration)
+- [Day 17: Deep Learning & Artificial Neural Networks (ANNs)](#day-17---deep-learning--artificial-neural-networks-anns)
+
 
 ---
 
@@ -378,3 +386,70 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 - 📂 [**Dataset Folder**](./02_Phase/14_Day_25-06-2026/DataSet/)
 
 </details>
+
+<br>
+
+# Day 15 - Introduction to Generative AI & Large Language Models (LLMs)
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 15 Details</summary>
+
+## 📚 [Day 15: Introduction to Generative AI & Large Language Models (LLMs)](./03_Phase/15_Day_26-06-2026)
+
+### 💻 [**15.1 - Theoretical Concepts**](./03_Phase/15_Day_26-06-2026/Readme.md)
+
+> **`Topics Covered:` Generative AI & LLMs -** Gen AI introduction, Traditional vs. Generative AI comparison, tokens, parameters, prompt engineering basics, how next-token prediction works, transformer models (attention mechanism, self-supervised learning, RLHF finetuning), and limitations of Gen AI (hallucinations, bias, copyright).
+
+### 💻 [**15.2 - Practical Implementations**](./03_Phase/15_Day_26-06-2026/Notebook/)
+
+> **`Topics Covered:` Practical Concepts Covered -** Initial introduction to Generative AI capabilities, prompt examples, text/image/code generation use cases, popular LLM comparisons, and simple Python code structure for API integration.
+
+- 📓 [**Generative AI & LLM Notebook**](./03_Phase/15_Day_26-06-2026/Notebook/15_Notebook.ipynb)
+
+</details>
+
+<br>
+
+# Day 16 - APIs (Application Programming Interfaces) & Gen AI Integration
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 16 Details</summary>
+
+## 📚 [Day 16: APIs (Application Programming Interfaces) & Gen AI Integration](./03_Phase/16_Day_29-06-2026)
+
+### 💻 [**16.1 - Theoretical Concepts**](./03_Phase/16_Day_29-06-2026/Readme.md)
+
+> **`Topics Covered:` APIs & Gen AI App Builders -** What are APIs (Analogy: Client-Waiter-Kitchen), why APIs are important, types of APIs based on architecture (REST, SOAP, GraphQL, gRPC) and access scope, free AI APIs for students, top AI App Builder platforms (Lovable, Bolt.new, Firebase Studio, Replit AI, v0, Cursor, Claude), and a learning roadmap for beginners.
+
+### 💻 [**16.2 - Practical Implementations**](./03_Phase/16_Day_29-06-2026/Notebook/)
+
+> **`Topics Covered:` Practical Concepts Covered -** Hands-on implementation of the Gemini API for content generation, prompt engineering structures, building a Python-based client, and sample code for an AI Email Generator built using FastAPI.
+
+- 📓 [**APIs & Gemini Integration Notebook**](./03_Phase/16_Day_29-06-2026/Notebook/16_Notebook.ipynb)
+- 🚀 [**Mini Project — StoryScape AI (AI Story Generator)**](./03_Phase/16_Day_29-06-2026/StoryScape%20AI/)
+
+</details>
+
+<br>
+
+# Day 17 - Deep Learning & Artificial Neural Networks (ANNs)
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 17 Details</summary>
+
+## 📚 [Day 17: Deep Learning & Artificial Neural Networks (ANNs)](./03_Phase/17_Day_30-06-2026)
+
+### 💻 [**17.1 - Theoretical Concepts**](./03_Phase/17_Day_30-06-2026/Readme.md)
+
+> **`Topics Covered:` Deep Learning & Neural Networks -** What is Deep Learning, Shallow vs Deep networks, AI vs ML vs DL relationship, Input/Hidden/Output layer architecture, Artificial Neuron components (Inputs, Weights, Weighted Sum, Bias, Activation Functions - Sigmoid, Tanh, ReLU, Leaky ReLU, Softmax), how layers extract features automatically, and standard Keras Sequential Model configurations.
+
+### 💻 [**17.2 - Practical Implementations**](./03_Phase/17_Day_30-06-2026/Notebook/)
+
+> **`Topics Covered:` Practical Concepts Covered -** Training a student pass/fail prediction model using TensorFlow Keras Sequential API, split and standardization using StandardScaler, model training with adam optimizer & binary crossentropy, accuracy metrics evaluation, and user input prediction.
+
+- 📓 [**Deep Learning Student Pass/Fail Notebook**](./03_Phase/17_Day_30-06-2026/Notebook/17_Notebook.ipynb)
+- 🐍 [**Standalone Python Script**](./03_Phase/17_Day_30-06-2026/student_pass_fail_model.py)
+- 🖊️ **Asif Sir's Notes:** [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1kTD0xPAXOnMhnYWakYbD67NFcy1PZ2K0?usp=sharing#scrollTo=ncD2OSPcsNj8)
+
+</details>
+
