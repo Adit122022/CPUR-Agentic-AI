@@ -6,6 +6,8 @@ from google import genai
 from google.genai import types
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.messages import SystemMessage, HumanMessage
 
 import prompt as pb
 
@@ -48,17 +50,14 @@ def get_gemini_client() -> genai.Client:
         http_options={"headers": {"User-Agent": "aistudio-build"}}
     )
 
-def generate_content_with_retry(
-    client: genai.Client,
-    model_name: str,
-    contents: str,
-    config: types.GenerateContentConfig,
-    retries: int = 3,
-    delay_sec: float = 1.5
-) -> Any:
+def get_langchain_fallback_chain(model_name: str, response_schema: Any) -> Any:
     """
-    Robust generation helper with retries and a fallback list of models.
+    Creates a LangChain chain with fallback models and structured output parsing.
     """
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        raise ValueError("GEMINI_API_KEY environment variable is not configured.")
+
     models_to_try = [
         model_name,            # Primary model requested
         "gemini-3.5-flash",    # Fast premium fallback
@@ -74,34 +73,27 @@ def generate_content_with_retry(
         if m and m not in unique_models:
             unique_models.append(m)
 
-    last_error = None
+    llms = []
     for model in unique_models:
-        for attempt in range(1, retries + 1):
-            try:
-                print(f"[Gemini API] Querying model \"{model}\" (Attempt {attempt}/{retries})...")
-                response = client.models.generate_content(
-                    model=model,
-                    contents=contents,
-                    config=config
-                )
-                if response and response.text:
-                    print(f"[Gemini API] Successfully generated content using model: {model}")
-                    return response
-                raise ValueError("Empty response received from Gemini model.")
-            except Exception as error:
-                last_error = error
-                print(f"[Gemini API] Error with model \"{model}\" on attempt {attempt}/{retries}: {error}")
-                if attempt < retries:
-                    wait_time = delay_sec * (2 ** (attempt - 1))
-                    time.sleep(wait_time)
+        llm = ChatGoogleGenerativeAI(
+            model=model,
+            google_api_key=api_key,
+            temperature=0.7,
+        )
+        # Apply structured output matching response_schema
+        structured_llm = llm.with_structured_output(response_schema)
+        llms.append(structured_llm)
 
-    raise last_error or RuntimeError("Failed to generate content after trying multiple models and retries.")
+    # Chain the fallbacks
+    chain = llms[0]
+    if len(llms) > 1:
+        chain = chain.with_fallbacks(llms[1:])
+    return chain
 
 def generate_story(topic: str, genre: str, length: str, age_group: str, writing_style: str) -> Dict[str, Any]:
     """
-    Generates a full story with characters and chapters matching the requested criteria.
+    Generates a full story with characters and chapters matching the requested criteria using LangChain.
     """
-    client = get_gemini_client()
     system_instruction, user_prompt = pb.build_generation_prompts(
         topic=topic,
         genre=genre,
@@ -110,26 +102,27 @@ def generate_story(topic: str, genre: str, length: str, age_group: str, writing_
         writing_style=writing_style
     )
 
-    response = generate_content_with_retry(
-        client=client,
-        model_name="gemini-3.5-flash",
-        contents=user_prompt,
-        config=types.GenerateContentConfig(
-            system_instruction=system_instruction,
-            response_mime_type="application/json",
-            response_schema=StorySchema,
-        )
-    )
+    messages = [
+        SystemMessage(content=system_instruction),
+        HumanMessage(content=user_prompt)
+    ]
 
-    # In Python SDK with Pydantic response_schema, response.text is a JSON string
-    import json
-    return json.loads(response.text)
+    # Create the structured chain with fallback models
+    chain = get_langchain_fallback_chain("gemini-3.5-flash", StorySchema)
+    
+    # Invoke the chain
+    print(f"[LangChain] Querying story generation model chain...")
+    response = chain.invoke(messages)
+    
+    # The response is a StorySchema Pydantic object
+    if hasattr(response, "model_dump"):
+        return response.model_dump()
+    return dict(response)
 
 def generate_suggestions(title: str, summary: str, chapters: List[Dict[str, Any]], genre: str) -> Dict[str, Any]:
     """
-    Generates plot twists, character improvements, and alternate endings for a story.
+    Generates plot twists, character improvements, and alternate endings for a story using LangChain.
     """
-    client = get_gemini_client()
     system_instruction, user_prompt = pb.build_suggestion_prompts(
         title=title,
         summary=summary,
@@ -137,19 +130,23 @@ def generate_suggestions(title: str, summary: str, chapters: List[Dict[str, Any]
         genre=genre
     )
 
-    response = generate_content_with_retry(
-        client=client,
-        model_name="gemini-3.5-flash",
-        contents=user_prompt,
-        config=types.GenerateContentConfig(
-            system_instruction=system_instruction,
-            response_mime_type="application/json",
-            response_schema=SuggestionSchema,
-        )
-    )
+    messages = [
+        SystemMessage(content=system_instruction),
+        HumanMessage(content=user_prompt)
+    ]
 
-    import json
-    return json.loads(response.text)
+    # Create the structured chain with fallback models
+    chain = get_langchain_fallback_chain("gemini-3.5-flash", SuggestionSchema)
+    
+    # Invoke the chain
+    print(f"[LangChain] Querying suggestion generation model chain...")
+    response = chain.invoke(messages)
+    
+    # The response is a SuggestionSchema Pydantic object
+    if hasattr(response, "model_dump"):
+        return response.model_dump()
+    return dict(response)
+
 
 def generate_tts(text: str, voice: str) -> str:
     """
