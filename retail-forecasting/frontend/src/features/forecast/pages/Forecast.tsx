@@ -1,195 +1,407 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Cpu, CheckCircle2, AlertCircle, BrainCircuit, Zap } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import type { Product } from '../../../types';
-import AnimatedCounter from '../../../components/AnimatedCounter';
+import {
+  TrendingUp, TrendingDown, MapPin, Store, ShoppingBag, Users,
+  Zap, BrainCircuit, AlertCircle, ChevronRight, BarChart3,
+  CloudSun, Sparkles, ArrowUpRight, ArrowDownRight, Package, RefreshCw
+} from 'lucide-react';
+import {
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  AreaChart, Area, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis
+} from 'recharts';
 
-const MODEL_COLORS = ['#94a3b8', '#64748b', '#475569', '#6366f1'];
+// ─── City & Retailer Data ───────────────────────────────────────────────────
+const CITY = 'Kota, Rajasthan';
+
+const RETAILERS = [
+  { id: 'dmart', name: 'DMart', emoji: '🏬', color: 'from-blue-500 to-indigo-600', light: 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300', border: 'border-blue-300 dark:border-blue-700' },
+  { id: 'vmart', name: 'V Mart', emoji: '🛒', color: 'from-orange-500 to-red-600', light: 'bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300', border: 'border-orange-300 dark:border-orange-700' },
+  { id: 'local', name: 'Local Shops', emoji: '🏪', color: 'from-green-500 to-teal-600', light: 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300', border: 'border-green-300 dark:border-green-700' },
+];
+
+const SEASONS = ['Monsoon (Jul–Sep)', 'Festive (Oct–Nov)', 'Winter (Dec–Feb)', 'Summer (Mar–Jun)'];
+
+// ─── Kota-specific category demand data ────────────────────────────────────
+
+
+// Weekly demand forecast chart data
+
+
+
+
+const AI_INSIGHTS = [
+  {
+    icon: '🌡️',
+    title: 'Extreme Heat Alert',
+    text: 'Kota temps expected 44°C+ next week. Beverages, ORS, and ice cream will see 35–45% demand surge across all retailers.',
+    tag: 'Weather Signal',
+    color: 'border-l-orange-500 bg-orange-50/50 dark:bg-orange-900/10',
+    tagColor: 'text-orange-600 bg-orange-100 dark:bg-orange-900/40',
+  },
+  {
+    icon: '📖',
+    title: 'Exam Season Spike',
+    text: 'JEE/NEET exam season begins — 180k+ students stocking up on stationery, energy drinks, and ready-to-eat meals. Local shops will capture 40% of this demand.',
+    tag: 'Kota Student Economy',
+    color: 'border-l-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/10',
+    tagColor: 'text-indigo-600 bg-indigo-100 dark:bg-indigo-900/40',
+  },
+  {
+    icon: '🏷️',
+    title: 'V Mart Competitive Edge',
+    text: 'V Mart\'s budget apparel category is outperforming DMart by 23% in Kota due to student price sensitivity. Recommended to increase stock by 200 units.',
+    tag: 'Market Intelligence',
+    color: 'border-l-purple-500 bg-purple-50/50 dark:bg-purple-900/10',
+    tagColor: 'text-purple-600 bg-purple-100 dark:bg-purple-900/40',
+  },
+];
+
+// ─── Component ───────────────────────────────────────────────────────────────
+import { useForecastData } from '../hook/useForecast';
 
 export default function Forecast() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [selectedProductId, setSelectedProductId] = useState<number | ''>('');
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [showResults, setShowResults] = useState(false);
-  
-  useEffect(() => {
-    fetch('http://localhost:8000/api/products')
-      .then(res => res.json())
-      .then(data => setProducts(data))
-      .catch(err => console.error(err));
-  }, []);
+  const [selectedRetailer, setSelectedRetailer] = useState('dmart');
+  const [selectedSeason, setSelectedSeason] = useState(SEASONS[0]);
+  const [isRunning, setIsRunning] = useState(false);
+  const [ran, setRan] = useState(false);
+  const { categories, weekly, radar, dispatch, fetchForecastData } = useForecastData();
+  const KOTA_CATEGORIES = categories;
+  const WEEKLY_FORECAST = weekly;
+  const RADAR_DATA = radar;
 
-  const selectedProduct = products.find(p => p.id === selectedProductId);
+  const retailer = RETAILERS.find(r => r.id === selectedRetailer)!;
 
-  const handleGenerate = () => {
-    setIsGenerating(true);
-    setShowResults(false);
-    
-    // Simulate API call and agent deliberation
+  const handleRunForecast = async () => {
+    setIsRunning(true);
+    await dispatch(fetchForecastData() as any);
     setTimeout(() => {
-      setIsGenerating(false);
-      setShowResults(true);
-    }, 2500);
+      setIsRunning(false);
+      setRan(true);
+    }, 1500);
   };
 
-  const modelData = [
-    { name: 'Linear Regression', prediction: 450 },
-    { name: 'Decision Tree', prediction: 485 },
-    { name: 'Neural Network', prediction: 510 },
-    { name: 'Agent Consensus', prediction: 535 },
-  ];
+  type RetailerId = 'dmart' | 'vmart' | 'local';
+  const rid = selectedRetailer as RetailerId;
+  const topCategory = KOTA_CATEGORIES && KOTA_CATEGORIES.length > 0 ? KOTA_CATEGORIES.slice().sort(
+    (a: any, b: any) => b[rid]?.demand - a[rid]?.demand
+  )[0] : null;
 
   return (
-    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 mb-4">
-          AI Demand Forecast
-        </h1>
-        <p className="text-text-secondary text-lg">Harness the power of multi-agent consensus to predict future demand.</p>
-      </div>
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
 
-      <div className="glass-card p-6 rounded-2xl mb-8 relative z-20">
-        <div className="flex flex-col md:flex-row gap-4 items-end">
-          <div className="w-full md:w-2/3">
-            <label className="block text-sm font-medium text-text-secondary mb-2">Select Product to Forecast</label>
-            <div className="relative">
-              <select
-                value={selectedProductId}
-                onChange={(e) => {
-                  setSelectedProductId(Number(e.target.value));
-                  setShowResults(false);
-                }}
-                className="w-full pl-4 pr-10 py-3 bg-card-bg/50 border border-border-color rounded-xl appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 text-text-primary"
-              >
-                <option value="">Select a DMart Product...</option>
-                {products.map(p => (
-                  <option key={p.id} value={p.id}>{p.name} ({p.sku})</option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary w-5 h-5 pointer-events-none" />
+      {/* ── Header ── */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-8"
+      >
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 text-sm text-text-secondary mb-2">
+              <MapPin className="w-4 h-4 text-indigo-500" />
+              <span className="font-medium">{CITY}</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-green-500 font-medium">Live Intelligence</span>
             </div>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+              Retail Demand Intelligence
+            </h1>
+            <p className="text-text-secondary mt-1">AI-powered demand forecast for Kota's retail ecosystem</p>
           </div>
-          <div className="w-full md:w-1/3">
-            <button
-              onClick={handleGenerate}
-              disabled={isGenerating}
-              className="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-70 disabled:cursor-not-allowed text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-500/50 flex justify-center items-center gap-2 group relative overflow-hidden"
+
+          <div className="flex items-center gap-3">
+            <select
+              value={selectedSeason}
+              onChange={(e) => setSelectedSeason(e.target.value)}
+              className="px-4 py-2 glass-card border border-border-color rounded-xl text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
-              {isGenerating ? (
+              {SEASONS.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={handleRunForecast}
+              disabled={isRunning}
+              className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold text-sm shadow-lg hover:shadow-indigo-500/40 transition-all disabled:opacity-70 relative overflow-hidden"
+            >
+              {isRunning ? (
                 <>
-                  <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
-                    <Cpu className="w-5 h-5" />
+                  <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}>
+                    <RefreshCw className="w-4 h-4" />
                   </motion.div>
-                  Agents Analyzing...
+                  Analyzing Kota Market...
                 </>
               ) : (
                 <>
-                  <Zap className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  Generate Forecast
-                  {/* Pulse Ring */}
-                  <span className="absolute w-full h-full rounded-xl border-2 border-indigo-400 animate-ping opacity-20"></span>
+                  <Zap className="w-4 h-4" />
+                  Run AI Forecast
+                  <span className="absolute inset-0 rounded-xl border-2 border-purple-400 animate-ping opacity-20" />
                 </>
               )}
-            </button>
+            </motion.button>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <AnimatePresence>
-        {showResults && selectedProduct && (
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.6, staggerChildren: 0.2 }}
-            className="space-y-8"
+      {/* ── Retailer Selector ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="grid grid-cols-3 gap-4 mb-8"
+      >
+        {RETAILERS.map((r) => (
+          <motion.button
+            key={r.id}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setSelectedRetailer(r.id)}
+            className={`relative glass-card rounded-2xl p-5 text-left transition-all border-2 ${
+              selectedRetailer === r.id ? r.border : 'border-transparent'
+            }`}
           >
-            {/* Top Results Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="glass-card p-8 rounded-2xl md:col-span-2 flex flex-col justify-center items-center text-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10" />
-                <h3 className="text-lg font-medium text-text-secondary mb-2 relative z-10">Predicted Demand (Next 30 Days)</h3>
-                <div className="text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500 relative z-10">
-                  <AnimatedCounter value={535} duration={2.5} />
-                </div>
-                <p className="text-green-500 font-semibold mt-4 flex items-center gap-1 relative z-10">
-                  <CheckCircle2 className="w-4 h-4" /> +24% vs last month
-                </p>
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="glass-card p-6 rounded-2xl flex flex-col justify-center items-center text-center">
-                <h3 className="text-lg font-medium text-text-secondary mb-4">Agent Confidence</h3>
-                <div className="relative w-32 h-32 flex items-center justify-center">
-                  <svg className="w-full h-full transform -rotate-90">
-                    <circle cx="64" cy="64" r="56" fill="transparent" stroke="currentColor" strokeWidth="12" className="text-gray-200 dark:text-slate-800" />
-                    <motion.circle
-                      cx="64" cy="64" r="56" fill="transparent" stroke="currentColor" strokeWidth="12"
-                      className="text-indigo-500" strokeLinecap="round"
-                      strokeDasharray={351.86}
-                      initial={{ strokeDashoffset: 351.86 }}
-                      animate={{ strokeDashoffset: 351.86 * (1 - 0.92) }}
-                      transition={{ duration: 2, ease: "easeOut" }}
-                    />
-                  </svg>
-                  <div className="absolute flex flex-col items-center">
-                    <span className="text-3xl font-bold text-text-primary"><AnimatedCounter value={92} duration={2} />%</span>
-                  </div>
-                </div>
-              </motion.div>
+            {selectedRetailer === r.id && (
+              <motion.div
+                layoutId="retailer-glow"
+                className={`absolute inset-0 rounded-2xl opacity-10 bg-gradient-to-br ${r.color}`}
+              />
+            )}
+            <div className="text-3xl mb-2">{r.emoji}</div>
+            <div className="font-bold text-text-primary text-lg">{r.name}</div>
+            <div className="text-xs text-text-secondary mt-1 flex items-center gap-1">
+              <Store className="w-3 h-3" />
+              {r.id === 'dmart' ? 'Superstore chain' : r.id === 'vmart' ? 'Value fashion retail' : 'Kirana & neighbourhood'}
             </div>
+            {selectedRetailer === r.id && (
+              <span className={`absolute top-3 right-3 text-xs font-bold px-2 py-0.5 rounded-full ${r.light}`}>Active</span>
+            )}
+          </motion.button>
+        ))}
+      </motion.div>
 
-            {/* Model Comparison & Insights Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-6 rounded-2xl">
-                <h3 className="text-lg font-bold text-text-primary mb-6">Model Comparison</h3>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={modelData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e5e7eb" />
-                      <XAxis type="number" stroke="#9ca3af" />
-                      <YAxis dataKey="name" type="category" width={120} stroke="#9ca3af" tick={{ fontSize: 12 }} />
-                      <Tooltip cursor={{ fill: 'rgba(99, 102, 241, 0.1)' }} contentStyle={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }} />
-                      <Bar dataKey="prediction" radius={[0, 4, 4, 0]}>
-                        {modelData.map((_, index) => (
-                          <Cell key={`cell-${index}`} fill={MODEL_COLORS[index % MODEL_COLORS.length]} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-                <div className="glass-card p-6 rounded-2xl bg-indigo-50/50 dark:bg-indigo-900/10 border-indigo-100 dark:border-indigo-900/50">
-                  <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-300 mb-3 flex items-center gap-2">
-                    <BrainCircuit className="w-5 h-5 text-indigo-500" /> Synthesizer Explanation
-                  </h3>
-                  <p className="text-indigo-800 dark:text-indigo-200 leading-relaxed text-sm">
-                    The Agent Council predicts higher demand than traditional models. The <span className="font-semibold">Weather Analyst</span> identified an upcoming heatwave likely to boost outdoor categories, while the <span className="font-semibold">Market Scout</span> detected a 15% increase in social media sentiment for {selectedProduct.name}. The <span className="font-semibold">Data Analyst</span> confirmed historical correlations supporting a 24% uplift.
-                  </p>
-                </div>
-
-                <div className="glass-card p-6 rounded-2xl border-l-4 border-l-amber-500">
-                  <h3 className="text-lg font-bold text-text-primary mb-3 flex items-center gap-2">
-                    <AlertCircle className="w-5 h-5 text-amber-500" /> Actionable Recommendations
-                  </h3>
-                  <ul className="space-y-3 text-sm text-text-secondary">
-                    <li className="flex items-start gap-2">
-                      <div className="mt-1 w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0" />
-                      <span>Increase stock levels by 150 units before next Tuesday to avoid stockouts during the expected demand spike.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <div className="mt-1 w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0" />
-                      <span>Prepare promotional marketing aligned with the upcoming weather event to maximize conversion rates.</span>
-                    </li>
-                  </ul>
-                </div>
-              </motion.div>
+      {/* ── AI Insights Strip ── */}
+      <AnimatePresence>
+        {ran && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mb-8"
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="w-4 h-4 text-purple-500" />
+              <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider">AI Agent Insights for Kota</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {AI_INSIGHTS.map((insight, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  className={`glass-card rounded-xl p-4 border-l-4 ${insight.color}`}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <span className="text-2xl">{insight.icon}</span>
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${insight.tagColor}`}>{insight.tag}</span>
+                  </div>
+                  <h3 className="font-bold text-text-primary text-sm mb-1">{insight.title}</h3>
+                  <p className="text-xs text-text-secondary leading-relaxed">{insight.text}</p>
+                </motion.div>
+              ))}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── Category Demand Grid ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+
+        {/* Left: Category cards */}
+        <div className="lg:col-span-2 space-y-4">
+          <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
+            <Package className="w-5 h-5 text-indigo-500" />
+            Category Demand Forecast — <span className={`text-sm font-medium px-2 py-0.5 rounded-full ${retailer.light}`}>{retailer.name}</span>
+          </h2>
+          <div className="space-y-3">
+            {KOTA_CATEGORIES.map((cat: any, idx: number) => {
+              const data = cat[rid];
+              const isUp = data.trend >= 0;
+              return (
+                <motion.div
+                  key={cat.category}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.06 }}
+                  className="glass-card rounded-xl p-4 flex items-center gap-4 hover:shadow-lg transition-shadow"
+                >
+                  <div className="text-2xl w-10 text-center flex-shrink-0">{cat.icon}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <h3 className="font-semibold text-text-primary text-sm truncate">{cat.category}</h3>
+                      <span className={`flex items-center gap-1 text-xs font-bold ml-2 flex-shrink-0 ${isUp ? 'text-green-500' : 'text-red-500'}`}>
+                        {isUp ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                        {isUp ? '+' : ''}{data.trend}%
+                      </span>
+                    </div>
+                    <p className="text-xs text-text-secondary mb-2">{cat.reason}</p>
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${data.demand}%` }}
+                          transition={{ duration: 1, delay: idx * 0.08 }}
+                          className={`h-full rounded-full bg-gradient-to-r ${retailer.color}`}
+                        />
+                      </div>
+                      <span className="text-sm font-bold text-text-primary w-8 text-right">{data.demand}</span>
+                    </div>
+                  </div>
+                  {cat.category === topCategory.category && (
+                    <span className="text-xs font-bold px-2 py-1 bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 rounded-full flex-shrink-0">🏆 Top</span>
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Right: Radar + Context */}
+        <div className="space-y-6">
+          <div className="glass-card rounded-2xl p-5">
+            <h3 className="text-sm font-bold text-text-primary mb-4 flex items-center gap-2">
+              <BrainCircuit className="w-4 h-4 text-purple-500" />
+              Retailer Comparison Radar
+            </h3>
+            <ResponsiveContainer width="100%" height={220}>
+              <RadarChart data={RADAR_DATA}>
+                <PolarGrid stroke="#e5e7eb" />
+                <PolarAngleAxis dataKey="subject" tick={{ fontSize: 10, fill: '#9ca3af' }} />
+                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} />
+                <Radar name="DMart" dataKey="dmart" stroke="#6366f1" fill="#6366f1" fillOpacity={0.15} />
+                <Radar name="V Mart" dataKey="vmart" stroke="#f97316" fill="#f97316" fillOpacity={0.15} />
+                <Radar name="Local" dataKey="local" stroke="#22c55e" fill="#22c55e" fillOpacity={0.15} />
+              </RadarChart>
+            </ResponsiveContainer>
+            <div className="flex justify-center gap-4 mt-2">
+              {[['#6366f1', 'DMart'], ['#f97316', 'V Mart'], ['#22c55e', 'Local']].map(([color, label]) => (
+                <div key={label} className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: color as string }} />
+                  <span className="text-xs text-text-secondary">{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="glass-card rounded-2xl p-5">
+            <h3 className="text-sm font-bold text-text-primary mb-3 flex items-center gap-2">
+              <CloudSun className="w-4 h-4 text-amber-500" />
+              Kota Market Context
+            </h3>
+            <div className="space-y-3">
+              {[
+                { label: 'Student Population', value: '1.8L+', icon: <Users className="w-3.5 h-3.5" /> },
+                { label: 'Peak Demand Days', value: 'Fri–Sun', icon: <BarChart3 className="w-3.5 h-3.5" /> },
+                { label: 'Avg Summer Temp', value: '44°C', icon: <CloudSun className="w-3.5 h-3.5" /> },
+                { label: 'Coaching Centers', value: '500+', icon: <ShoppingBag className="w-3.5 h-3.5" /> },
+              ].map(({ label, value, icon }) => (
+                <div key={label} className="flex justify-between items-center text-sm">
+                  <span className="text-text-secondary flex items-center gap-1.5">{icon}{label}</span>
+                  <span className="font-bold text-text-primary">{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Weekly Demand Forecast Chart ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="glass-card rounded-2xl p-6 mb-8"
+      >
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-green-500" />
+            Weekly Demand Forecast — Kota
+          </h2>
+          <span className="text-xs text-text-secondary bg-gray-100 dark:bg-slate-800 px-3 py-1 rounded-full">
+            {selectedSeason}
+          </span>
+        </div>
+        <ResponsiveContainer width="100%" height={260}>
+          <AreaChart data={WEEKLY_FORECAST} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+            <defs>
+              <linearGradient id="gdmart" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="gvmart" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="glocal" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+            <XAxis dataKey="day" stroke="#9ca3af" />
+            <YAxis stroke="#9ca3af" />
+            <Tooltip
+              contentStyle={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)', color: 'var(--text-primary)', borderRadius: '12px' }}
+            />
+            <Area type="monotone" dataKey="dmart" name="DMart" stroke="#6366f1" fill="url(#gdmart)" strokeWidth={2} dot={{ r: 3 }} />
+            <Area type="monotone" dataKey="vmart" name="V Mart" stroke="#f97316" fill="url(#gvmart)" strokeWidth={2} dot={{ r: 3 }} />
+            <Area type="monotone" dataKey="local" name="Local Shops" stroke="#22c55e" fill="url(#glocal)" strokeWidth={2} dot={{ r: 3 }} />
+          </AreaChart>
+        </ResponsiveContainer>
+      </motion.div>
+
+      {/* ── Recommendation Cards ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="grid grid-cols-1 md:grid-cols-3 gap-4"
+      >
+        {[
+          {
+            icon: <TrendingUp className="w-5 h-5 text-green-500" />,
+            title: 'Stock More Of',
+            items: ['Beverages & Cold Drinks', 'Instant Noodles & Snacks', 'Stationery & Study Items'],
+            color: 'border-green-200 dark:border-green-800',
+            bg: 'bg-green-50 dark:bg-green-900/10',
+          },
+          {
+            icon: <TrendingDown className="w-5 h-5 text-red-500" />,
+            title: 'Reduce / Clear',
+            items: ['Heavy Winter Apparel', 'Luxury Personal Care', 'Seasonal Decor'],
+            color: 'border-red-200 dark:border-red-800',
+            bg: 'bg-red-50 dark:bg-red-900/10',
+          },
+          {
+            icon: <AlertCircle className="w-5 h-5 text-amber-500" />,
+            title: 'Action Required',
+            items: ['Reorder ORS & Electrolytes', 'Negotiate bulk deals for rice/flour', 'Add express checkout for students'],
+            color: 'border-amber-200 dark:border-amber-800',
+            bg: 'bg-amber-50 dark:bg-amber-900/10',
+          },
+        ].map(({ icon, title, items, color, bg }) => (
+          <div key={title} className={`glass-card rounded-xl p-5 border ${color} ${bg}`}>
+            <h3 className="font-bold text-text-primary mb-3 flex items-center gap-2">{icon}{title}</h3>
+            <ul className="space-y-2">
+              {items.map(item => (
+                <li key={item} className="flex items-center gap-2 text-sm text-text-secondary">
+                  <ChevronRight className="w-3.5 h-3.5 flex-shrink-0 text-text-secondary" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </motion.div>
     </div>
   );
 }

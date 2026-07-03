@@ -2,7 +2,7 @@ import asyncio
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.api import products, forecast, websocket
+from app.api import products, forecast, websocket, forecast_data
 from app.database.connection import engine, Base
 from app.database import seed_data
 from app.services import forecast_service
@@ -25,6 +25,7 @@ app.add_middleware(
 # Include Routers
 app.include_router(products.router, prefix="/api/products", tags=["Products"])
 app.include_router(forecast.router, prefix="/api/forecast", tags=["Forecast"])
+app.include_router(forecast_data.router)
 app.include_router(websocket.router, prefix="/api", tags=["Websocket Logs"])
 
 @app.on_event("startup")

@@ -49,3 +49,14 @@ class Forecast(Base):
 
     # Relationships
     product = relationship("Product", back_populates="forecasts")
+
+class DailySales(Base):
+    __tablename__ = "daily_sales"
+
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(String, index=True, nullable=False) # YYYY-MM-DD
+    retailer = Column(String, index=True, nullable=False) # dmart, vmart, local
+    category = Column(String, index=True, nullable=False)
+    sales_qty = Column(Integer, nullable=False)
+    price = Column(Float, nullable=False)
+    promotion = Column(Integer, nullable=False) # 1 or 0
