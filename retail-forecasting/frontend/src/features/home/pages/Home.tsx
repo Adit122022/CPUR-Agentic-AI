@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ChevronDown, BarChart2, Zap, Shield, Cpu, Users, Search, BrainCircuit, ArrowRight } from 'lucide-react';
-import ParticlesBackground from '../components/ParticlesBackground';
-import AnimatedCounter from '../components/AnimatedCounter';
+import ParticlesBackground from '../../../components/ParticlesBackground';
+import AnimatedCounter from '../../../components/AnimatedCounter';
 
 export default function Home() {
   const navigate = useNavigate();

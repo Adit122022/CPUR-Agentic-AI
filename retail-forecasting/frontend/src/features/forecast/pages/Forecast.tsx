@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Cpu, CheckCircle2, AlertCircle, BrainCircuit, Zap } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import type { Product } from '../types';
-import AnimatedCounter from '../components/AnimatedCounter';
+import type { Product } from '../../../types';
+import AnimatedCounter from '../../../components/AnimatedCounter';
 
 const MODEL_COLORS = ['#94a3b8', '#64748b', '#475569', '#6366f1'];
 

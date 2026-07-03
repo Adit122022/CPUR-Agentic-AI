@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Square, Activity, BrainCircuit } from 'lucide-react';
-import type { AgentLog } from '../types';
+import type { AgentLog } from '../../../types';
 
 const agents = [
   { id: 'data', name: 'Data Analyst', role: 'Quantitative Analysis', emoji: '📊', color: 'text-blue-500', bg: 'bg-blue-100 dark:bg-blue-900/30', border: 'border-blue-200 dark:border-blue-800' },

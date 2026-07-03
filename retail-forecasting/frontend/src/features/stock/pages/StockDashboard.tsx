@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Package, AlertTriangle, XOctagon, RefreshCw } from 'lucide-react';
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import type { Product } from '../types';
-import AnimatedCounter from '../components/AnimatedCounter';
+import type { Product } from '../../../types';
+import AnimatedCounter from '../../../components/AnimatedCounter';
 
 const COLORS = ['#6366f1', '#ec4899', '#8b5cf6', '#14b8a6', '#f59e0b'];
 

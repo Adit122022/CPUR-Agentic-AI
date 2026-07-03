@@ -4,8 +4,6 @@ from sqlalchemy.orm import Session
 
 from app.database.models import Product, HistoricalSales, Forecast
 from app.models.linear_regression import LinearRegressionModel
-from app.models.decision_tree import DecisionTreeModel
-from app.models.neural_network import NeuralNetworkModel
 from app.services.weather_service import WeatherService
 from app.services.social_media_service import SocialMediaService
 from app.agents.crew import run_forecast_crew
@@ -49,15 +47,14 @@ class ForecastService:
             
         sales_history = [{"date": s.date, "quantity": s.quantity} for s in sales]
         
-        # 3. Select and Run ML Model
-        if model_type == "linear_regression":
-            model = LinearRegressionModel()
-        elif model_type == "decision_tree":
-            model = DecisionTreeModel()
-        elif model_type == "neural_network":
-            model = NeuralNetworkModel()
-        else:
-            raise ValueError(f"Unknown ML model type: {model_type}")
+        # 3. Select and Run ML Model (Simplified to Linear Regression)
+        if model_type not in ["linear_regression", "decision_tree", "neural_network"]:
+            # For backward compatibility with the frontend dropdown, we accept all 
+            # but map them directly to Linear Regression for simplicity
+            pass 
+            
+        model = LinearRegressionModel()
+        model_used_name = "linear_regression"
             
         predicted_qty = model.predict_next_day(sales_history)
         
@@ -91,7 +88,7 @@ class ForecastService:
             product_id=product.id,
             forecast_date=tomorrow_str,
             predicted_quantity=predicted_qty,
-            model_used=model_type,
+            model_used=model_used_name,
             agent_adjustments=agent_adjustments,
             adjusted_quantity=adjusted_qty
         )

@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Products from './pages/Products';
-import StockDashboard from './pages/StockDashboard';
-import Forecast from './pages/Forecast';
-import AgentConsole from './pages/AgentConsole';
+import Home from './features/home/pages/Home';
+import Products from './features/products/pages/Products';
+import StockDashboard from './features/stock/pages/StockDashboard';
+import Forecast from './features/forecast/pages/Forecast';
+import AgentConsole from './features/agents/pages/AgentConsole';
 
 function AnimatedRoutes() {
   const location = useLocation();
