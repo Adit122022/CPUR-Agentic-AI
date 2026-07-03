@@ -47,8 +47,8 @@ export default function Products() {
     <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-text-primary">Product Catalog</h1>
-          <p className="text-text-secondary mt-1">Manage and monitor your DMart inventory.</p>
+          <h1 className="text-3xl md:text-4xl font-gothic text-text-primary uppercase mb-2">Product Catalog</h1>
+          <p className="text-text-secondary mt-1 font-pixel text-xs tracking-widest uppercase">Manage and monitor your DMart inventory.</p>
         </div>
         
         <div className="relative w-full md:w-64">
@@ -70,14 +70,14 @@ export default function Products() {
             key={category}
             onClick={() => setSelectedCategory(category)}
             className={`relative px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
-              selectedCategory === category ? 'text-indigo-600 dark:text-indigo-400' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-slate-800'
+              selectedCategory === category ? 'text-[var(--color-olive-400)] dark:text-indigo-400' : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-slate-800'
             }`}
           >
             {category}
             {selectedCategory === category && (
               <motion.div
                 layoutId="category-indicator"
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-500"
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--color-olive-300)]"
                 initial={false}
               />
             )}
@@ -118,7 +118,7 @@ export default function Products() {
                   <p className="text-xs text-text-secondary uppercase tracking-wider mb-1">{product.brand || product.category}</p>
                   <h3 className="text-lg font-bold text-text-primary mb-2 line-clamp-1" title={product.name}>{product.name}</h3>
                   <div className="flex items-center gap-2">
-                    <p className="text-xl font-semibold text-indigo-600 dark:text-indigo-400">₹{product.discounted_price || product.price}</p>
+                    <p className="text-xl font-semibold text-[var(--color-olive-400)] dark:text-indigo-400">₹{product.discounted_price || product.price}</p>
                     {product.discounted_price && product.discounted_price < product.price && (
                       <p className="text-sm line-through text-text-secondary">₹{product.price}</p>
                     )}
@@ -164,7 +164,7 @@ export default function Products() {
                     {selectedProduct.quantity && <p className="text-sm text-text-secondary mt-1">Pack Size: {selectedProduct.quantity}</p>}
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">₹{selectedProduct.discounted_price || selectedProduct.price}</p>
+                    <p className="text-2xl font-bold text-[var(--color-olive-400)] dark:text-indigo-400">₹{selectedProduct.discounted_price || selectedProduct.price}</p>
                     <p className={`text-sm mt-1 font-medium ${selectedProduct.current_stock > 100 ? 'text-green-500' : selectedProduct.current_stock > 50 ? 'text-amber-500' : 'text-red-500'}`}>
                       {selectedProduct.current_stock} units available
                     </p>

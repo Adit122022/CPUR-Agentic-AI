@@ -11,14 +11,14 @@ const agents = [
 ];
 
 const simulationLogs = [
-  { agentId: 'data', message: "Analyzing past 3 years of sales data for Smart Home Hub. Baseline demand projected at 420 units." },
-  { agentId: 'weather', message: "Alert: Unseasonable cold front approaching the Northeast next week. Expecting people to stay indoors." },
-  { agentId: 'market', message: "Social listening indicates a 15% spike in mentions for home automation on Twitter and TikTok over the last 48 hours." },
-  { agentId: 'data', message: "Adjusting model... Incorporating market sentiment (+15%) and weather impact (+8%). New projection: 516 units." },
-  { agentId: 'market', message: "Competitor 'SmartLife' is currently out of stock on their premium hub. We should capture some of their overflow demand." },
-  { agentId: 'data', message: "Factoring competitor stockout. Adding another 19 units to the projection." },
-  { agentId: 'synth', message: "Reviewing all inputs. The data supports a strong upward trend. Weather and competitor dynamics create a perfect storm for sales." },
-  { agentId: 'synth', message: "Final Consensus Reached: 535 units predicted. Confidence score: 92%. Recommendation generated to increase stock." }
+  { agentId: 'data', message: "Analyzing past 2 years of sales data for DMart Kota. Baseline demand for Beverages & ORS projected at 4,200 units for next week." },
+  { agentId: 'weather', message: "Alert: Severe heatwave (45°C+) predicted for Rajasthan starting Thursday. Expecting a massive spike in hydration products." },
+  { agentId: 'market', message: "Local Kirana stores are running low on cold storage capacity. DMart will absorb overflow demand from students in the coaching district." },
+  { agentId: 'data', message: "Adjusting model... Incorporating heatwave (+35%) and Kirana overflow (+12%). New projection: 6,174 units." },
+  { agentId: 'market', message: "V-Mart is offering a 10% discount on summer apparel, but their beverage aisle is understocked." },
+  { agentId: 'data', message: "Factoring competitor stockout. Adding another 400 units to the projection." },
+  { agentId: 'synth', message: "Reviewing all inputs. The data supports a strong upward trend for cold beverages. Weather and competitor dynamics create a perfect storm for sales." },
+  { agentId: 'synth', message: "Final Consensus Reached: 6,574 units predicted. Confidence score: 94%. Recommendation generated to increase stock." }
 ];
 
 export default function AgentConsole() {
@@ -83,11 +83,11 @@ export default function AgentConsole() {
       {/* Left Sidebar - Agents */}
       <div className="w-full md:w-80 border-r border-border-color bg-card-bg p-6 flex flex-col">
         <div className="mb-8">
-          <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
-            <Activity className="w-5 h-5 text-indigo-500" />
+          <h2 className="text-2xl font-gothic text-text-primary uppercase flex items-center gap-2">
+            <Activity className="w-5 h-5 text-[var(--color-olive-300)]" />
             AI Council
           </h2>
-          <p className="text-sm text-text-secondary mt-1">Multi-agent debate system</p>
+          <p className="text-xs font-pixel tracking-widest uppercase text-text-secondary mt-1">Multi-agent debate system</p>
         </div>
 
         <div className="flex-1 space-y-4">
@@ -123,7 +123,7 @@ export default function AgentConsole() {
             className={`w-full py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
               isRunning 
                 ? 'bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/30 dark:hover:bg-red-900/50' 
-                : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg hover:shadow-indigo-500/50'
+                : 'bg-[var(--color-olive-400)] text-white hover:bg-indigo-700 shadow-lg hover:shadow-indigo-500/50'
             }`}
           >
             {isRunning ? (

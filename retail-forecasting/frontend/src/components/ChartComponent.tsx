@@ -77,7 +77,7 @@ export const ChartComponent: React.FC<ChartComponentProps> = ({
           </p>
         </div>
         {forecastData && (
-          <div className="flex items-center gap-1.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 px-3 py-1 rounded-full text-xs font-medium">
+          <div className="flex items-center gap-1.5 bg-[var(--color-olive-300)]/10 border border-indigo-500/20 text-indigo-400 px-3 py-1 rounded-full text-xs font-medium">
             <TrendingUp className="w-3.5 h-3.5" />
             <span>Active Model: {forecastData.model_used.replace('_', ' ')}</span>
           </div>

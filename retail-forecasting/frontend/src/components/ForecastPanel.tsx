@@ -30,7 +30,7 @@ export const ForecastPanel: React.FC<ForecastPanelProps> = ({
   return (
     <div className="rounded-xl border border-white/10 bg-white/5 p-5 backdrop-blur-md flex flex-col h-full">
       <div className="flex items-center gap-2 border-b border-white/15 pb-3 mb-4">
-        <div className="p-1.5 rounded-lg bg-indigo-500/15 text-indigo-400">
+        <div className="p-1.5 rounded-lg bg-[var(--color-olive-300)]/15 text-indigo-400">
           <Brain className="w-5 h-5" />
         </div>
         <div>
@@ -57,7 +57,7 @@ export const ForecastPanel: React.FC<ForecastPanelProps> = ({
                   onClick={() => setModelType(m.id)}
                   className={`p-3 rounded-lg border text-left transition flex flex-col gap-1 ${
                     modelType === m.id
-                      ? 'bg-indigo-600/15 border-indigo-500 text-white'
+                      ? 'bg-[var(--color-olive-400)]/15 border-indigo-500 text-white'
                       : 'bg-white/5 border-white/5 text-slate-400 hover:bg-white/10 hover:border-white/10'
                   }`}
                 >
@@ -84,7 +84,7 @@ export const ForecastPanel: React.FC<ForecastPanelProps> = ({
                   onChange={(e) => setUseAgents(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500"></div>
+                <div className="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[var(--color-olive-300)]"></div>
               </label>
             </div>
 
@@ -146,8 +146,8 @@ export const ForecastPanel: React.FC<ForecastPanelProps> = ({
               productId === null
                 ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700/50'
                 : loading
-                ? 'bg-indigo-600/30 text-indigo-300 cursor-wait border border-indigo-500/20'
-                : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/20 active:translate-y-[1px]'
+                ? 'bg-[var(--color-olive-400)]/30 text-indigo-300 cursor-wait border border-indigo-500/20'
+                : 'bg-[var(--color-olive-400)] hover:bg-[var(--color-olive-300)] text-white shadow-lg shadow-indigo-600/20 active:translate-y-[1px]'
             }`}
           >
             {loading ? (

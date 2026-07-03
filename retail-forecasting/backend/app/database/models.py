@@ -17,6 +17,7 @@ class Product(Base):
     description = Column(String, nullable=True)
     current_stock = Column(Integer, default=0) # We will synthesize this
     sku = Column(String, unique=True, index=True, nullable=False)
+    image = Column(String, nullable=True)
 
     # Relationships
     sales_history = relationship("HistoricalSales", back_populates="product", cascade="all, delete-orphan")

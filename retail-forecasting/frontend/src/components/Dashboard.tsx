@@ -101,13 +101,13 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
       {/* Background Decoratives */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[var(--color-olive-400)]/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-fuchsia-600/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Header */}
       <header className="border-b border-white/10 bg-slate-950/60 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-600/35">
+          <div className="p-2 bg-[var(--color-olive-400)] rounded-xl text-white shadow-lg shadow-indigo-600/35">
             <LayoutDashboard className="w-6 h-6" />
           </div>
           <div>
@@ -296,7 +296,7 @@ export const Dashboard: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition"
+                  className="px-4 py-2 text-xs font-semibold rounded-lg bg-[var(--color-olive-400)] hover:bg-[var(--color-olive-300)] text-white transition"
                 >
                   Create Product
                 </button>

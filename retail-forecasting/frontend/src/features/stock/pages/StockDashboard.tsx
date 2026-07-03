@@ -48,15 +48,15 @@ export default function StockDashboard() {
   return (
     <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-text-primary">Stock Dashboard</h1>
-        <p className="text-text-secondary mt-1">Real-time inventory metrics and reorder alerts.</p>
+        <h1 className="text-3xl md:text-4xl font-gothic text-text-primary uppercase mb-2">Stock Dashboard</h1>
+        <p className="text-text-secondary mt-1 font-pixel text-xs tracking-widest uppercase">Real-time inventory metrics and reorder alerts.</p>
       </div>
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="glass-card p-6 rounded-2xl">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 rounded-xl">
+            <div className="p-3 bg-indigo-100 text-[var(--color-olive-400)] dark:bg-indigo-900/30 dark:text-indigo-400 rounded-xl">
               <Package className="w-6 h-6" />
             </div>
             <div>

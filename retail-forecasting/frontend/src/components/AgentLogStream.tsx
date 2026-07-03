@@ -98,7 +98,7 @@ export const AgentLogStream: React.FC = () => {
     <div className="rounded-xl border border-white/10 bg-slate-950/70 p-5 backdrop-blur-md flex flex-col h-[350px]">
       <div className="flex items-center justify-between border-b border-white/15 pb-3 mb-3">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-indigo-500/15 text-indigo-400">
+          <div className="p-1.5 rounded-lg bg-[var(--color-olive-300)]/15 text-indigo-400">
             <Terminal className="w-5 h-5" />
           </div>
           <div>

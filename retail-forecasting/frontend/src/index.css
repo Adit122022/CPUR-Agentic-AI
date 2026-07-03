@@ -1,28 +1,40 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Geist Pixel';
+  src: url('../node_modules/geist/dist/fonts/geist-pixel/GeistPixel-Grid.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
 @theme {
-  --color-primary-500: #6366f1;
-  --color-secondary-500: #8b5cf6;
-  --color-accent-500: #ec4899;
+  --color-olive-100: #C5BE6A;
+  --color-olive-200: #9E9A6F;
+  --color-olive-300: #F0E358;
+  --color-olive-400: #706F62;
+  --color-olive-500: #464435;
+  --color-olive-600: #383621;
   
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-sans: 'Poppins', system-ui, sans-serif;
+  --font-gothic: 'Montenegrin Gothic One', serif;
+  --font-pixel: 'Geist Pixel', monospace;
 }
 
 @layer base {
   :root {
-    --bg-color: #f9fafb; /* gray-50 */
-    --card-bg: #ffffff; /* white */
-    --text-primary: #111827; /* gray-900 */
-    --text-secondary: #4b5563; /* gray-600 */
-    --border-color: #e5e7eb; /* gray-200 */
+    --bg-color: #fcfcfc;
+    --card-bg: #ffffff; 
+    --text-primary: #383621; 
+    --text-secondary: #706F62; 
+    --border-color: #C5BE6A; 
   }
 
   .dark {
-    --bg-color: #020617; /* slate-950 */
-    --card-bg: #0f172a; /* slate-900 */
-    --text-primary: #f8fafc; /* slate-50 */
-    --text-secondary: #94a3b8; /* slate-400 */
-    --border-color: #1e293b; /* slate-800 */
+    --bg-color: #1a1a14;
+    --card-bg: #2b2a22; 
+    --text-primary: #F0E358; 
+    --text-secondary: #C5BE6A; 
+    --border-color: #464435; 
   }
 
   body {
@@ -41,25 +53,10 @@
   }
   
   .dark .glass-card {
-    box-shadow: 0 4px 20px -2px rgba(99, 102, 241, 0.1);
+    box-shadow: 0 4px 20px -2px rgba(197, 190, 106, 0.1); /* olive-100 */
   }
 
-  .text-gradient {
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-image: linear-gradient(to right, #8b5cf6, #6366f1, #ec4899);
+  .text-primary-theme {
+    color: var(--text-primary);
   }
-  
-  .bg-gradient-shift {
-    background: linear-gradient(-45deg, #4f46e5, #7c3aed, #db2777, #3b82f6);
-    background-size: 400% 400%;
-    animation: gradientShift 15s ease infinite;
-  }
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
 }

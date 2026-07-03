@@ -14,9 +14,9 @@ import {
 const CITY = 'Kota, Rajasthan';
 
 const RETAILERS = [
-  { id: 'dmart', name: 'DMart', emoji: '🏬', color: 'from-blue-500 to-indigo-600', light: 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300', border: 'border-blue-300 dark:border-blue-700' },
-  { id: 'vmart', name: 'V Mart', emoji: '🛒', color: 'from-orange-500 to-red-600', light: 'bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300', border: 'border-orange-300 dark:border-orange-700' },
-  { id: 'local', name: 'Local Shops', emoji: '🏪', color: 'from-green-500 to-teal-600', light: 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300', border: 'border-green-300 dark:border-green-700' },
+  { id: 'dmart', name: 'DMart', emoji: '🏬', color: 'bg-[var(--color-olive-100)] text-[var(--color-olive-600)]', light: 'bg-[var(--color-olive-100)] text-[var(--color-olive-600)]', border: 'border-[var(--color-olive-100)]' },
+  { id: 'vmart', name: 'V Mart', emoji: '🛒', color: 'bg-[var(--color-olive-300)] text-[var(--color-olive-600)]', light: 'bg-[var(--color-olive-300)] text-[var(--color-olive-600)]', border: 'border-[var(--color-olive-300)]' },
+  { id: 'local', name: 'Local Shops', emoji: '🏪', color: 'bg-[var(--color-olive-400)] text-white', light: 'bg-[var(--color-olive-400)] text-white', border: 'border-[var(--color-olive-400)]' },
 ];
 
 const SEASONS = ['Monsoon (Jul–Sep)', 'Festive (Oct–Nov)', 'Winter (Dec–Feb)', 'Summer (Mar–Jun)'];
@@ -44,7 +44,7 @@ const AI_INSIGHTS = [
     text: 'JEE/NEET exam season begins — 180k+ students stocking up on stationery, energy drinks, and ready-to-eat meals. Local shops will capture 40% of this demand.',
     tag: 'Kota Student Economy',
     color: 'border-l-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/10',
-    tagColor: 'text-indigo-600 bg-indigo-100 dark:bg-indigo-900/40',
+    tagColor: 'text-[var(--color-olive-400)] bg-indigo-100 dark:bg-indigo-900/40',
   },
   {
     icon: '🏷️',
@@ -98,15 +98,15 @@ export default function Forecast() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-sm text-text-secondary mb-2">
-              <MapPin className="w-4 h-4 text-indigo-500" />
+              <MapPin className="w-4 h-4 text-[var(--color-olive-300)]" />
               <span className="font-medium">{CITY}</span>
               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
               <span className="text-green-500 font-medium">Live Intelligence</span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+            <h1 className="text-3xl md:text-4xl font-gothic text-text-primary uppercase mb-2">
               Retail Demand Intelligence
             </h1>
-            <p className="text-text-secondary mt-1">AI-powered demand forecast for Kota's retail ecosystem</p>
+            <p className="text-text-secondary mt-1 font-pixel text-xs tracking-widest uppercase">AI-powered demand forecast for Kota's retail ecosystem</p>
           </div>
 
           <div className="flex items-center gap-3">
@@ -152,7 +152,7 @@ export default function Forecast() {
         {RETAILERS.map((r) => (
           <motion.button
             key={r.id}
-            whileHover={{ scale: 1.02 }}
+            
             whileTap={{ scale: 0.98 }}
             onClick={() => setSelectedRetailer(r.id)}
             className={`relative glass-card rounded-2xl p-5 text-left transition-all border-2 ${
@@ -219,7 +219,7 @@ export default function Forecast() {
         {/* Left: Category cards */}
         <div className="lg:col-span-2 space-y-4">
           <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
-            <Package className="w-5 h-5 text-indigo-500" />
+            <Package className="w-5 h-5 text-[var(--color-olive-300)]" />
             Category Demand Forecast — <span className={`text-sm font-medium px-2 py-0.5 rounded-full ${retailer.light}`}>{retailer.name}</span>
           </h2>
           <div className="space-y-3">

@@ -16,14 +16,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isSelected, o
       onClick={() => onSelect(product)}
       className={`relative overflow-hidden rounded-xl border p-5 transition-all duration-300 cursor-pointer backdrop-blur-md ${
         isSelected
-          ? 'bg-indigo-600/10 border-indigo-500 shadow-lg shadow-indigo-500/10 translate-y-[-2px]'
+          ? 'bg-[var(--color-olive-400)]/10 border-indigo-500 shadow-lg shadow-indigo-500/10 translate-y-[-2px]'
           : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20'
       }`}
     >
-      <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-olive-300)]/5 rounded-full blur-2xl pointer-events-none" />
       
       <div className="flex items-start justify-between mb-4">
-        <div className="p-2 rounded-lg bg-indigo-500/15 text-indigo-400">
+        <div className="p-2 rounded-lg bg-[var(--color-olive-300)]/15 text-indigo-400">
           <Package className="w-5 h-5" />
         </div>
         <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-white/5 text-slate-400 border border-white/5">

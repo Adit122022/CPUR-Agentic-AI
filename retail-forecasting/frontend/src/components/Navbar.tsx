@@ -29,8 +29,8 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <NavLink to="/" className="flex items-center gap-2">
-              <Activity className="h-8 w-8 text-indigo-500" />
-              <span className="font-bold text-xl tracking-tight text-gradient">ForecastAI</span>
+              <Activity className="h-8 w-8 text-[var(--color-olive-300)]" />
+              <span className="font-gothic text-2xl tracking-widest text-[var(--color-olive-300)] uppercase">Forecast AI</span>
             </NavLink>
           </div>
           
@@ -42,7 +42,7 @@ export default function Navbar() {
                   to={link.path}
                   className={({ isActive }) =>
                     `relative px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-text-secondary hover:text-text-primary hover:bg-gray-100 dark:hover:bg-slate-800'
+                      isActive ? 'text-[var(--color-olive-400)] dark:text-indigo-400' : 'text-text-secondary hover:text-text-primary hover:bg-gray-100 dark:hover:bg-slate-800'
                     }`
                   }
                 >
@@ -52,7 +52,7 @@ export default function Navbar() {
                       {isActive && (
                         <motion.div
                           layoutId="navbar-indicator"
-                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-500"
+                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--color-olive-300)]"
                           initial={false}
                           transition={{ type: "spring", stiffness: 300, damping: 30 }}
                         />
@@ -106,7 +106,7 @@ export default function Navbar() {
                 onClick={() => setIsOpen(false)}
                 className={({ isActive }) =>
                   `block px-3 py-2 rounded-md text-base font-medium ${
-                    isActive ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400' : 'text-text-secondary hover:text-text-primary hover:bg-gray-100 dark:hover:bg-slate-800'
+                    isActive ? 'bg-indigo-50 dark:bg-indigo-900/30 text-[var(--color-olive-400)] dark:text-indigo-400' : 'text-text-secondary hover:text-text-primary hover:bg-gray-100 dark:hover:bg-slate-800'
                   }`
                 }
               >
