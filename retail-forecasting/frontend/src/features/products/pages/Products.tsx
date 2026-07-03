@@ -11,9 +11,18 @@ export default function Products() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const { products, loading } = useProducts();
 
-  const categories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
+  const uniqueProducts = products.reduce((acc, current) => {
+    const x = acc.find(item => item.name === current.name);
+    if (!x) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, [] as Product[]);
 
-  const filteredProducts = products.filter(product => 
+  const categories = ['All', ...Array.from(new Set(uniqueProducts.map(p => p.category)))];
+
+  const filteredProducts = uniqueProducts.filter(product => 
     (selectedCategory === 'All' || product.category === selectedCategory) &&
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -24,11 +33,12 @@ export default function Products() {
     return 'text-red-500 bg-red-50 dark:bg-red-900/30';
   };
 
-  const getFallbackImage = (category: string) => {
-    if (category.toLowerCase().includes('grocery')) return 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400';
-    if (category.toLowerCase().includes('apparel')) return 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&q=80&w=400';
-    if (category.toLowerCase().includes('electronics')) return 'https://images.unsplash.com/photo-1558089687-f282ffcbc126?auto=format&fit=crop&q=80&w=400';
-    return 'https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?auto=format&fit=crop&q=80&w=400';
+  const getFallbackImage = (product: Product) => {
+    // Since we do not have a real database of 300+ DMart photos, 
+    // we use a clean placeholder that prominently displays the exact product name.
+    const shortName = product.name.split(' ').slice(0, 3).join(' ');
+    const text = encodeURIComponent(shortName);
+    return `https://placehold.co/400x400/312e81/ffffff/png?text=${text}`;
   };
 
   // Mock sales history since the backend API for products doesn't include it in this endpoint yet
@@ -106,7 +116,7 @@ export default function Products() {
               >
                 <div className="h-48 overflow-hidden relative">
                   <img 
-                    src={product.image || getFallbackImage(product.category)} 
+                    src={product.image || getFallbackImage(product)} 
                     alt={product.name} 
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
@@ -148,7 +158,7 @@ export default function Products() {
               className="glass-card w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl bg-card-bg max-h-[90vh] overflow-y-auto"
             >
               <div className="relative h-64">
-                <img src={selectedProduct.image || getFallbackImage(selectedProduct.category)} alt={selectedProduct.name} className="w-full h-full object-cover" />
+                <img src={selectedProduct.image || getFallbackImage(selectedProduct)} alt={selectedProduct.name} className="w-full h-full object-cover" />
                 <button 
                   onClick={() => setSelectedProduct(null)}
                   className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors"

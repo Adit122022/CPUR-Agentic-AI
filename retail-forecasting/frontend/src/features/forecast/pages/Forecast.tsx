@@ -256,7 +256,7 @@ export default function Forecast() {
                       <span className="text-sm font-bold text-text-primary w-8 text-right">{data.demand}</span>
                     </div>
                   </div>
-                  {cat.category === topCategory.category && (
+                  {topCategory && cat.category === topCategory.category && (
                     <span className="text-xs font-bold px-2 py-1 bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 rounded-full flex-shrink-0">🏆 Top</span>
                   )}
                 </motion.div>

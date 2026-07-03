@@ -30,11 +30,25 @@ def get_category_demand(db: Session = Depends(get_db)):
 
     prev_dict = {(r.retailer, r.category): r.total_qty for r in previous}
 
+    CATEGORY_METADATA = {
+        "Stationery & Books": {"icon": "📚", "reason": "Consistent high student demand"},
+        "Ready-to-Eat & Instant Food": {"icon": "🍜", "reason": "Late-night study snack consumption"},
+        "Groceries & Staples": {"icon": "🌾", "reason": "Standard household necessities"},
+        "Beverages & Cold Drinks": {"icon": "🥤", "reason": "Summer heatwave hydration needs"},
+        "Personal Care": {"icon": "🧼", "reason": "Regular hygiene products"},
+        "Apparels & Innerwear": {"icon": "👕", "reason": "Seasonal light wear clothes"}
+    }
+
     results = []
     # Structure it like the frontend expects KOTA_CATEGORIES
     categories_set = set([r.category for r in recent])
     for cat in categories_set:
-        cat_data = {"category": cat}
+        meta = CATEGORY_METADATA.get(cat, {"icon": "📦", "reason": "General retail demand"})
+        cat_data = {
+            "category": cat,
+            "icon": meta["icon"],
+            "reason": meta["reason"]
+        }
         for retailer in ['dmart', 'vmart', 'local']:
             curr_val = next((r.total_qty for r in recent if r.retailer == retailer and r.category == cat), 0)
             prev_val = prev_dict.get((retailer, cat), 0)

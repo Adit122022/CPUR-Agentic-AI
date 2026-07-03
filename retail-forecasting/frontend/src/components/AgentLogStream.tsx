@@ -74,7 +74,7 @@ export const AgentLogStream: React.FC = () => {
   };
 
   const getAgentColor = (agent: string) => {
-    switch (agent.toLowerCase()) {
+    switch (agent.toLowerCase().replace(/ /g, '_')) {
       case 'system':
         return 'text-emerald-400';
       case 'data_analyst':

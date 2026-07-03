@@ -42,29 +42,10 @@ export const ForecastPanel: React.FC<ForecastPanelProps> = ({
       <form onSubmit={handleSubmit} className="space-y-5 flex-1 flex flex-col justify-between">
         <div className="space-y-4">
           <div>
-            <label className="text-xs font-semibold text-slate-400 block mb-2">Select Mathematical Model</label>
-            <div className="grid grid-cols-3 gap-2">
-              {(
-                [
-                  { id: 'linear_regression', label: 'Linear Regression', desc: 'Baseline trends' },
-                  { id: 'decision_tree', label: 'Decision Tree', desc: 'Non-linear branches' },
-                  { id: 'neural_network', label: 'Neural Network', desc: 'Complex relationships' },
-                ] as const
-              ).map((m) => (
-                <button
-                  key={m.id}
-                  type="button"
-                  onClick={() => setModelType(m.id)}
-                  className={`p-3 rounded-lg border text-left transition flex flex-col gap-1 ${
-                    modelType === m.id
-                      ? 'bg-[var(--color-olive-400)]/15 border-indigo-500 text-white'
-                      : 'bg-white/5 border-white/5 text-slate-400 hover:bg-white/10 hover:border-white/10'
-                  }`}
-                >
-                  <span className="text-xs font-bold block">{m.label}</span>
-                  <span className="text-[10px] text-slate-500 leading-tight">{m.desc}</span>
-                </button>
-              ))}
+            <label className="text-xs font-semibold text-slate-400 block mb-2">Mathematical Model</label>
+            <div className="p-3 rounded-lg border bg-[var(--color-olive-400)]/15 border-indigo-500 text-white flex flex-col gap-1">
+              <span className="text-xs font-bold block">Linear Regression</span>
+              <span className="text-[10px] text-indigo-300/70 leading-tight">Robust baseline statistical trends</span>
             </div>
           </div>
 
