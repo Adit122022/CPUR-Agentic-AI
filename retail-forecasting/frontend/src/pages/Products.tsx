@@ -1,18 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { mockProducts } from '../data/products';
 import type { Product } from '../types';
 
 export default function Products() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const categories = ['All', ...Array.from(new Set(mockProducts.map(p => p.category)))];
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/products');
+        if (response.ok) {
+          const data = await response.json();
+          setProducts(data);
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
 
-  const filteredProducts = mockProducts.filter(product => 
+  const categories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
+
+  const filteredProducts = products.filter(product => 
     (selectedCategory === 'All' || product.category === selectedCategory) &&
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -23,12 +41,31 @@ export default function Products() {
     return 'text-red-500 bg-red-50 dark:bg-red-900/30';
   };
 
+  const getFallbackImage = (category: string) => {
+    if (category.toLowerCase().includes('grocery')) return 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400';
+    if (category.toLowerCase().includes('apparel')) return 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&q=80&w=400';
+    if (category.toLowerCase().includes('electronics')) return 'https://images.unsplash.com/photo-1558089687-f282ffcbc126?auto=format&fit=crop&q=80&w=400';
+    return 'https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?auto=format&fit=crop&q=80&w=400';
+  };
+
+  // Mock sales history since the backend API for products doesn't include it in this endpoint yet
+  const getMockSalesHistory = () => {
+    return [
+      { month: 'Jan', sales: Math.floor(Math.random() * 200) + 50 },
+      { month: 'Feb', sales: Math.floor(Math.random() * 200) + 50 },
+      { month: 'Mar', sales: Math.floor(Math.random() * 200) + 50 },
+      { month: 'Apr', sales: Math.floor(Math.random() * 200) + 50 },
+      { month: 'May', sales: Math.floor(Math.random() * 200) + 50 },
+      { month: 'Jun', sales: Math.floor(Math.random() * 200) + 50 },
+    ];
+  };
+
   return (
     <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold text-text-primary">Product Catalog</h1>
-          <p className="text-text-secondary mt-1">Manage and monitor your inventory.</p>
+          <p className="text-text-secondary mt-1">Manage and monitor your DMart inventory.</p>
         </div>
         
         <div className="relative w-full md:w-64">
@@ -65,42 +102,50 @@ export default function Products() {
         ))}
       </div>
 
-      {/* Product Grid */}
-      <motion.div 
-        layout
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-      >
-        <AnimatePresence>
-          {filteredProducts.map((product, idx) => (
-            <motion.div
-              layout
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ delay: idx * 0.05 }}
-              key={product.id}
-              onClick={() => setSelectedProduct(product)}
-              className="glass-card rounded-xl overflow-hidden cursor-pointer group hover:-translate-y-2 transition-transform"
-            >
-              <div className="h-48 overflow-hidden relative">
-                <img 
-                  src={product.image} 
-                  alt={product.name} 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className={`absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-bold backdrop-blur-md ${getStockColor(product.stock)}`}>
-                  {product.stock} in stock
+      {loading ? (
+        <div className="flex justify-center py-20 text-text-secondary">Loading DMart products...</div>
+      ) : (
+        <motion.div 
+          layout
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        >
+          <AnimatePresence>
+            {filteredProducts.map((product, idx) => (
+              <motion.div
+                layout
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ delay: idx * 0.05 }}
+                key={product.id}
+                onClick={() => setSelectedProduct(product)}
+                className="glass-card rounded-xl overflow-hidden cursor-pointer group hover:-translate-y-2 transition-transform"
+              >
+                <div className="h-48 overflow-hidden relative">
+                  <img 
+                    src={product.image || getFallbackImage(product.category)} 
+                    alt={product.name} 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className={`absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-bold backdrop-blur-md ${getStockColor(product.current_stock)}`}>
+                    {product.current_stock} in stock
+                  </div>
                 </div>
-              </div>
-              <div className="p-4">
-                <p className="text-xs text-text-secondary uppercase tracking-wider mb-1">{product.category}</p>
-                <h3 className="text-lg font-bold text-text-primary mb-2 line-clamp-1">{product.name}</h3>
-                <p className="text-xl font-semibold text-indigo-600 dark:text-indigo-400">${product.price}</p>
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </motion.div>
+                <div className="p-4">
+                  <p className="text-xs text-text-secondary uppercase tracking-wider mb-1">{product.brand || product.category}</p>
+                  <h3 className="text-lg font-bold text-text-primary mb-2 line-clamp-1" title={product.name}>{product.name}</h3>
+                  <div className="flex items-center gap-2">
+                    <p className="text-xl font-semibold text-indigo-600 dark:text-indigo-400">₹{product.discounted_price || product.price}</p>
+                    {product.discounted_price && product.discounted_price < product.price && (
+                      <p className="text-sm line-through text-text-secondary">₹{product.price}</p>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+      )}
 
       {/* Product Detail Modal */}
       <AnimatePresence>
@@ -117,10 +162,10 @@ export default function Products() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="glass-card w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl bg-card-bg"
+              className="glass-card w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl bg-card-bg max-h-[90vh] overflow-y-auto"
             >
               <div className="relative h-64">
-                <img src={selectedProduct.image} alt={selectedProduct.name} className="w-full h-full object-cover" />
+                <img src={selectedProduct.image || getFallbackImage(selectedProduct.category)} alt={selectedProduct.name} className="w-full h-full object-cover" />
                 <button 
                   onClick={() => setSelectedProduct(null)}
                   className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors"
@@ -132,21 +177,29 @@ export default function Products() {
                 <div className="flex justify-between items-start mb-6">
                   <div>
                     <h2 className="text-2xl font-bold text-text-primary">{selectedProduct.name}</h2>
-                    <p className="text-text-secondary">{selectedProduct.category}</p>
+                    <p className="text-text-secondary">{selectedProduct.brand} • {selectedProduct.category}</p>
+                    {selectedProduct.quantity && <p className="text-sm text-text-secondary mt-1">Pack Size: {selectedProduct.quantity}</p>}
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">${selectedProduct.price}</p>
-                    <p className={`text-sm mt-1 font-medium ${selectedProduct.stock > 100 ? 'text-green-500' : selectedProduct.stock > 50 ? 'text-amber-500' : 'text-red-500'}`}>
-                      {selectedProduct.stock} units available
+                    <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">₹{selectedProduct.discounted_price || selectedProduct.price}</p>
+                    <p className={`text-sm mt-1 font-medium ${selectedProduct.current_stock > 100 ? 'text-green-500' : selectedProduct.current_stock > 50 ? 'text-amber-500' : 'text-red-500'}`}>
+                      {selectedProduct.current_stock} units available
                     </p>
                   </div>
                 </div>
 
+                {selectedProduct.description && (
+                  <div className="mb-6">
+                    <h3 className="text-sm font-bold text-text-primary mb-2">Description</h3>
+                    <p className="text-sm text-text-secondary leading-relaxed line-clamp-3">{selectedProduct.description}</p>
+                  </div>
+                )}
+
                 <div className="mt-8">
-                  <h3 className="text-lg font-bold text-text-primary mb-4">Sales History</h3>
+                  <h3 className="text-lg font-bold text-text-primary mb-4">Simulated Sales History</h3>
                   <div className="h-64 w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={selectedProduct.salesHistory}>
+                      <AreaChart data={selectedProduct.salesHistory || getMockSalesHistory()}>
                         <defs>
                           <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8}/>

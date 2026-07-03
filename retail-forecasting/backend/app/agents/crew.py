@@ -5,6 +5,7 @@ import asyncio
 try:
     from crewai import Crew, Task, Process
     from langchain_openai import ChatOpenAI
+    from langchain_groq import ChatGroq
     CREWAI_AVAILABLE = True
 except ImportError:
     CREWAI_AVAILABLE = False
@@ -123,9 +124,8 @@ def run_forecast_crew(
     try:
         # Initialize LLM based on available key
         if has_groq:
-            llm = ChatOpenAI(
-                openai_api_key=settings.GROQ_API_KEY,
-                openai_api_base="https://api.groq.com/openai/v1",
+            llm = ChatGroq(
+                api_key=settings.GROQ_API_KEY,
                 model_name=settings.GROQ_MODEL_NAME or "llama-3.1-70b-versatile",
                 temperature=0.7
             )

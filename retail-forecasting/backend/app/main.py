@@ -32,8 +32,8 @@ async def startup_event():
     # 1. Initialize Database Tables
     Base.metadata.create_all(bind=engine)
     
-    # 2. Seed initial data if tables are empty
-    seed_data.seed_db()
+    # 2. Skip old hardcoded seed_data; we use import_csv instead
+    # seed_data.seed_db()
     
     # 3. Capture the running event loop for thread-safe websocket broadcasts
     forecast_service.main_loop = asyncio.get_running_loop()

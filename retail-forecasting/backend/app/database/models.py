@@ -8,10 +8,15 @@ class Product(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    sku = Column(String, unique=True, index=True, nullable=False)
-    category = Column(String, nullable=False)
+    brand = Column(String, nullable=True)
     price = Column(Float, nullable=False)
-    current_stock = Column(Integer, default=0)
+    discounted_price = Column(Float, nullable=True)
+    category = Column(String, nullable=False)
+    sub_category = Column(String, nullable=True)
+    quantity = Column(String, nullable=True) # e.g., '500 gm'
+    description = Column(String, nullable=True)
+    current_stock = Column(Integer, default=0) # We will synthesize this
+    sku = Column(String, unique=True, index=True, nullable=False)
 
     # Relationships
     sales_history = relationship("HistoricalSales", back_populates="product", cascade="all, delete-orphan")

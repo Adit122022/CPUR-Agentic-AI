@@ -1,11 +1,17 @@
 export interface Product {
-  id: string;
+  id: number;
+  sku: string;
   name: string;
+  brand?: string;
   category: string;
+  sub_category?: string;
   price: number;
-  stock: number;
-  image: string;
-  salesHistory: { month: string; sales: number }[];
+  discounted_price?: number;
+  quantity?: string;
+  description?: string;
+  current_stock: number;
+  salesHistory: { month: string; sales: number }[]; // Only used for UI mock chart currently
+  image?: string;
 }
 
 export interface StockAlert {

@@ -1,18 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Cpu, Zap, CheckCircle2, AlertCircle, BrainCircuit } from 'lucide-react';
+import { ChevronDown, Cpu, CheckCircle2, AlertCircle, BrainCircuit, Zap } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { mockProducts } from '../data/products';
+import type { Product } from '../types';
 import AnimatedCounter from '../components/AnimatedCounter';
 
 const MODEL_COLORS = ['#94a3b8', '#64748b', '#475569', '#6366f1'];
 
 export default function Forecast() {
-  const [selectedProductId, setSelectedProductId] = useState(mockProducts[0].id);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [selectedProductId, setSelectedProductId] = useState<number | ''>('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  
+  useEffect(() => {
+    fetch('http://localhost:8000/api/products')
+      .then(res => res.json())
+      .then(data => setProducts(data))
+      .catch(err => console.error(err));
+  }, []);
 
-  const selectedProduct = mockProducts.find(p => p.id === selectedProductId);
+  const selectedProduct = products.find(p => p.id === selectedProductId);
 
   const handleGenerate = () => {
     setIsGenerating(true);
@@ -48,11 +56,15 @@ export default function Forecast() {
             <div className="relative">
               <select
                 value={selectedProductId}
-                onChange={(e) => setSelectedProductId(e.target.value)}
-                className="w-full appearance-none bg-gray-50 dark:bg-slate-800 border border-border-color text-text-primary rounded-xl px-4 py-3 pr-8 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                onChange={(e) => {
+                  setSelectedProductId(Number(e.target.value));
+                  setShowResults(false);
+                }}
+                className="w-full pl-4 pr-10 py-3 bg-card-bg/50 border border-border-color rounded-xl appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 text-text-primary"
               >
-                {mockProducts.map((p) => (
-                  <option key={p.id} value={p.id}>{p.name} - {p.category}</option>
+                <option value="">Select a DMart Product...</option>
+                {products.map(p => (
+                  <option key={p.id} value={p.id}>{p.name} ({p.sku})</option>
                 ))}
               </select>
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary w-5 h-5 pointer-events-none" />

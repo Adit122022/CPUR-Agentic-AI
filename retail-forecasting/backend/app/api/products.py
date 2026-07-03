@@ -13,8 +13,13 @@ router = APIRouter()
 class ProductBase(BaseModel):
     name: str
     sku: str
+    brand: str | None = None
     category: str
+    sub_category: str | None = None
     price: float
+    discounted_price: float | None = None
+    quantity: str | None = None
+    description: str | None = None
     current_stock: int
 
 class ProductResponse(ProductBase):
@@ -24,8 +29,8 @@ class ProductResponse(ProductBase):
         from_attributes = True
 
 @router.get("", response_model=List[ProductResponse])
-def get_products(db: Session = Depends(get_db)):
-    return db.query(models.Product).all()
+def get_products(db: Session = Depends(get_db), limit: int = 100):
+    return db.query(models.Product).order_by(models.Product.id.asc()).limit(limit).all()
 
 @router.post("", response_model=ProductResponse)
 def create_product(product_in: ProductBase, db: Session = Depends(get_db)):
@@ -37,8 +42,13 @@ def create_product(product_in: ProductBase, db: Session = Depends(get_db)):
     db_product = models.Product(
         name=product_in.name,
         sku=product_in.sku.upper(),
+        brand=product_in.brand,
         category=product_in.category,
+        sub_category=product_in.sub_category,
         price=product_in.price,
+        discounted_price=product_in.discounted_price,
+        quantity=product_in.quantity,
+        description=product_in.description,
         current_stock=product_in.current_stock
     )
     
