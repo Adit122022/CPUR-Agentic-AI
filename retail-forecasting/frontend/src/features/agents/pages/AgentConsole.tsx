@@ -10,16 +10,7 @@ const agents = [
   { id: 'synth', name: 'Synthesizer', role: 'Consensus Builder', emoji: '🧠', color: 'text-green-500', bg: 'bg-green-100 dark:bg-green-900/30', border: 'border-green-200 dark:border-green-800' },
 ];
 
-const simulationLogs = [
-  { agentId: 'data', message: "Analyzing past 2 years of sales data for DMart Kota. Baseline demand for Beverages & ORS projected at 4,200 units for next week." },
-  { agentId: 'weather', message: "Alert: Severe heatwave (45°C+) predicted for Rajasthan starting Thursday. Expecting a massive spike in hydration products." },
-  { agentId: 'market', message: "Local Kirana stores are running low on cold storage capacity. DMart will absorb overflow demand from students in the coaching district." },
-  { agentId: 'data', message: "Adjusting model... Incorporating heatwave (+35%) and Kirana overflow (+12%). New projection: 6,174 units." },
-  { agentId: 'market', message: "V-Mart is offering a 10% discount on summer apparel, but their beverage aisle is understocked." },
-  { agentId: 'data', message: "Factoring competitor stockout. Adding another 400 units to the projection." },
-  { agentId: 'synth', message: "Reviewing all inputs. The data supports a strong upward trend for cold beverages. Weather and competitor dynamics create a perfect storm for sales." },
-  { agentId: 'synth', message: "Final Consensus Reached: 6,574 units predicted. Confidence score: 94%. Recommendation generated to increase stock." }
-];
+
 
 export default function AgentConsole() {
   const [logs, setLogs] = useState<AgentLog[]>([]);
@@ -81,7 +72,7 @@ export default function AgentConsole() {
           model_type: 'linear_regression',
           use_agents: true
         })
-      }).then(res => res.json()).then(data => {
+      }).then(res => res.json()).then(() => {
         // When forecast completes, we can stop the simulation state
         setTimeout(() => setIsRunning(false), 2000);
       }).catch(err => {
