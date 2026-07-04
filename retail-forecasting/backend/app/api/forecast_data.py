@@ -31,12 +31,12 @@ def get_category_demand(db: Session = Depends(get_db)):
     prev_dict = {(r.retailer, r.category): r.total_qty for r in previous}
 
     CATEGORY_METADATA = {
-        "Stationery & Books": {"icon": "📚", "reason": "Consistent high student demand"},
-        "Ready-to-Eat & Instant Food": {"icon": "🍜", "reason": "Late-night study snack consumption"},
+        "Stationery & Books": {"icon": "📚", "reason": "Corporate and academic seasonal restocking"},
+        "Ready-to-Eat & Instant Food": {"icon": "🍜", "reason": "High-velocity convenience category"},
         "Groceries & Staples": {"icon": "🌾", "reason": "Standard household necessities"},
-        "Beverages & Cold Drinks": {"icon": "🥤", "reason": "Summer heatwave hydration needs"},
-        "Personal Care": {"icon": "🧼", "reason": "Regular hygiene products"},
-        "Apparels & Innerwear": {"icon": "👕", "reason": "Seasonal light wear clothes"}
+        "Beverages & Cold Drinks": {"icon": "🥤", "reason": "Seasonal temperature-driven volume"},
+        "Personal Care": {"icon": "🧼", "reason": "Consistent daily replenishment"},
+        "Apparels & Innerwear": {"icon": "👕", "reason": "Trend and seasonal rotation"}
     }
 
     results = []

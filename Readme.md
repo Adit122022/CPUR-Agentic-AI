@@ -23,6 +23,7 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 | [Day 15](./03_Phase/15_Day_26-06-2026) | 26 Jun 2026 | Introduction to Generative AI & Large Language Models    | [📂 View](./03_Phase/15_Day_26-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1YkZzqprLk3q1wGMRT7-8I69cZdCAAJD9?usp=sharing) |
 | [Day 16](./03_Phase/16_Day_29-06-2026) | 29 Jun 2026 | APIs & Generative AI Integration                          | [📂 View](./03_Phase/16_Day_29-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1DzZ-nK9NRtZsPHz1sOaYw56CrjYuehtZ?usp=sharing) |
 | [Day 17](./03_Phase/17_Day_30-06-2026) | 30 Jun 2026 | Deep Learning & Artificial Neural Networks                | [📂 View](./03_Phase/17_Day_30-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1kTD0xPAXOnMhnYWakYbD67NFcy1PZ2K0?usp=sharing#scrollTo=ncD2OSPcsNj8) |
+| [Day 21](./04_phase/21_Day_4-07-2026) | 04 Jul 2026 | Introduction to LangChain & Chat Models                  | [📂 View](./04_phase/21_Day_4-07-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/13osBRlwH82GfCqIJohqhQOB0VoDK4wpp?usp=sharing#scrollTo=rpuSPitE__Aa) |
 
 
 > 📝 **Asif Sir's Notes** — These are the live in-class Google Colab notebooks shared by our instructor during each session.
@@ -48,6 +49,7 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 - [Day 15: Introduction to Generative AI & Large Language Models (LLMs)](#day-15---introduction-to-generative-ai--large-language-models-llms)
 - [Day 16: APIs (Application Programming Interfaces) & Gen AI Integration](#day-16---apis-application-programming-interfaces--gen-ai-integration)
 - [Day 17: Deep Learning & Artificial Neural Networks (ANNs)](#day-17---deep-learning--artificial-neural-networks-anns)
+- [Day 21: Introduction to LangChain & Chat Models](#day-21---introduction-to-langchain--chat-models)
 
 
 ---
@@ -450,6 +452,31 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 - 📓 [**Deep Learning Student Pass/Fail Notebook**](./03_Phase/17_Day_30-06-2026/Notebook/17_Notebook.ipynb)
 - 🐍 [**Standalone Python Script**](./03_Phase/17_Day_30-06-2026/student_pass_fail_model.py)
 - 🖊️ **Asif Sir's Notes:** [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1kTD0xPAXOnMhnYWakYbD67NFcy1PZ2K0?usp=sharing#scrollTo=ncD2OSPcsNj8)
+
+</details>
+
+<br>
+
+# Day 21 - Introduction to LangChain & Chat Models
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 21 Details</summary>
+
+## 📚 [Day 21: Introduction to LangChain & Chat Models](./04_phase/21_Day_4-07-2026)
+
+### 💻 [**21.1 - Theoretical Concepts**](./04_phase/21_Day_4-07-2026/Part_01_LangChain_Intro.md)
+
+> **`Topics Covered:` LangChain & Chat Models -** Introduction to LangChain framework, Direct API vs LangChain, Prompt Templates, Chains, Memory, RAG (Retrieval-Augmented Generation), Agents, Tool Integration, Model types (Chat, LLM, Embedding), and Message types (Human, AI, System, Tool).
+
+### 💻 [**21.2 - Practical Implementations**](./04_phase/21_Day_4-07-2026/project/chat_assistant.py)
+
+> **`Topics Covered:` Practical Concepts Covered -** Initial setup of LangChain with Gemini API, creating a basic AI Chat Assistant with memory using Python, handling user inputs, and maintaining chat history.
+
+- 📓 [**LangChain Notebook**](./04_phase/21_Day_4-07-2026/Notebook/21_Notebook.ipynb)
+- 🚀 [**Mini Project — AI Chat Assistant**](./04_phase/21_Day_4-07-2026/project/chat_assistant.py)
+- 📖 [**Part 1 Notes**](./04_phase/21_Day_4-07-2026/Part_01_LangChain_Intro.md)
+- 📖 [**Part 2 Notes**](./04_phase/21_Day_4-07-2026/Part_02_Models_And_Messages.md)
+- 🖊️ **Asif Sir's Notes:** [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/13osBRlwH82GfCqIJohqhQOB0VoDK4wpp?usp=sharing#scrollTo=rpuSPitE__Aa)
 
 </details>
 

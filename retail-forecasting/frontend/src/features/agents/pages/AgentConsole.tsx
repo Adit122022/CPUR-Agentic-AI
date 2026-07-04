@@ -35,46 +35,70 @@ export default function AgentConsole() {
     scrollToBottom();
   }, [logs, activeAgent]);
 
+  const wsRef = useRef<WebSocket | null>(null);
+
   useEffect(() => {
-    let timeoutIds: ReturnType<typeof setTimeout>[] = [];
-    
+    scrollToBottom();
+  }, [logs, activeAgent]);
+
+  useEffect(() => {
     if (isRunning) {
       setLogs([]);
-      let delay = 1000;
+      // Connect to real WebSocket
+      wsRef.current = new WebSocket('ws://localhost:8000/api/ws/logs');
       
-      simulationLogs.forEach((simLog, idx) => {
-        const agent = agents.find(a => a.id === simLog.agentId)!;
-        
-        // Show typing indicator
-        const typingTimeout = setTimeout(() => {
-          setActiveAgent(agent.id);
-        }, delay - 500);
-        
-        // Add log
-        const logTimeout = setTimeout(() => {
-          setLogs(prev => [...prev, {
-            id: `log-${idx}`,
-            agent: agent.name,
-            role: agent.role,
-            emoji: agent.emoji,
-            message: simLog.message,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-            color: agent.color
-          }]);
+      wsRef.current.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          const agent = agents.find(a => a.name === data.agent) || agents[3]; // Fallback to synthesizer
           
-          if (idx === simulationLogs.length - 1) {
+          // Show typing indicator briefly before adding log
+          setActiveAgent(agent.id);
+          
+          setTimeout(() => {
+            setLogs(prev => [...prev, {
+              id: `log-${Date.now()}-${Math.random()}`,
+              agent: agent.name,
+              role: agent.role,
+              emoji: agent.emoji,
+              message: data.message,
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+              color: agent.color
+            }]);
             setActiveAgent(null);
-            setIsRunning(false);
-          }
-        }, delay);
-        
-        timeoutIds.push(typingTimeout, logTimeout);
-        delay += Math.random() * 2000 + 1500; // Random delay between 1.5s and 3.5s
+          }, 500);
+        } catch (e) {
+          console.error("Failed to parse websocket message", e);
+        }
+      };
+
+      // Trigger a real forecast for product ID 1 (simulation demo)
+      fetch('http://localhost:8000/api/forecast/trigger', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          product_id: 1,
+          model_type: 'linear_regression',
+          use_agents: true
+        })
+      }).then(res => res.json()).then(data => {
+        // When forecast completes, we can stop the simulation state
+        setTimeout(() => setIsRunning(false), 2000);
+      }).catch(err => {
+        console.error("Forecast trigger failed", err);
+        setIsRunning(false);
       });
+      
+    } else {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
     }
 
     return () => {
-      timeoutIds.forEach(clearTimeout);
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
     };
   }, [isRunning]);
 

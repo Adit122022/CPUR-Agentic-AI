@@ -11,7 +11,7 @@ import {
 } from 'recharts';
 
 // ─── City & Retailer Data ───────────────────────────────────────────────────
-const CITY = 'Kota, Rajasthan';
+const REGION = 'National Operations';
 
 const RETAILERS = [
   { id: 'dmart', name: 'DMart', emoji: '🏬', color: 'bg-[var(--color-olive-100)] text-[var(--color-olive-600)]', light: 'bg-[var(--color-olive-100)] text-[var(--color-olive-600)]', border: 'border-[var(--color-olive-100)]' },
@@ -33,23 +33,23 @@ const AI_INSIGHTS = [
   {
     icon: '🌡️',
     title: 'Extreme Heat Alert',
-    text: 'Kota temps expected 44°C+ next week. Beverages, ORS, and ice cream will see 35–45% demand surge across all retailers.',
+    text: 'Regional temperatures expected 44°C+ next week. Beverages and ice cream will see 35–45% demand surge across all branches.',
     tag: 'Weather Signal',
     color: 'border-l-orange-500 bg-orange-50/50 dark:bg-orange-900/10',
     tagColor: 'text-orange-600 bg-orange-100 dark:bg-orange-900/40',
   },
   {
-    icon: '📖',
-    title: 'Exam Season Spike',
-    text: 'JEE/NEET exam season begins — 180k+ students stocking up on stationery, energy drinks, and ready-to-eat meals. Local shops will capture 40% of this demand.',
-    tag: 'Kota Student Economy',
+    icon: '📊',
+    title: 'Weekend Demand Spike',
+    text: 'Historical data indicates a 40% higher weekend footfall in key metropolitan hubs. Recommend reordering fast-moving staples.',
+    tag: 'Data Signal',
     color: 'border-l-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/10',
     tagColor: 'text-[var(--color-olive-400)] bg-indigo-100 dark:bg-indigo-900/40',
   },
   {
     icon: '🏷️',
-    title: 'V Mart Competitive Edge',
-    text: 'V Mart\'s budget apparel category is outperforming DMart by 23% in Kota due to student price sensitivity. Recommended to increase stock by 200 units.',
+    title: 'Competitor Promo Active',
+    text: 'Value fashion competitor is offering a 10% discount on summer apparel. Expect a slight dip in high-margin clothing sales.',
     tag: 'Market Intelligence',
     color: 'border-l-purple-500 bg-purple-50/50 dark:bg-purple-900/10',
     tagColor: 'text-purple-600 bg-purple-100 dark:bg-purple-900/40',
@@ -73,6 +73,22 @@ export default function Forecast() {
 
   const handleRunForecast = async () => {
     setIsRunning(true);
+    
+    // Trigger real backend ML simulation (starts CrewAI and WebSockets)
+    try {
+      await fetch('http://localhost:8000/api/forecast/trigger', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          product_id: 1, // trigger for Chana Dal
+          model_type: 'linear_regression',
+          use_agents: true
+        })
+      });
+    } catch (e) {
+      console.error(e);
+    }
+
     await dispatch(fetchForecastData() as any);
     setTimeout(() => {
       setIsRunning(false);
@@ -99,14 +115,14 @@ export default function Forecast() {
           <div>
             <div className="flex items-center gap-2 text-sm text-text-secondary mb-2">
               <MapPin className="w-4 h-4 text-[var(--color-olive-300)]" />
-              <span className="font-medium">{CITY}</span>
+              <span className="font-medium">{REGION}</span>
               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
               <span className="text-green-500 font-medium">Live Intelligence</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-gothic text-text-primary uppercase mb-2">
               Retail Demand Intelligence
             </h1>
-            <p className="text-text-secondary mt-1 font-pixel text-xs tracking-widest uppercase">AI-powered demand forecast for Kota's retail ecosystem</p>
+            <p className="text-text-secondary mt-1 font-pixel text-xs tracking-widest uppercase">AI-powered demand forecast for enterprise retail ecosystems</p>
           </div>
 
           <div className="flex items-center gap-3">
@@ -128,7 +144,7 @@ export default function Forecast() {
                   <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}>
                     <RefreshCw className="w-4 h-4" />
                   </motion.div>
-                  Analyzing Kota Market...
+                  Analyzing Market Data...
                 </>
               ) : (
                 <>
@@ -189,7 +205,7 @@ export default function Forecast() {
           >
             <div className="flex items-center gap-2 mb-3">
               <Sparkles className="w-4 h-4 text-purple-500" />
-              <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider">AI Agent Insights for Kota</h2>
+              <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider">AI Agent Insights for Region</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {AI_INSIGHTS.map((insight, i) => (
@@ -295,14 +311,13 @@ export default function Forecast() {
           <div className="glass-card rounded-2xl p-5">
             <h3 className="text-sm font-bold text-text-primary mb-3 flex items-center gap-2">
               <CloudSun className="w-4 h-4 text-amber-500" />
-              Kota Market Context
+              Regional Market Context
             </h3>
             <div className="space-y-3">
               {[
-                { label: 'Student Population', value: '1.8L+', icon: <Users className="w-3.5 h-3.5" /> },
+                { label: 'Active Customers', value: '1.2M+', icon: <Users className="w-3.5 h-3.5" /> },
                 { label: 'Peak Demand Days', value: 'Fri–Sun', icon: <BarChart3 className="w-3.5 h-3.5" /> },
-                { label: 'Avg Summer Temp', value: '44°C', icon: <CloudSun className="w-3.5 h-3.5" /> },
-                { label: 'Coaching Centers', value: '500+', icon: <ShoppingBag className="w-3.5 h-3.5" /> },
+                { label: 'Fulfillment Centers', value: '14 Active', icon: <ShoppingBag className="w-3.5 h-3.5" /> },
               ].map(({ label, value, icon }) => (
                 <div key={label} className="flex justify-between items-center text-sm">
                   <span className="text-text-secondary flex items-center gap-1.5">{icon}{label}</span>
@@ -324,7 +339,7 @@ export default function Forecast() {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-green-500" />
-            Weekly Demand Forecast — Kota
+            Weekly Demand Forecast — Regional
           </h2>
           <span className="text-xs text-text-secondary bg-gray-100 dark:bg-slate-800 px-3 py-1 rounded-full">
             {selectedSeason}
@@ -370,7 +385,7 @@ export default function Forecast() {
           {
             icon: <TrendingUp className="w-5 h-5 text-green-500" />,
             title: 'Stock More Of',
-            items: ['Beverages & Cold Drinks', 'Instant Noodles & Snacks', 'Stationery & Study Items'],
+            items: ['Beverages & Cold Drinks', 'Instant Noodles & Snacks', 'Stationery & Office Supplies'],
             color: 'border-green-200 dark:border-green-800',
             bg: 'bg-green-50 dark:bg-green-900/10',
           },
@@ -384,7 +399,7 @@ export default function Forecast() {
           {
             icon: <AlertCircle className="w-5 h-5 text-amber-500" />,
             title: 'Action Required',
-            items: ['Reorder ORS & Electrolytes', 'Negotiate bulk deals for rice/flour', 'Add express checkout for students'],
+            items: ['Reorder ORS & Electrolytes', 'Negotiate bulk deals for rice/flour', 'Optimize checkout throughput for peak hours'],
             color: 'border-amber-200 dark:border-amber-800',
             bg: 'bg-amber-50 dark:bg-amber-900/10',
           },
