@@ -15,6 +15,12 @@
   --color-olive-500: #464435;
   --color-olive-600: #383621;
   
+  --color-bg-color: var(--bg-color);
+  --color-card-bg: var(--card-bg);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-border-color: var(--border-color);
+
   --font-sans: 'Poppins', system-ui, sans-serif;
   --font-gothic: 'Montenegrin Gothic One', serif;
   --font-pixel: 'Geist Pixel', monospace;

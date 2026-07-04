@@ -7,11 +7,13 @@ import AnimatedCounter from '../../../components/AnimatedCounter';
 
 const COLORS = ['#6366f1', '#ec4899', '#8b5cf6', '#14b8a6', '#f59e0b'];
 
+import { API_BASE_URL } from '../../../services/api';
+
 export default function StockDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/products')
+    fetch(`${API_BASE_URL}/api/products`)
       .then(res => res.json())
       .then(data => setProducts(data))
       .catch(err => console.error(err));

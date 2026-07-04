@@ -30,7 +30,7 @@ export default function Navbar() {
           <div className="flex items-center">
             <NavLink to="/" className="flex items-center gap-2">
               <Activity className="h-8 w-8 text-[var(--color-olive-300)]" />
-              <span className="font-gothic text-2xl tracking-widest text-[var(--color-olive-300)] uppercase">Forecast AI</span>
+              <span className="font-gothic text-2xl tracking-widest text-[var(--color-olive-300)] uppercase">ClearShelf</span>
             </NavLink>
           </div>
           

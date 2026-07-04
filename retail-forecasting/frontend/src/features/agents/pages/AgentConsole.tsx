@@ -11,6 +11,7 @@ const agents = [
 ];
 
 
+import { API_BASE_URL } from '../../../services/api';
 
 export default function AgentConsole() {
   const [logs, setLogs] = useState<AgentLog[]>([]);
@@ -36,7 +37,9 @@ export default function AgentConsole() {
     if (isRunning) {
       setLogs([]);
       // Connect to real WebSocket
-      wsRef.current = new WebSocket('ws://localhost:8000/api/ws/logs');
+      const wsProtocol = API_BASE_URL.startsWith('https') ? 'wss' : 'ws';
+      const wsUrl = `${wsProtocol}://${API_BASE_URL.replace(/^https?:\/\//, '')}/api/ws/logs`;
+      wsRef.current = new WebSocket(wsUrl);
       
       wsRef.current.onmessage = (event) => {
         try {
@@ -64,7 +67,7 @@ export default function AgentConsole() {
       };
 
       // Trigger a real forecast for product ID 1 (simulation demo)
-      fetch('http://localhost:8000/api/forecast/trigger', {
+      fetch(`${API_BASE_URL}/api/forecast/trigger`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

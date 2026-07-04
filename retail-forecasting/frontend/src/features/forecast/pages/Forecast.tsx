@@ -58,6 +58,7 @@ const AI_INSIGHTS = [
 
 // ─── Component ───────────────────────────────────────────────────────────────
 import { useForecastData } from '../hook/useForecast';
+import { API_BASE_URL } from '../../../services/api';
 
 export default function Forecast() {
   const [selectedRetailer, setSelectedRetailer] = useState('dmart');
@@ -76,7 +77,7 @@ export default function Forecast() {
     
     // Trigger real backend ML simulation (starts CrewAI and WebSockets)
     try {
-      await fetch('http://localhost:8000/api/forecast/trigger', {
+      await fetch(`${API_BASE_URL}/api/forecast/trigger`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -120,7 +121,7 @@ export default function Forecast() {
               <span className="text-green-500 font-medium">Live Intelligence</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-gothic text-text-primary uppercase mb-2">
-              Retail Demand Intelligence
+              ClearShelf Intelligence
             </h1>
             <p className="text-text-secondary mt-1 font-pixel text-xs tracking-widest uppercase">AI-powered demand forecast for enterprise retail ecosystems</p>
           </div>

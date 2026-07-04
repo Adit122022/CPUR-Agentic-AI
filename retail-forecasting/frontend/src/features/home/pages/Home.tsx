@@ -47,7 +47,7 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-6xl md:text-8xl font-gothic tracking-tight mb-6 text-text-primary uppercase"
           >
-            Retail <span className="text-[var(--color-olive-400)]">Demand</span><br />Intelligence
+            ClearShelf <span className="text-[var(--color-olive-400)]">Intelligence</span>
           </motion.h1>
 
           <motion.p
