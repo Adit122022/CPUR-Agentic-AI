@@ -1,54 +1,141 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Square, Activity, BrainCircuit } from 'lucide-react';
+import { Play, Square, Activity, BrainCircuit, Package, Wifi, WifiOff, ChevronDown } from 'lucide-react';
 import type { AgentLog } from '../../../types';
+import { API_BASE_URL } from '../../../services/api';
+import { cn } from '../../../lib/utils';
 
 const agents = [
-  { id: 'data', name: 'Data Analyst', role: 'Quantitative Analysis', emoji: '📊', color: 'text-blue-500', bg: 'bg-blue-100 dark:bg-blue-900/30', border: 'border-blue-200 dark:border-blue-800' },
-  { id: 'market', name: 'Market Scout', role: 'Trend Detection', emoji: '🔍', color: 'text-pink-500', bg: 'bg-pink-100 dark:bg-pink-900/30', border: 'border-pink-200 dark:border-pink-800' },
-  { id: 'weather', name: 'Weather Analyst', role: 'Climate Impacts', emoji: '🌤️', color: 'text-amber-500', bg: 'bg-amber-100 dark:bg-amber-900/30', border: 'border-amber-200 dark:border-amber-800' },
-  { id: 'synth', name: 'Synthesizer', role: 'Consensus Builder', emoji: '🧠', color: 'text-green-500', bg: 'bg-green-100 dark:bg-green-900/30', border: 'border-green-200 dark:border-green-800' },
+  { id: 'data',    name: 'Data Analyst',     role: 'Quantitative Analysis', emoji: '📊', accent: 'blue'   },
+  { id: 'market',  name: 'Market Scout',      role: 'Trend Detection',       emoji: '🔍', accent: 'pink'   },
+  { id: 'weather', name: 'Weather Analyst',   role: 'Climate Impacts',       emoji: '🌤️', accent: 'amber'  },
+  { id: 'synth',   name: 'Synthesizer',       role: 'Consensus Builder',     emoji: '🧠', accent: 'emerald'},
 ];
 
+const accentClasses: Record<string, { bg: string; text: string; ring: string; border: string }> = {
+  blue:    { bg: 'bg-blue-500/10',    text: 'text-blue-400',    ring: 'ring-blue-500/30',    border: 'border-blue-500/40'    },
+  pink:    { bg: 'bg-pink-500/10',    text: 'text-pink-400',    ring: 'ring-pink-500/30',    border: 'border-pink-500/40'    },
+  amber:   { bg: 'bg-amber-500/10',   text: 'text-amber-400',   ring: 'ring-amber-500/30',   border: 'border-amber-500/40'   },
+  emerald: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', ring: 'ring-emerald-500/30', border: 'border-emerald-500/40' },
+};
 
-import { API_BASE_URL } from '../../../services/api';
+interface Product {
+  id: number;
+  name: string;
+  sku: string;
+  category: string;
+}
+
+function AgentCard({ agent, isActive }: { agent: typeof agents[0]; isActive: boolean }) {
+  const colors = accentClasses[agent.accent];
+  return (
+    <motion.div
+      animate={{ scale: isActive ? 1.02 : 1 }}
+      className={cn(
+        'rounded-xl border p-4 transition-all duration-300',
+        isActive ? `${colors.border} ring-1 ${colors.ring} bg-card` : 'border-border bg-card/50'
+      )}
+    >
+      <div className="flex items-center gap-3">
+        <div className={cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xl', colors.bg)}>
+          {agent.emoji}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-foreground truncate">{agent.name}</h3>
+            {isActive && (
+              <span className="flex gap-0.5">
+                {[0, 1, 2].map(i => (
+                  <motion.span
+                    key={i}
+                    className={cn('h-1.5 w-1.5 rounded-full', colors.text.replace('text-', 'bg-'))}
+                    animate={{ opacity: [0.3, 1, 0.3] }}
+                    transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
+                  />
+                ))}
+              </span>
+            )}
+          </div>
+          <p className={cn('text-xs', isActive ? colors.text : 'text-muted-foreground')}>{agent.role}</p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function LogBubble({ log }: { log: AgentLog }) {
+  const agent = agents.find(a => a.name === log.agent);
+  const colors = agent ? accentClasses[agent.accent] : accentClasses.blue;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      className="flex gap-3"
+    >
+      <div className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm mt-0.5', colors.bg)}>
+        {log.emoji}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-baseline gap-2 mb-1.5">
+          <span className={cn('text-xs font-semibold', agent ? colors.text : 'text-muted-foreground')}>{log.agent}</span>
+          <span className="text-[10px] text-muted-foreground">{log.timestamp}</span>
+        </div>
+        <div className={cn('rounded-2xl rounded-tl-sm border p-4', colors.border, colors.bg)}>
+          <p className="text-sm text-foreground leading-relaxed">{log.message}</p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function AgentConsole() {
+  const [searchParams] = useSearchParams();
   const [logs, setLogs] = useState<AgentLog[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const [activeAgent, setActiveAgent] = useState<string | null>(null);
+  const [wsConnected, setWsConnected] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(
+    searchParams.get('product_id') ? Number(searchParams.get('product_id')) : null
+  );
+  const [selectOpen, setSelectOpen] = useState(false);
   const logsEndRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = () => {
-    logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [logs, activeAgent]);
-
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    scrollToBottom();
+    logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [logs, activeAgent]);
 
   useEffect(() => {
+    fetch(`${API_BASE_URL}/api/products`)
+      .then(r => r.json())
+      .then((data: Product[]) => {
+        setProducts(data);
+        if (!selectedProductId && data.length > 0) setSelectedProductId(data[0].id);
+      })
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
     if (isRunning) {
+      if (!selectedProductId) { setIsRunning(false); return; }
       setLogs([]);
-      // Connect to real WebSocket
+
       const wsProtocol = API_BASE_URL.startsWith('https') ? 'wss' : 'ws';
       const wsUrl = `${wsProtocol}://${API_BASE_URL.replace(/^https?:\/\//, '')}/api/ws/logs`;
       wsRef.current = new WebSocket(wsUrl);
-      
+
+      wsRef.current.onopen  = () => setWsConnected(true);
+      wsRef.current.onclose = () => setWsConnected(false);
+      wsRef.current.onerror = () => setWsConnected(false);
+
       wsRef.current.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          const agent = agents.find(a => a.name === data.agent) || agents[3]; // Fallback to synthesizer
-          
-          // Show typing indicator briefly before adding log
+          const agent = agents.find(a => a.name === data.agent) || agents[3];
           setActiveAgent(agent.id);
-          
           setTimeout(() => {
             setLogs(prev => [...prev, {
               id: `log-${Date.now()}-${Math.random()}`,
@@ -57,156 +144,204 @@ export default function AgentConsole() {
               emoji: agent.emoji,
               message: data.message,
               timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-              color: agent.color
+              color: '',
             }]);
             setActiveAgent(null);
           }, 500);
-        } catch (e) {
-          console.error("Failed to parse websocket message", e);
-        }
+        } catch (e) { console.error(e); }
       };
 
-      // Trigger a real forecast for product ID 1 (simulation demo)
+      const selectedProduct = products.find(p => p.id === selectedProductId);
+      setLogs([{
+        id: 'system-start',
+        agent: 'System',
+        role: 'Orchestrator',
+        emoji: '⚙️',
+        message: `Starting AI agent analysis for: ${selectedProduct?.name || `Product #${selectedProductId}`} (SKU: ${selectedProduct?.sku || '—'})`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        color: '',
+      }]);
+
       fetch(`${API_BASE_URL}/api/forecast/trigger`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          product_id: 1,
-          model_type: 'linear_regression',
-          use_agents: true
-        })
+        body: JSON.stringify({ product_id: selectedProductId, model_type: 'linear_regression', use_agents: true }),
       }).then(res => res.json()).then(() => {
-        // When forecast completes, we can stop the simulation state
         setTimeout(() => setIsRunning(false), 2000);
-      }).catch(err => {
-        console.error("Forecast trigger failed", err);
-        setIsRunning(false);
-      });
-      
+      }).catch(err => { console.error(err); setIsRunning(false); });
+
     } else {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
+      wsRef.current?.close();
+      setWsConnected(false);
     }
 
-    return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-    };
+    return () => { wsRef.current?.close(); };
   }, [isRunning]);
 
+  const selectedProduct = products.find(p => p.id === selectedProductId);
+
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex flex-col md:flex-row w-full bg-bg-color">
-      {/* Left Sidebar - Agents */}
-      <div className="w-full md:w-80 border-r border-border-color bg-card-bg p-6 flex flex-col">
-        <div className="mb-8">
-          <h2 className="text-2xl font-gothic text-text-primary uppercase flex items-center gap-2">
-            <Activity className="w-5 h-5 text-[var(--color-olive-300)]" />
-            AI Council
-          </h2>
-          <p className="text-xs font-pixel tracking-widest uppercase text-text-secondary mt-1">Multi-agent debate system</p>
+    <div className="min-h-[calc(100vh-4rem)] flex flex-col md:flex-row bg-background">
+
+      {/* ── LEFT SIDEBAR ── */}
+      <aside className="w-full md:w-72 lg:w-80 border-r border-border bg-card/50 flex flex-col shrink-0">
+        <div className="p-6 border-b border-border">
+          <div className="flex items-center gap-2 mb-1">
+            <Activity className="h-5 w-5 text-brand" />
+            <h1 className="text-base font-bold text-foreground">AI Council</h1>
+          </div>
+          <p className="text-xs text-muted-foreground">Multi-agent deliberation system</p>
         </div>
 
-        <div className="flex-1 space-y-4">
-          {agents.map((agent) => (
-            <div 
-              key={agent.id}
-              className={`p-4 rounded-xl border-2 transition-all duration-300 ${activeAgent === agent.id ? agent.border + ' shadow-lg scale-105' : 'border-transparent bg-gray-50 dark:bg-slate-800/50'}`}
+        {/* Product selector */}
+        <div className="p-4 border-b border-border">
+          <label className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+            <Package className="h-3 w-3" />
+            Analyzing Product
+          </label>
+
+          {/* Custom select dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setSelectOpen(o => !o)}
+              disabled={isRunning}
+              className="w-full flex items-center justify-between gap-2 rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-left transition-colors hover:bg-secondary disabled:opacity-60"
             >
-              <div className="flex items-center gap-4">
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${agent.bg}`}>
-                  {agent.emoji}
-                </div>
-                <div>
-                  <h3 className="font-bold text-text-primary flex items-center gap-2">
-                    {agent.name}
-                    {activeAgent === agent.id && (
-                      <span className="flex h-2 w-2 relative">
-                        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${agent.bg.split(' ')[0]}`}></span>
-                        <span className={`relative inline-flex rounded-full h-2 w-2 ${agent.bg.split(' ')[0].replace('bg-', 'bg-opacity-100 bg-')}`}></span>
-                      </span>
-                    )}
-                  </h3>
-                  <p className="text-xs text-text-secondary">{agent.role}</p>
-                </div>
-              </div>
-            </div>
+              <span className="truncate text-foreground">
+                {selectedProduct ? (selectedProduct.name.length > 26 ? selectedProduct.name.slice(0, 26) + '…' : selectedProduct.name) : 'Select product…'}
+              </span>
+              <ChevronDown className={cn('h-4 w-4 shrink-0 text-muted-foreground transition-transform', selectOpen && 'rotate-180')} />
+            </button>
+            <AnimatePresence>
+              {selectOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -4, scale: 0.97 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute z-20 mt-1 w-full rounded-lg border border-border bg-card shadow-xl overflow-hidden"
+                >
+                  <div className="max-h-52 overflow-y-auto py-1">
+                    {products.map(p => (
+                      <button
+                        key={p.id}
+                        onClick={() => { setSelectedProductId(p.id); setSelectOpen(false); }}
+                        className={cn(
+                          'w-full text-left px-3 py-2 text-sm transition-colors hover:bg-secondary',
+                          p.id === selectedProductId ? 'text-brand font-medium' : 'text-foreground'
+                        )}
+                      >
+                        <div className="truncate">{p.name}</div>
+                        <div className="text-[10px] text-muted-foreground mt-0.5">{p.category} · {p.sku}</div>
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {selectedProduct && (
+            <p className="text-[10px] text-muted-foreground mt-2">{selectedProduct.sku} · {selectedProduct.category}</p>
+          )}
+        </div>
+
+        {/* Agent cards */}
+        <div className="flex-1 p-4 space-y-2.5 overflow-y-auto">
+          {agents.map(agent => (
+            <AgentCard key={agent.id} agent={agent} isActive={activeAgent === agent.id} />
           ))}
         </div>
 
-        <div className="mt-8">
+        {/* Run button */}
+        <div className="p-4 border-t border-border">
           <button
-            onClick={() => isRunning ? setIsRunning(false) : setIsRunning(true)}
-            className={`w-full py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
-              isRunning 
-                ? 'bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/30 dark:hover:bg-red-900/50' 
-                : 'bg-[var(--color-olive-400)] text-white hover:bg-indigo-700 shadow-lg hover:shadow-indigo-500/50'
-            }`}
+            onClick={() => setIsRunning(r => !r)}
+            disabled={!selectedProductId}
+            className={cn(
+              'w-full flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition-all disabled:opacity-50',
+              isRunning
+                ? 'bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20'
+                : 'bg-brand text-background shadow-[0_0_20px_rgba(245,158,11,0.25)] hover:shadow-[0_0_32px_rgba(245,158,11,0.4)] hover:opacity-90'
+            )}
           >
             {isRunning ? (
-              <><Square className="w-5 h-5" /> Stop Simulation</>
+              <><Square className="h-4 w-4" /> Stop Analysis</>
             ) : (
-              <><Play className="w-5 h-5 fill-current" /> Start Simulation</>
+              <><Play className="h-4 w-4 fill-current" /> Run Agent Analysis</>
             )}
           </button>
+          {!selectedProductId && (
+            <p className="text-[11px] text-muted-foreground text-center mt-2">Select a product first</p>
+          )}
         </div>
-      </div>
+      </aside>
 
-      {/* Right Content - Logs */}
-      <div className="flex-1 flex flex-col h-[calc(100vh-4rem)] bg-gray-50 dark:bg-slate-950">
-        <div className="p-4 border-b border-border-color bg-card-bg flex justify-between items-center sticky top-0 z-10">
-          <h3 className="font-bold text-text-primary">Live Deliberation Log</h3>
-          <span className="text-xs font-medium px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-full flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-            WebSocket Connected
-          </span>
+      {/* ── MAIN LOG PANEL ── */}
+      <div className="flex-1 flex flex-col min-h-0">
+        {/* Header bar */}
+        <div className="flex items-center justify-between gap-4 px-6 py-4 border-b border-border bg-card/30 sticky top-0 z-10 backdrop-blur-sm">
+          <div>
+            <h2 className="text-sm font-semibold text-foreground">Live Agent Deliberation</h2>
+            {selectedProduct && (
+              <p className="text-xs text-muted-foreground mt-0.5">{selectedProduct.name} · SKU: {selectedProduct.sku}</p>
+            )}
+          </div>
+          <div className={cn(
+            'flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium',
+            wsConnected && isRunning
+              ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
+              : 'border-border bg-muted/50 text-muted-foreground'
+          )}>
+            {wsConnected && isRunning ? (
+              <><Wifi className="h-3 w-3" /> WebSocket Live</>
+            ) : (
+              <><WifiOff className="h-3 w-3" /> Idle</>
+            )}
+          </div>
         </div>
-        
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+
+        {/* Log feed */}
+        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
           <AnimatePresence>
             {logs.length === 0 && !activeAgent && !isRunning && (
-              <motion.div 
-                initial={{ opacity: 0 }} 
-                animate={{ opacity: 1 }} 
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="h-full flex flex-col items-center justify-center text-text-secondary"
+                className="flex flex-col items-center justify-center h-64 text-center"
               >
-                <BrainCircuit className="w-16 h-16 mb-4 opacity-20" />
-                <p>Click "Start Simulation" to watch the AI agents deliberate.</p>
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-card mb-4">
+                  <BrainCircuit className="h-8 w-8 text-muted-foreground/40" />
+                </div>
+                <p className="font-medium text-foreground">Select a product and run the analysis</p>
+                <p className="mt-1 text-sm text-muted-foreground max-w-xs">
+                  The AI agents will analyze demand factors and produce a consensus forecast.
+                </p>
               </motion.div>
             )}
-            
-            {logs.map((log) => (
-              <motion.div
-                key={log.id}
-                initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                className="flex flex-col max-w-3xl"
-              >
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-lg">{log.emoji}</span>
-                  <span className="font-bold text-sm text-text-primary">{log.agent}</span>
-                  <span className="text-xs text-text-secondary">{log.timestamp}</span>
-                </div>
-                <div className={`p-4 rounded-2xl rounded-tl-sm glass-card border-l-4 ${log.color.replace('text-', 'border-')}`}>
-                  <p className="text-text-primary text-sm leading-relaxed">{log.message}</p>
-                </div>
-              </motion.div>
-            ))}
-            
+
+            {logs.map(log => <LogBubble key={log.id} log={log} />)}
+
             {activeAgent && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="flex items-center gap-3 text-text-secondary max-w-3xl"
+                exit={{ opacity: 0 }}
+                className="flex gap-3"
               >
-                <span className="text-lg">{agents.find(a => a.id === activeAgent)?.emoji}</span>
-                <div className="glass-card p-3 rounded-2xl rounded-tl-sm flex items-center gap-1 w-16">
-                  <span className="w-2 h-2 bg-text-secondary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                  <span className="w-2 h-2 bg-text-secondary rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                  <span className="w-2 h-2 bg-text-secondary rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-base mt-0.5">
+                  {agents.find(a => a.id === activeAgent)?.emoji}
+                </div>
+                <div className="flex items-center gap-1.5 rounded-2xl rounded-tl-sm border border-border bg-card px-4 py-3">
+                  {[0, 150, 300].map(delay => (
+                    <motion.span
+                      key={delay}
+                      className="h-2 w-2 rounded-full bg-muted-foreground/50"
+                      animate={{ opacity: [0.3, 1, 0.3], y: [0, -3, 0] }}
+                      transition={{ duration: 1, repeat: Infinity, delay: delay / 1000 }}
+                    />
+                  ))}
                 </div>
               </motion.div>
             )}

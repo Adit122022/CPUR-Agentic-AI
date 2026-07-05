@@ -120,3 +120,51 @@ def get_radar_data(db: Session = Depends(get_db)):
         })
         
     return radar_data
+
+from app.database.models import HistoricalSales, Product
+from sqlalchemy import func as sqlfunc
+from collections import defaultdict
+
+@router.get("/stock-trend")
+def get_stock_trend(db: Session = Depends(get_db)):
+    """
+    Returns 6-week aggregated sales volumes by top category from real HistoricalSales data.
+    Powers the trend chart on the Stock Dashboard.
+    """
+    forty_two_days_ago = (datetime.today() - timedelta(days=42)).strftime('%Y-%m-%d')
+    
+    sales = db.query(
+        HistoricalSales.date,
+        HistoricalSales.quantity,
+        Product.category
+    ).join(Product, Product.id == HistoricalSales.product_id)\
+     .filter(HistoricalSales.date >= forty_two_days_ago)\
+     .all()
+
+    # Group by week number and category
+    week_cat: dict = defaultdict(lambda: defaultdict(int))
+    for s in sales:
+        dt = datetime.strptime(s.date, '%Y-%m-%d')
+        # Week 1 = oldest, Week 6 = most recent
+        days_ago = (datetime.today() - dt).days
+        week_num = min(6, max(1, 6 - (days_ago // 7)))
+        week_cat[week_num][s.category] += s.quantity
+
+    # Find top 3 categories by total volume
+    cat_totals: dict = defaultdict(int)
+    for wk, cats in week_cat.items():
+        for cat, qty in cats.items():
+            cat_totals[cat] += qty
+
+    top_cats = sorted(cat_totals, key=lambda c: cat_totals[c], reverse=True)[:3]
+
+    result = []
+    for wk in range(1, 7):
+        row: dict = {"name": f"Week {wk}"}
+        for cat in top_cats:
+            # Shorten category name
+            short = cat.split('&')[0].strip() if '&' in cat else cat.split(' ')[0]
+            row[short] = week_cat[wk].get(cat, 0)
+        result.append(row)
+
+    return {"data": result, "categories": [c.split('&')[0].strip() if '&' in c else c.split(' ')[0] for c in top_cats]}

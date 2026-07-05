@@ -1,123 +1,140 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Sun, Moon, Activity } from 'lucide-react';
+import { useTheme } from './ThemeProvider';
+import { cn } from '../lib/utils';
+
+const navLinks = [
+  { name: 'Home',      path: '/' },
+  { name: 'Products',  path: '/products' },
+  { name: 'Stock',     path: '/stock' },
+  { name: 'Forecast',  path: '/forecast' },
+  { name: 'AI Agents', path: '/agents' },
+];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [isDark]);
-
-  const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Products', path: '/products' },
-    { name: 'Stock', path: '/stock' },
-    { name: 'Forecast', path: '/forecast' },
-    { name: 'AI Agents', path: '/agents' },
-  ];
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border-color/70 bg-[color:var(--card-bg)]/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="page-shell">
         <div className="flex h-16 items-center justify-between">
-          <NavLink to="/" className="flex items-center gap-3 rounded-full px-2 py-1">
-            <div className="rounded-full border border-olive-300/60 bg-olive-100/70 p-2 shadow-sm dark:bg-[#2a281f]">
-              <Activity className="h-5 w-5 text-olive-400" />
+
+          {/* Logo */}
+          <NavLink to="/" className="flex items-center gap-2.5 group">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-background">
+              <Activity className="h-4 w-4" />
             </div>
-            <div className="flex flex-col">
-              <span className="font-gothic text-lg uppercase tracking-[0.25em] text-olive-400">ClearShelf</span>
-              <span className="text-[10px] uppercase tracking-[0.3em] text-text-secondary">Retail AI</span>
-            </div>
+            <span className="text-base font-bold tracking-tight text-foreground">
+              Clear<span className="text-brand">Shelf</span>
+            </span>
           </NavLink>
-          
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-center gap-1 rounded-full border border-border-color/50 bg-white/60 p-1 shadow-sm dark:bg-[#23211d]/70">
-              {navLinks.map((link) => (
-                <NavLink
-                  key={link.name}
-                  to={link.path}
-                  className={({ isActive }) =>
-                    `relative rounded-full px-3 py-2 text-sm font-medium transition-all ${
-                      isActive ? 'bg-olive-100/80 text-olive-600 dark:bg-[#2a281f] dark:text-olive-300' : 'text-text-secondary hover:text-text-primary hover:bg-[#f7f5dd] dark:hover:bg-slate-800'
-                    }`
-                  }
-                >
-                  {({ isActive }) => (
-                    <>
-                      {link.name}
-                      {isActive && (
-                        <motion.div
-                          layoutId="navbar-indicator"
-                          className="absolute inset-x-1 bottom-1 h-0.5 rounded-full bg-olive-300"
-                          initial={false}
-                          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                        />
-                      )}
-                    </>
-                  )}
-                </NavLink>
-              ))}
-            </div>
-          </div>
-          
-          <div className="hidden md:flex items-center">
+
+          {/* Desktop nav - centered */}
+          <nav className="hidden md:flex items-center gap-1">
+            {navLinks.map((link) => (
+              <NavLink
+                key={link.name}
+                to={link.path}
+                end={link.path === '/'}
+                className={({ isActive }) =>
+                  cn(
+                    'relative px-3 py-1.5 text-sm font-medium transition-colors rounded-md',
+                    isActive
+                      ? 'text-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
+                  )
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    {link.name}
+                    {isActive && (
+                      <motion.div
+                        layoutId="navbar-pill"
+                        className="absolute inset-0 rounded-md bg-secondary"
+                        style={{ zIndex: -1 }}
+                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                  </>
+                )}
+              </NavLink>
+            ))}
+          </nav>
+
+          {/* Right: theme toggle + mobile menu */}
+          <div className="flex items-center gap-2">
             <button
-              onClick={() => setIsDark(!isDark)}
-              className="rounded-full border border-border-color/60 bg-white/70 p-2 text-text-secondary transition-colors hover:bg-[#f7f5dd] dark:bg-[#23211d]/70 dark:hover:bg-slate-800"
+              onClick={toggleTheme}
+              className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              aria-label="Toggle theme"
             >
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              <AnimatePresence mode="wait" initial={false}>
+                {theme === 'dark' ? (
+                  <motion.span key="sun" initial={{ opacity: 0, rotate: -90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 90 }} transition={{ duration: 0.15 }}>
+                    <Sun className="h-4 w-4" />
+                  </motion.span>
+                ) : (
+                  <motion.span key="moon" initial={{ opacity: 0, rotate: 90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: -90 }} transition={{ duration: 0.15 }}>
+                    <Moon className="h-4 w-4" />
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </button>
-          </div>
-          
-          <div className="flex items-center md:hidden">
-            <button
-              onClick={() => setIsDark(!isDark)}
-              className="mr-2 rounded-full border border-border-color/60 bg-white/70 p-2 text-text-secondary transition-colors hover:bg-[#f7f5dd] dark:bg-[#23211d]/70 dark:hover:bg-slate-800"
+
+            <NavLink
+              to="/forecast"
+              className="hidden md:inline-flex h-9 items-center gap-1.5 rounded-md bg-brand px-4 text-sm font-semibold text-background transition-opacity hover:opacity-90"
             >
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </button>
+              Launch Forecast
+            </NavLink>
+
+            {/* Mobile menu button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center rounded-full border border-border-color/60 bg-white/70 p-2 text-text-secondary transition-colors hover:bg-[#f7f5dd] dark:bg-[#23211d]/70 dark:hover:bg-slate-800"
+              className="md:hidden flex h-9 w-9 items-center justify-center rounded-md border border-border text-muted-foreground hover:bg-secondary"
             >
-              {isOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
+              {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </div>
       </div>
 
-      {isOpen && (
-        <motion.div 
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          className="border-t border-border-color/70 bg-[color:var(--card-bg)]/95 md:hidden"
-        >
-          <div className="page-shell space-y-2 px-4 py-3">
-            {navLinks.map((link) => (
-              <NavLink
-                key={link.name}
-                to={link.path}
-                onClick={() => setIsOpen(false)}
-                className={({ isActive }) =>
-                  `block rounded-2xl px-3 py-2 text-base font-medium ${
-                    isActive ? 'bg-olive-100/80 text-olive-600 dark:bg-[#2a281f] dark:text-olive-300' : 'text-text-secondary hover:text-text-primary hover:bg-[#f7f5dd] dark:hover:bg-slate-800'
-                  }`
-                }
-              >
-                {link.name}
-              </NavLink>
-            ))}
-          </div>
-        </motion.div>
-      )}
-    </nav>
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="border-t border-border bg-background md:hidden overflow-hidden"
+          >
+            <div className="page-shell py-3 space-y-1">
+              {navLinks.map((link) => (
+                <NavLink
+                  key={link.name}
+                  to={link.path}
+                  end={link.path === '/'}
+                  onClick={() => setIsOpen(false)}
+                  className={({ isActive }) =>
+                    cn(
+                      'block rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                      isActive
+                        ? 'bg-secondary text-foreground'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                    )
+                  }
+                >
+                  {link.name}
+                </NavLink>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
   );
 }

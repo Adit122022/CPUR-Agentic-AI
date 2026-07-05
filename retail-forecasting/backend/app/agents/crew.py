@@ -2,6 +2,7 @@ import sys
 import io
 import time
 import asyncio
+from typing import Callable
 try:
     from crewai import Crew, Task, Process
     from langchain_openai import ChatOpenAI

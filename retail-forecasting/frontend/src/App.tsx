@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Home from './features/home/pages/Home';
 import Products from './features/products/pages/Products';
 import StockDashboard from './features/stock/pages/StockDashboard';
@@ -9,15 +10,14 @@ import AgentConsole from './features/agents/pages/AgentConsole';
 
 function AnimatedRoutes() {
   const location = useLocation();
-  
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Home />} />
+        <Route path="/"        element={<Home />} />
         <Route path="/products" element={<Products />} />
-        <Route path="/stock" element={<StockDashboard />} />
+        <Route path="/stock"   element={<StockDashboard />} />
         <Route path="/forecast" element={<Forecast />} />
-        <Route path="/agents" element={<AgentConsole />} />
+        <Route path="/agents"  element={<AgentConsole />} />
       </Routes>
     </AnimatePresence>
   );
@@ -26,11 +26,12 @@ function AnimatedRoutes() {
 function App() {
   return (
     <Router>
-      <div className="min-h-screen flex flex-col bg-bg-color text-text-primary transition-colors duration-300">
+      <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
         <Navbar />
         <main className="grow">
           <AnimatedRoutes />
         </main>
+        <Footer />
       </div>
     </Router>
   );
