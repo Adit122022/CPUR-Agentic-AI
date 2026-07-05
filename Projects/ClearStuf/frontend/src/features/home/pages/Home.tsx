@@ -1,86 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowRight, BarChart2, Package, Shield, TrendingUp, Sparkles, Brain, Zap, Eye, CheckCircle, ShoppingBag, Store, Boxes } from 'lucide-react';
-import { useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  ArrowRight, CheckCircle2, Loader2, Sparkles, Brain, Zap, 
+  Activity, Database, ShieldAlert, LineChart, ChevronDown, ChevronUp 
+} from 'lucide-react';
 import { API_BASE_URL } from '../../../services/api';
-import AnimatedCounter from '../../../components/AnimatedCounter';
+import { cn } from '../../../lib/utils';
 
-/* ─── tiny floating dot for hero bg ─── */
-function StarField() {
-  const stars = Array.from({ length: 60 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 1.5 + 0.5,
-    opacity: Math.random() * 0.4 + 0.1,
-    delay: Math.random() * 4,
-  }));
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
-      {stars.map(s => (
-        <motion.div
-          key={s.id}
-          className="absolute rounded-full bg-white"
-          style={{ left: `${s.x}%`, top: `${s.y}%`, width: s.size, height: s.size, opacity: s.opacity }}
-          animate={{ opacity: [s.opacity, s.opacity * 2.5, s.opacity] }}
-          transition={{ duration: 3 + s.delay, repeat: Infinity, ease: 'easeInOut', delay: s.delay }}
-        />
-      ))}
-    </div>
-  );
-}
-
-/* ─── animated number stat card ─── */
-function StatCard({ value, label, icon, isText }: { value: number | string; label: string; icon: React.ReactNode; isText?: boolean }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col items-center justify-center rounded-2xl border border-border bg-card/60 px-6 py-5 backdrop-blur-sm text-center"
-    >
-      <div className="mb-2 text-brand">{icon}</div>
-      <p className="text-2xl font-bold text-foreground">
-        {isText ? value : <AnimatedCounter value={value as number} />}
-      </p>
-      <p className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">{label}</p>
-    </motion.div>
-  );
-}
-
-const features = [
-  { title: 'Real-Time Insights',     desc: 'Demand patterns emerge instantly.', icon: <Eye className="h-5 w-5" /> },
-  { title: 'Smart Recommendations',  desc: 'AI-powered restocking suggestions.', icon: <Brain className="h-5 w-5" /> },
-  { title: 'Zero Stockouts',         desc: 'Automated low-stock alerts.',        icon: <Zap className="h-5 w-5" /> },
-  { title: 'Reduce Waste',           desc: 'Precision overstock forecasting.',    icon: <CheckCircle className="h-5 w-5" /> },
-];
-
-const useCases = [
-  { title: 'Fashion Stores',        desc: 'Plan seasonal inventory smartly.',    icon: <ShoppingBag className="h-4 w-4" /> },
-  { title: 'Local Retailers',       desc: 'Never run out of top sellers.',       icon: <Store className="h-4 w-4" /> },
-  { title: 'Grocery & Essentials',  desc: 'Catch demand spikes early.',          icon: <Package className="h-4 w-4" /> },
-  { title: 'Electronics & Home',    desc: 'Track fast-moving SKUs.',             icon: <Boxes className="h-4 w-4" /> },
-];
-
-const testimonials = [
-  { name: 'Rajesh Kumar',  role: 'Fashion Store Owner, Delhi',    text: 'ClearShelf helped us reduce overstock by 35% while keeping bestsellers always available.' },
-  { name: 'Priya Sharma',  role: 'Supermarket Manager, Mumbai',   text: 'The forecast accuracy is incredible. We plan orders with confidence — zero stockouts in months.' },
-  { name: 'Amit Patel',    role: 'Retail Chain Owner, Kota',      text: 'Managing inventory across multiple stores is now effortless. The platform pays for itself in reduced waste.' },
-];
-
-const steps = [
-  { num: '01', title: 'Connect Your Store',   desc: 'Link your sales data and inventory systems in minutes.' },
-  { num: '02', title: 'Let AI Learn',         desc: 'Analyzes patterns, trends, seasonality and local factors.' },
-  { num: '03', title: 'Get Smart Forecasts',  desc: 'Daily demand predictions with actionable recommendations.' },
-  { num: '04', title: 'Optimize & Earn',      desc: 'Watch waste drop and profits rise from smarter decisions.' },
+const BRAND_LOGOS = [
+  { name: 'Open AI', code: 'OA' },
+  { name: 'Character AI', code: 'CA' },
+  { name: 'Granola', code: 'GR' },
+  { name: 'Oracle', code: 'OR' },
+  { name: 'Hello Patient', code: 'HP' },
+  { name: 'Portola', code: 'PR' },
 ];
 
 export default function Home() {
   const navigate = useNavigate();
   const [productCount, setProductCount] = useState(0);
-  const [alertCount,   setAlertCount]   = useState(0);
+  const [alertCount, setAlertCount] = useState(0);
   const [categoryCount, setCategoryCount] = useState(0);
+  const [activeStep, setActiveStep] = useState(0);
+  const [faqOpen, setFaqOpen] = useState<number | null>(null);
+
+  // Pipeline step loop
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveStep((prev) => (prev + 1) % 5);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/products`)
@@ -93,282 +44,407 @@ export default function Home() {
       .catch(() => {});
   }, []);
 
+  const toggleFaq = (idx: number) => {
+    setFaqOpen(faqOpen === idx ? null : idx);
+  };
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
-
+    <div className="min-h-screen bg-background text-foreground overflow-hidden">
+      
       {/* ══════════════════════════════════════════════
-          HERO — Aceternity split layout
-      ══════════════════════════════════════════════ */}
-      <section className="relative isolate overflow-hidden min-h-[calc(100vh-4rem)] flex items-center">
-        {/* dot grid */}
-        <div className="absolute inset-0 dot-bg opacity-40 dark:opacity-20 pointer-events-none" aria-hidden />
-        {/* glow orb */}
-        <div className="absolute inset-0 glow-amber pointer-events-none" aria-hidden />
-        {/* bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background to-transparent pointer-events-none" aria-hidden />
-        <StarField />
-
-        <div className="relative z-10 page-shell w-full py-24 lg:py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-
-            {/* LEFT — big heading */}
-            <div>
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="brand-pill mb-6 w-fit"
-              >
-                <Sparkles className="h-3 w-3" />
-                System v2.4 — Live
-              </motion.div>
-
-              <motion.h1
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-[clamp(2.8rem,6vw,5.5rem)] font-extrabold leading-[1.02] tracking-tight text-foreground"
-              >
-                The smartest way to{' '}
-                <span
-                  style={{
-                    background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #f59e0b 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                  }}
-                >
-                  forecast
-                </span>{' '}
-                retail demand.
-              </motion.h1>
-
-              <motion.p
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.25 }}
-                className="mt-6 text-lg text-muted-foreground max-w-md leading-relaxed"
-              >
-                Precision inventory forecasting powered by multi-agent AI. Reduce stockouts, cut waste, and make data-driven decisions — instantly.
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.4 }}
-                className="mt-10 flex flex-wrap gap-3"
-              >
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => navigate('/forecast')}
-                  className="inline-flex h-11 items-center gap-2 rounded-lg bg-brand px-6 text-sm font-semibold text-background shadow-[0_0_24px_rgba(245,158,11,0.3)] transition-all hover:shadow-[0_0_32px_rgba(245,158,11,0.45)]"
-                >
-                  Launch Forecast
-                  <ArrowRight className="h-4 w-4" />
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => navigate('/products')}
-                  className="inline-flex h-11 items-center gap-2 rounded-lg border border-border bg-secondary px-6 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-                >
-                  Explore Products
-                </motion.button>
-              </motion.div>
-            </div>
-
-            {/* RIGHT — description + stats */}
+          1. HERO SECTION (Overlapping 3D Screens - B&W Style)
+          ══════════════════════════════════════════════ */}
+      <section className="pt-20 md:pt-32 lg:pt-40 pb-28 relative border-b border-border bg-background dot-bg">
+        <div className="absolute inset-0 glow-amber opacity-10 pointer-events-none" />
+        
+        <div className="max-w-7xl px-4 md:px-8 mx-auto grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-16 items-center">
+          
+          {/* Left Column Text */}
+          <div className="space-y-6">
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-col gap-6"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-card text-muted-foreground text-[10px] font-bold uppercase tracking-widest"
             >
-              <p className="text-muted-foreground leading-relaxed text-base">
-                We built ClearShelf to give every retailer — from small neighborhood shops to multi-store chains — the same inventory intelligence that enterprise giants use. No calls. No guesswork. Just clear forecasts.
-              </p>
+              <Sparkles className="h-3 w-3 text-foreground" />
+              <span>Cooperative Retail AI Agents</span>
+            </motion.div>
+            
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.6 }}
+              className="text-4xl sm:text-5xl lg:text-7xl tracking-tight font-black leading-[1.05]"
+            >
+              Forecasts that <br /> run themselves. <br />
+              <span className="text-muted-foreground font-light">Optimization that keeps you safe.</span>
+            </motion.h1>
 
-              {/* Stats grid */}
-              <div className="grid grid-cols-2 gap-3">
-                <StatCard value={productCount} label="Products Tracked" icon={<Package className="h-5 w-5" />} />
-                <StatCard value="Linear" label="Forecast Model" icon={<TrendingUp className="h-5 w-5" />} isText />
-                <StatCard value={alertCount} label="Stock Alerts" icon={<Shield className="h-5 w-5" />} />
-                <StatCard value={categoryCount} label="Categories" icon={<BarChart2 className="h-5 w-5" />} />
-              </div>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="text-sm sm:text-base text-muted-foreground max-w-lg leading-relaxed pt-2"
+            >
+              Deploy autonomous AI agents that plan demand, inspect inventory pipelines, and trigger restocking alerts—without changing how your retail teams operate.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="flex flex-wrap items-center gap-4 pt-4"
+            >
+              <button 
+                onClick={() => navigate('/login')}
+                className="inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md text-xs font-bold uppercase tracking-widest bg-foreground text-background hover:bg-foreground/90 h-11 px-8 shadow-brand transition-all hover:scale-[1.01]"
+              >
+                Start Free Trial
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              <button 
+                onClick={() => navigate('/documentation')}
+                className="inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md text-xs font-bold uppercase tracking-widest border border-border bg-background/50 hover:bg-secondary h-11 px-8 transition-all"
+              >
+                Read System Guide
+              </button>
             </motion.div>
           </div>
+
+          {/* Right Column: Overlapping Rotated Screens (Matching Reference Layout) */}
+          <div className="relative min-h-[350px] sm:min-h-[450px] lg:min-h-[550px] w-full flex items-center justify-center translate-x-4 md:translate-x-12">
+            <div className="relative w-full h-full perspective-distant">
+              
+              {/* Back Overlapping Screen (Screen 4 Layout) */}
+              <motion.div
+                initial={{ opacity: 0, y: -50, rotateY: 15, rotateX: 30, rotateZ: -15 }}
+                animate={{ opacity: 1, y: 0, rotateY: 20, rotateX: 35, rotateZ: -20 }}
+                transition={{ duration: 0.8 }}
+                className="absolute inset-0 w-[85%] h-fit bg-card border border-border/80 rounded-xl shadow-2xl p-5 select-none pointer-events-none mask-b-20 mask-r-20"
+              >
+                {/* Mock Header */}
+                <div className="flex items-center justify-between pb-3 border-b border-border/40 mb-3">
+                  <div className="flex gap-1">
+                    <span className="w-2 h-2 rounded-full bg-border" />
+                    <span className="w-2 h-2 rounded-full bg-border" />
+                    <span className="w-2 h-2 rounded-full bg-border" />
+                  </div>
+                  <span className="text-[9px] text-muted-foreground font-mono">clearshelf.ai/metrics</span>
+                </div>
+                
+                {/* Dashboard mock list */}
+                <div className="space-y-2">
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold font-mono">CRITICAL SAFETY THRESHOLDS</p>
+                  {[
+                    { sku: 'AP-002', name: 'Organic Cotton Tee', qty: '45 items left', alert: 'Medium Risk' },
+                    { sku: 'SH-001', name: 'Premium Leather Boots', qty: '14 items left', alert: 'Critical Alert' },
+                  ].map(item => (
+                    <div key={item.sku} className="p-2.5 rounded-lg bg-secondary/40 border border-border/50 flex justify-between items-center">
+                      <div>
+                        <p className="text-xs font-bold">{item.name}</p>
+                        <p className="text-[9px] text-muted-foreground font-mono">{item.sku} • {item.qty}</p>
+                      </div>
+                      <span className="text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 border border-border bg-card rounded-md">{item.alert}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Front Overlapping Screen (Screen 3 Layout, Translated X/Y) */}
+              <motion.div
+                initial={{ opacity: 0, y: 50, rotateY: 15, rotateX: 30, rotateZ: -15 }}
+                animate={{ opacity: 1, y: 0, rotateY: 20, rotateX: 35, rotateZ: -20 }}
+                transition={{ duration: 0.8, delay: 0.15 }}
+                style={{ transformStyle: 'preserve-3d' }}
+                className="absolute inset-0 w-[85%] h-fit bg-card border border-border rounded-xl shadow-2xl p-5 select-none pointer-events-none translate-x-12 -translate-y-12 md:translate-x-20 md:-translate-y-20 z-10"
+              >
+                {/* Mock Header */}
+                <div className="flex items-center justify-between pb-3 border-b border-border/40 mb-3">
+                  <div className="flex gap-1">
+                    <span className="w-2 h-2 rounded-full bg-border" />
+                    <span className="w-2 h-2 rounded-full bg-border" />
+                    <span className="w-2 h-2 rounded-full bg-border" />
+                  </div>
+                  <span className="text-[9px] text-muted-foreground font-mono">clearshelf.ai/analytics</span>
+                </div>
+
+                {/* Stat grid */}
+                <div className="grid grid-cols-3 gap-2 mb-4">
+                  <div className="bg-secondary/40 border border-border/60 rounded-lg p-2 text-center">
+                    <p className="text-[9px] uppercase tracking-wider text-muted-foreground">SKUs</p>
+                    <p className="text-xs font-bold mt-0.5">{productCount || 'Active'}</p>
+                  </div>
+                  <div className="bg-secondary/40 border border-border/60 rounded-lg p-2 text-center">
+                    <p className="text-[9px] uppercase tracking-wider text-muted-foreground">Alerts</p>
+                    <p className="text-xs font-bold text-foreground mt-0.5">{alertCount || '0'}</p>
+                  </div>
+                  <div className="bg-secondary/40 border border-border/60 rounded-lg p-2 text-center">
+                    <p className="text-[9px] uppercase tracking-wider text-muted-foreground">Categories</p>
+                    <p className="text-xs font-bold text-foreground mt-0.5">{categoryCount || '0'}</p>
+                  </div>
+                </div>
+
+                {/* Mini Graph */}
+                <div className="bg-secondary/20 border border-border/40 rounded-lg p-3">
+                  <p className="text-[9px] font-mono text-muted-foreground mb-2">SEASONALITY REGRESSION INDEX</p>
+                  <div className="h-16 flex items-end justify-between gap-1 pt-2">
+                    {[25, 40, 30, 60, 50, 75, 90, 80, 95].map((h, i) => (
+                      <div key={i} className="flex-1 bg-foreground/30 rounded-t-sm" style={{ height: `${(h / 100) * 100}%` }} />
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+
+            </div>
+          </div>
         </div>
       </section>
 
       {/* ══════════════════════════════════════════════
-          USE CASES
-      ══════════════════════════════════════════════ */}
-      <section className="border-t border-border py-24">
-        <div className="page-shell">
-          <div className="mb-12 text-center">
-            <span className="eyebrow mb-4 mx-auto">Built for any retailer</span>
-            <h2 className="section-title mt-4 max-w-2xl mx-auto">
-              Whether you run one store or twenty, ClearShelf scales with you.
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {useCases.map((uc, i) => (
-              <motion.div
-                key={uc.title}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.07 }}
-                className="rounded-2xl border border-border bg-card p-6 hover:border-brand/40 transition-colors"
-              >
-                <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-brand/10 text-brand">
-                  {uc.icon}
-                </div>
-                <h3 className="font-semibold text-foreground">{uc.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{uc.desc}</p>
-              </motion.div>
+          2. LOGO CLOUD (Black & White style)
+          ══════════════════════════════════════════════ */}
+      <section className="py-12 border-b border-border bg-secondary/15">
+        <div className="max-w-7xl px-4 md:px-8 mx-auto text-center">
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-8">
+            Trusted by modern retail operators
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8 items-center opacity-35">
+            {BRAND_LOGOS.map((brand) => (
+              <div key={brand.name} className="flex items-center justify-center gap-1.5 hover:opacity-100 transition-opacity duration-300">
+                <span className="w-5 h-5 flex items-center justify-center rounded bg-foreground text-background font-black text-[10px]">{brand.code}</span>
+                <span className="font-bold text-foreground text-sm tracking-tight">{brand.name}</span>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* ══════════════════════════════════════════════
-          FEATURES
-      ══════════════════════════════════════════════ */}
-      <section className="border-t border-border py-24 bg-card/30">
-        <div className="page-shell">
-          <div className="mb-12 text-center">
-            <span className="eyebrow mb-4 mx-auto">Why retailers love ClearShelf</span>
-            <h2 className="section-title mt-4">Intelligent inventory that works.</h2>
+          3. FEATURE GRID (Three columns, monochrome details)
+          ══════════════════════════════════════════════ */}
+      <section id="features" className="py-20 lg:py-28 bg-background border-b border-border scroll-mt-16">
+        <div className="max-w-7xl px-4 md:px-8 mx-auto">
+          
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16">
+            <div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl tracking-tight font-black leading-none uppercase">
+                Built for Scale. <br /> Tuned for precision.
+              </h2>
+            </div>
+            <p className="text-sm text-muted-foreground max-w-sm leading-relaxed">
+              ClearShelf operates using isolated local databases, fitting demand algorithms to transaction sheets without manual inventory auditing.
+            </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((f, i) => (
-              <motion.div
-                key={f.title}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                whileHover={{ y: -4 }}
-                className="gradient-border rounded-2xl bg-card p-6"
-              >
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
-                  {f.icon}
-                </div>
-                <h3 className="font-semibold text-foreground">{f.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{f.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* ══════════════════════════════════════════════
-          HOW IT WORKS
-      ══════════════════════════════════════════════ */}
-      <section className="border-t border-border py-24">
-        <div className="page-shell">
-          <div className="mb-12 text-center">
-            <span className="eyebrow mb-4 mx-auto">Simple & effective</span>
-            <h2 className="section-title mt-4">How it works.</h2>
-          </div>
-          <div className="mx-auto max-w-2xl space-y-6">
-            {steps.map((step, i) => (
-              <motion.div
-                key={step.num}
-                initial={{ opacity: 0, x: -16 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.07 }}
-                className="flex items-start gap-6 rounded-2xl border border-border bg-card p-6"
-              >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand font-bold text-sm">
-                  {step.num}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            {/* Feature 1 */}
+            <div className="bg-card border border-border rounded-xl p-6 flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-lg bg-secondary border border-border flex items-center justify-center text-foreground mb-6">
+                  <Brain className="h-5 w-5" />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-foreground">{step.title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">{step.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-foreground mb-3">Prebuilt Retail Agents</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed mb-6">
+                  Verify specific automated agents as they calculate regional seasonality, alerts, and replenishment points.
+                </p>
+              </div>
 
-      {/* ══════════════════════════════════════════════
-          TESTIMONIALS
-      ══════════════════════════════════════════════ */}
-      <section className="border-t border-border py-24 bg-card/30">
-        <div className="page-shell">
-          <div className="mb-12 text-center">
-            <span className="eyebrow mb-4 mx-auto">Success stories</span>
-            <h2 className="section-title mt-4">Trusted by retailers across India.</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => (
-              <motion.div
-                key={t.name}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="flex flex-col justify-between rounded-2xl border border-border bg-card p-7"
-              >
-                <div>
-                  <div className="mb-3 flex gap-0.5 text-brand">{'★★★★★'.split('').map((s, j) => <span key={j}>{s}</span>)}</div>
-                  <p className="text-sm leading-relaxed text-muted-foreground">"{t.text}"</p>
-                </div>
-                <div className="mt-6">
-                  <p className="font-semibold text-foreground text-sm">{t.name}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{t.role}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════
-          FINAL CTA
-      ══════════════════════════════════════════════ */}
-      <section className="border-t border-border py-24">
-        <div className="page-shell">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="relative overflow-hidden rounded-3xl border border-border bg-card p-12 text-center"
-          >
-            {/* inner glow */}
-            <div className="absolute inset-0 glow-amber-sm pointer-events-none" />
-            <div className="absolute inset-0 dot-bg opacity-20 pointer-events-none" />
-            <div className="relative">
-              <h2 className="section-title mb-4">Ready to transform your retail?</h2>
-              <p className="mb-8 text-muted-foreground max-w-md mx-auto">
-                Join retailers who have reduced stockouts, minimized waste, and increased profits with AI forecasting.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => navigate('/forecast')}
-                  className="inline-flex h-11 items-center gap-2 rounded-lg bg-brand px-7 text-sm font-semibold text-background shadow-[0_0_24px_rgba(245,158,11,0.3)] hover:shadow-[0_0_40px_rgba(245,158,11,0.45)] transition-all"
-                >
-                  Start Your Free Forecast
-                  <ArrowRight className="h-4 w-4" />
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => navigate('/agents')}
-                  className="inline-flex h-11 items-center rounded-lg border border-border bg-secondary px-7 text-sm font-medium text-foreground hover:bg-accent transition-colors"
-                >
-                  Meet the AI Agents
-                </motion.button>
+              <div className="space-y-2">
+                {[
+                  { name: 'Seasonality Indexer', role: 'Aligns holiday spikes', icon: <Activity className="h-3.5 w-3.5 text-foreground" /> },
+                  { name: 'Restock Sentinel', role: 'Flags stockout windows', icon: <ShieldAlert className="h-3.5 w-3.5 text-muted-foreground" /> },
+                  { name: 'Linear Predictor', role: 'Computes regression curves', icon: <LineChart className="h-3.5 w-3.5 text-foreground" /> },
+                ].map(agent => (
+                  <div key={agent.name} className="flex items-center gap-3 p-2 rounded-lg bg-secondary/30 border border-border/50">
+                    <div className="p-1 rounded bg-background border border-border">{agent.icon}</div>
+                    <div>
+                      <p className="text-xs font-bold text-foreground">{agent.name}</p>
+                      <p className="text-[9px] text-muted-foreground">{agent.role}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          </motion.div>
+
+            {/* Feature 2 */}
+            <div className="bg-card border border-border rounded-xl p-6 flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-lg bg-secondary border border-border flex items-center justify-center text-foreground mb-6">
+                  <Zap className="h-5 w-5" />
+                </div>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-foreground mb-3">Workflow Pipelines</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed mb-6">
+                  Track files dynamically as transactions are indexed, aligned, and converted into structured reports.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                {[
+                  { title: 'Injest CSV Logs', desc: 'Validates columns & headers', time: '1s' },
+                  { title: 'Deduplicate SKUs', desc: 'Isolates distinct codes', time: '2s' },
+                  { title: 'Fit Seasonality', desc: 'Identifies holiday trends', time: '4s' },
+                  { title: 'Apply Regression', desc: 'Calculates predicted demand', time: '3s' },
+                ].map((step, idx) => {
+                  const isDone = idx < activeStep;
+                  const isCurrent = idx === activeStep;
+                  return (
+                    <div 
+                      key={step.title} 
+                      className={cn(
+                        "flex items-center justify-between p-2 rounded-lg border transition-all duration-300",
+                        isCurrent 
+                          ? "border-foreground bg-foreground/5 scale-[1.01]" 
+                          : isDone 
+                          ? "border-border/60 bg-secondary/15" 
+                          : "border-border/20 opacity-40 bg-transparent"
+                      )}
+                    >
+                      <div className="flex items-center gap-2">
+                        {isDone ? (
+                          <CheckCircle2 className="h-3.5 w-3.5 text-foreground" />
+                        ) : isCurrent ? (
+                          <Loader2 className="h-3.5 w-3.5 text-foreground animate-spin" />
+                        ) : (
+                          <span className="w-3.5 h-3.5 rounded-full border border-border flex items-center justify-center text-[8px] font-bold">{idx + 1}</span>
+                        )}
+                        <div>
+                          <p className="text-[10px] font-bold text-foreground leading-tight">{step.title}</p>
+                          <p className="text-[8px] text-muted-foreground">{step.desc}</p>
+                        </div>
+                      </div>
+                      <span className="text-[8px] font-mono text-muted-foreground">{step.time}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="bg-card border border-border rounded-xl p-6 flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-lg bg-secondary border border-border flex items-center justify-center text-foreground mb-6">
+                  <Database className="h-5 w-5" />
+                </div>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-foreground mb-3">Structured Database</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed mb-6">
+                  Keep transaction lines and safety limits fully synchronized. Your records sit in secure PostgreSQL instances.
+                </p>
+              </div>
+
+              <div className="h-44 border border-border rounded-lg bg-secondary/20 p-4 flex flex-col justify-between">
+                <div className="flex items-center justify-between pb-2 border-b border-border">
+                  <span className="text-[9px] font-mono font-bold text-foreground">DB SYNCHRONIZER STATUS</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-foreground animate-ping" />
+                </div>
+                <div className="space-y-1.5 py-2 grow flex flex-col justify-center text-[10px]">
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Sync State</span>
+                    <span className="font-mono text-foreground font-bold">Active</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">SSL Encrypted</span>
+                    <span className="font-mono text-foreground font-bold">Enabled</span>
+                  </div>
+                </div>
+                <div className="w-full bg-border h-1 rounded-full overflow-hidden">
+                  <div className="bg-foreground h-full w-[94%]" />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════
+          4. FAQS SECTION (B&W Accordion Style)
+          ══════════════════════════════════════════════ */}
+      <section id="faqs" className="py-20 lg:py-28 bg-background border-b border-border scroll-mt-16">
+        <div className="max-w-4xl px-4 md:px-8 mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-foreground">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-xs text-muted-foreground uppercase tracking-widest mt-2">
+              Everything you need to know about retail forecasting
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {[
+              {
+                q: "How does the linear regression predictor calculate stock levels?",
+                a: "It fits a weekly demand curve using local sales data, factoring in current safety stock parameters. Every regression is computed dynamically upon CSV upload."
+              },
+              {
+                q: "Is my CSV transactional data secured?",
+                a: "Yes, all data remains client-side or sits in a dedicated, isolated database replica. Your credentials and store tokens are authenticated via Clerk."
+              },
+              {
+                q: "Can I manage alerts for multiple store categories?",
+                a: "Yes, category filters let you isolate footwear, electronics, apparel, and custom lines instantly, generating custom replenishment levels for each."
+              }
+            ].map((faq, idx) => {
+              const isOpen = faqOpen === idx;
+              return (
+                <div 
+                  key={idx} 
+                  className="border border-border rounded-lg bg-card/40 overflow-hidden transition-all duration-300"
+                >
+                  <button
+                    onClick={() => toggleFaq(idx)}
+                    className="w-full flex items-center justify-between p-5 text-left text-sm font-bold text-foreground hover:bg-secondary/20 transition-colors uppercase tracking-wider"
+                  >
+                    <span>{faq.q}</span>
+                    {isOpen ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <div className="p-5 pt-0 border-t border-border/40 text-xs text-muted-foreground leading-relaxed">
+                          {faq.a}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════
+          5. CTA CALL-TO-ACTION (B&W split layout)
+          ══════════════════════════════════════════════ */}
+      <section className="py-20 lg:py-28 bg-secondary/10 relative overflow-hidden">
+        <div className="max-w-4xl px-4 mx-auto text-center relative z-10">
+          <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-foreground leading-[1.1] mb-6">
+            Ready to optimize your retail supply chain?
+          </h2>
+          <p className="text-xs text-muted-foreground max-w-md mx-auto mb-10 leading-relaxed uppercase tracking-wider">
+            Sign up in seconds, drop your transactional sales spreadsheets, and unlock automated shelf forecasts instantly.
+          </p>
+          <div className="flex justify-center items-center gap-4">
+            <button
+              onClick={() => navigate('/login')}
+              className="inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md text-xs font-bold uppercase tracking-widest bg-foreground text-background hover:bg-foreground/90 h-11 px-8 shadow-brand transition-all hover:scale-[1.01]"
+            >
+              Sign Up Now
+            </button>
+            <button
+              onClick={() => navigate('/documentation')}
+              className="inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md text-xs font-bold uppercase tracking-widest border border-border bg-background hover:bg-secondary h-11 px-8 transition-all"
+            >
+              Read Docs
+            </button>
+          </div>
         </div>
       </section>
     </div>

@@ -5,6 +5,7 @@ import { store } from './store';
 import { ThemeProvider } from './components/ThemeProvider';
 import { ClerkProvider } from '@clerk/clerk-react';
 import ClerkFetchInterceptor from './components/ClerkFetchInterceptor.tsx';
+import SmoothScroll from './components/SmoothScroll.tsx';
 import App from './App.tsx';
 import './index.css';
 
@@ -20,7 +21,9 @@ createRoot(document.getElementById('root')!).render(
       <ThemeProvider>
         <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
           <ClerkFetchInterceptor>
-            <App />
+            <SmoothScroll>
+              <App />
+            </SmoothScroll>
           </ClerkFetchInterceptor>
         </ClerkProvider>
       </ThemeProvider>

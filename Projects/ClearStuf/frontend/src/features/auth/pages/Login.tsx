@@ -1,12 +1,11 @@
 import { SignIn } from '@clerk/clerk-react';
 import { motion } from 'framer-motion';
+import { Sparkles } from 'lucide-react';
 
 export default function Login() {
   return (
-    <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden py-12 px-4 sm:px-6 lg:px-8">
-      {/* Background ambient glowing blobs */}
-      <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden py-12 px-4 sm:px-6 lg:px-8 bg-background dot-bg">
+      <div className="absolute inset-0 glow-amber opacity-10 pointer-events-none" />
       
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -19,20 +18,21 @@ export default function Login() {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 text-sm font-medium mb-4"
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-border bg-card text-muted-foreground text-[10px] font-bold uppercase tracking-widest mb-4"
           >
-            <span>🔐 Secure Authentication</span>
+            <Sparkles className="h-3 w-3 text-foreground animate-pulse" />
+            <span>Secure Authentication</span>
           </motion.div>
-          <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Welcome to ClearShelf
+          <h2 className="text-3xl font-black uppercase tracking-tight text-foreground">
+            ClearShelf Login
           </h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Sign in to access your retail forecasting & stock services
+          <p className="mt-2 text-[9px] uppercase tracking-widest text-muted-foreground">
+            Sign in to access your retail forecasting dashboard
           </p>
         </div>
 
-        {/* Clerk Sign In component styled to match */}
-        <div className="flex justify-center bg-card/40 backdrop-blur-xl border border-border/50 rounded-2xl p-6 shadow-2xl">
+        {/* Clerk Sign In component styled in pure monochrome style */}
+        <div className="flex justify-center bg-card/75 backdrop-blur-xl border border-border rounded-xl p-6 shadow-2xl">
           <SignIn 
             routing="hash"
             appearance={{
@@ -41,25 +41,25 @@ export default function Login() {
                 socialButtonsVariant: 'iconButton',
               },
               variables: {
-                colorPrimary: '#6366f1',
+                colorPrimary: '#ffffff',
                 colorBackground: 'transparent',
                 colorText: 'currentColor',
-                colorTextSecondary: '#94a3b8',
-                colorInputBackground: 'rgba(255, 255, 255, 0.03)',
+                colorTextSecondary: '#9b9b9b',
+                colorInputBackground: 'rgba(255, 255, 255, 0.02)',
                 colorInputText: 'currentColor',
-                borderRadius: '0.75rem',
+                borderRadius: '0.375rem',
               },
               elements: {
                 card: 'shadow-none border-none bg-transparent p-0 w-full',
                 headerTitle: 'hidden',
                 headerSubtitle: 'hidden',
-                socialButtonsIconButton: 'border border-border/50 bg-background/50 hover:bg-background/80 transition-colors',
-                formButtonPrimary: 'bg-indigo-600 hover:bg-indigo-500 text-white font-medium shadow-lg hover:shadow-indigo-500/20 transition-all duration-300 py-2.5',
-                footerActionLink: 'text-indigo-400 hover:text-indigo-300',
-                dividerLine: 'bg-border/30',
-                dividerText: 'text-muted-foreground uppercase text-xs tracking-wider',
-                formFieldLabel: 'text-sm font-medium text-foreground/80 mb-1',
-                formFieldInput: 'border border-border/50 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all rounded-lg',
+                socialButtonsIconButton: 'border border-border bg-background/50 hover:bg-secondary transition-colors h-10 w-full flex items-center justify-center',
+                formButtonPrimary: 'bg-foreground hover:bg-foreground/90 text-background font-bold uppercase tracking-widest text-[10px] shadow-brand transition-all duration-300 py-3 rounded-md',
+                footerActionLink: 'text-foreground hover:text-muted-foreground font-black transition-colors',
+                dividerLine: 'bg-border/60',
+                dividerText: 'text-muted-foreground uppercase text-[9px] tracking-widest font-bold',
+                formFieldLabel: 'text-[9px] font-bold text-foreground/80 mb-1 uppercase tracking-widest',
+                formFieldInput: 'border border-border bg-background/30 focus:border-foreground focus:ring-1 focus:ring-foreground transition-all rounded-md text-xs py-2 px-3',
               }
             }}
           />

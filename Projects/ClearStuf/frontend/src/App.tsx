@@ -10,6 +10,8 @@ import AgentConsole from './features/agents/pages/AgentConsole';
 import UploadPage from './features/upload/pages/UploadPage';
 import Login from './features/auth/pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
+import UploadGuard from './components/UploadGuard';
+import Documentation from './features/documentation/pages/Documentation';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -18,29 +20,42 @@ function AnimatedRoutes() {
       <Routes location={location} key={location.pathname}>
         <Route path="/"         element={<Home />} />
         <Route path="/login"    element={<Login />} />
-        <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
-        <Route path="/stock"    element={<ProtectedRoute><StockDashboard /></ProtectedRoute>} />
-        <Route path="/forecast" element={<ProtectedRoute><Forecast /></ProtectedRoute>} />
-        <Route path="/agents"   element={<ProtectedRoute><AgentConsole /></ProtectedRoute>} />
+        <Route path="/documentation" element={<Documentation />} />
+        <Route path="/products" element={<ProtectedRoute><UploadGuard><Products /></UploadGuard></ProtectedRoute>} />
+
+        <Route path="/stock"    element={<ProtectedRoute><UploadGuard><StockDashboard /></UploadGuard></ProtectedRoute>} />
+        <Route path="/forecast" element={<ProtectedRoute><UploadGuard><Forecast /></UploadGuard></ProtectedRoute>} />
+        <Route path="/agents"   element={<ProtectedRoute><UploadGuard><AgentConsole /></UploadGuard></ProtectedRoute>} />
         <Route path="/upload"   element={<ProtectedRoute><UploadPage /></ProtectedRoute>} />
+
       </Routes>
     </AnimatePresence>
+  );
+}
+
+function AppContent() {
+  const location = useLocation();
+  const showNavAndFooter = location.pathname !== '/login';
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
+      {showNavAndFooter && <Navbar />}
+      <main className="grow">
+        <AnimatedRoutes />
+      </main>
+      {showNavAndFooter && <Footer />}
+    </div>
   );
 }
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
-        <Navbar />
-        <main className="grow">
-          <AnimatedRoutes />
-        </main>
-        <Footer />
-      </div>
+      <AppContent />
     </Router>
   );
 }
+
 
 export default App;
 

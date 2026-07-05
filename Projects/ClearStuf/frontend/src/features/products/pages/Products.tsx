@@ -14,14 +14,9 @@ interface SalesHistory {
 
 // Category colour palette (cycles for any number of categories)
 const CATEGORY_COLORS = [
-  { bg: 'bg-indigo-50 dark:bg-indigo-900/20', text: 'text-indigo-600 dark:text-indigo-300', border: 'border-indigo-200 dark:border-indigo-700/50', dot: 'bg-indigo-400' },
-  { bg: 'bg-emerald-50 dark:bg-emerald-900/20', text: 'text-emerald-600 dark:text-emerald-300', border: 'border-emerald-200 dark:border-emerald-700/50', dot: 'bg-emerald-400' },
-  { bg: 'bg-amber-50 dark:bg-amber-900/20',   text: 'text-amber-600 dark:text-amber-300',   border: 'border-amber-200 dark:border-amber-700/50',   dot: 'bg-amber-400' },
-  { bg: 'bg-rose-50 dark:bg-rose-900/20',     text: 'text-rose-600 dark:text-rose-300',     border: 'border-rose-200 dark:border-rose-700/50',     dot: 'bg-rose-400' },
-  { bg: 'bg-violet-50 dark:bg-violet-900/20', text: 'text-violet-600 dark:text-violet-300', border: 'border-violet-200 dark:border-violet-700/50', dot: 'bg-violet-400' },
-  { bg: 'bg-cyan-50 dark:bg-cyan-900/20',     text: 'text-cyan-600 dark:text-cyan-300',     border: 'border-cyan-200 dark:border-cyan-700/50',     dot: 'bg-cyan-400' },
-  { bg: 'bg-orange-50 dark:bg-orange-900/20', text: 'text-orange-600 dark:text-orange-300', border: 'border-orange-200 dark:border-orange-700/50', dot: 'bg-orange-400' },
-  { bg: 'bg-teal-50 dark:bg-teal-900/20',     text: 'text-teal-600 dark:text-teal-300',     border: 'border-teal-200 dark:border-teal-700/50',     dot: 'bg-teal-400' },
+  { bg: 'bg-secondary/40', text: 'text-foreground', border: 'border-border', dot: 'bg-foreground' },
+  { bg: 'bg-card', text: 'text-muted-foreground', border: 'border-border/80', dot: 'bg-muted-foreground' },
+  { bg: 'bg-secondary/60', text: 'text-foreground/80', border: 'border-border/60', dot: 'bg-foreground/50' },
 ];
 
 export default function Products() {
@@ -68,9 +63,9 @@ export default function Products() {
   };
 
   const getStockState = (stock: number) => {
-    if (stock > 100) return { label: 'Healthy',      color: 'text-green-600 bg-green-50 dark:bg-green-900/30' };
-    if (stock > 50)  return { label: 'Watchlist',    color: 'text-amber-600 bg-amber-50 dark:bg-amber-900/30' };
-    return               { label: 'Restock soon', color: 'text-red-600 bg-red-50 dark:bg-red-900/30' };
+    if (stock > 100) return { label: 'Healthy',      color: 'text-foreground border border-border bg-secondary/15' };
+    if (stock > 50)  return { label: 'Watchlist',    color: 'text-muted-foreground border border-border bg-transparent' };
+    return               { label: 'Restock soon', color: 'text-foreground bg-foreground text-background font-bold border border-foreground' };
   };
 
   const getFallbackImage = (product: Product) => {
@@ -372,13 +367,13 @@ export default function Products() {
                       <p className="mt-1 text-xs font-mono text-text-secondary">SKU: {selectedProduct.sku}</p>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <p className="text-2xl font-bold text-olive-500">₹{selectedProduct.discounted_price || selectedProduct.price}</p>
+                      <p className="text-2xl font-bold text-foreground">₹{selectedProduct.discounted_price || selectedProduct.price}</p>
                       {selectedProduct.discounted_price && selectedProduct.discounted_price < selectedProduct.price && (
                         <p className="text-sm text-text-secondary line-through">₹{selectedProduct.price}</p>
                       )}
                       <p className={`mt-1 text-sm font-medium ${
-                        selectedProduct.current_stock > 100 ? 'text-green-600' :
-                        selectedProduct.current_stock > 50 ? 'text-amber-600' : 'text-red-600'
+                        selectedProduct.current_stock > 100 ? 'text-foreground font-bold' :
+                        selectedProduct.current_stock > 50 ? 'text-muted-foreground' : 'text-foreground underline decoration-wavy'
                       }`}>
                         {selectedProduct.current_stock} units in stock
                       </p>
@@ -400,7 +395,7 @@ export default function Products() {
                         setSelectedProduct(null);
                         navigate(`/forecast?product_id=${selectedProduct.id}`);
                       }}
-                      className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold text-sm hover:shadow-lg hover:shadow-indigo-500/30 transition-all"
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-foreground text-background rounded-xl font-bold text-xs uppercase tracking-widest shadow-brand transition-all"
                     >
                       <TrendingUp className="w-4 h-4" />
                       View Demand Forecast →
@@ -408,7 +403,7 @@ export default function Products() {
                     <motion.button
                       whileTap={{ scale: 0.97 }}
                       onClick={() => setSelectedProduct(null)}
-                      className="py-2.5 px-4 border border-border-color rounded-xl text-sm text-text-secondary hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
+                      className="py-2.5 px-4 border border-border rounded-xl text-xs font-bold uppercase tracking-widest text-text-secondary hover:bg-secondary transition-colors"
                     >
                       Close
                     </motion.button>
@@ -429,18 +424,18 @@ export default function Products() {
                           <AreaChart data={salesHistory}>
                             <defs>
                               <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%"  stopColor="#a3a833" stopOpacity={0.4} />
-                                <stop offset="95%" stopColor="#a3a833" stopOpacity={0} />
+                                <stop offset="5%"  stopColor="#9B9B9B" stopOpacity={0.4} />
+                                <stop offset="95%" stopColor="#9B9B9B" stopOpacity={0} />
                               </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" vertical={false} />
-                            <XAxis dataKey="date" stroke="#9ca3af" tick={{ fontSize: 10 }} interval={6} />
-                            <YAxis stroke="#9ca3af" tick={{ fontSize: 10 }} />
+                            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                            <XAxis dataKey="date" stroke="#9B9B9B" tick={{ fontSize: 10 }} interval={6} />
+                            <YAxis stroke="#9B9B9B" tick={{ fontSize: 10 }} />
                             <Tooltip
-                              contentStyle={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)', color: 'var(--text-primary)', borderRadius: '12px' }}
+                              contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', color: 'var(--foreground)', borderRadius: '12px' }}
                               formatter={(v: any) => [`${v} units`, 'Sales']}
                             />
-                            <Area type="monotone" dataKey="quantity" name="Sales" stroke="#a3a833" strokeWidth={2} fillOpacity={1} fill="url(#colorSales)" dot={false} />
+                            <Area type="monotone" dataKey="quantity" name="Sales" stroke="#FFFFFF" strokeWidth={2} fillOpacity={1} fill="url(#colorSales)" dot={false} />
                           </AreaChart>
                         </ResponsiveContainer>
                       ) : (

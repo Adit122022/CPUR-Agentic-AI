@@ -4,8 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   TrendingUp, Package, RefreshCw, Zap,
   BrainCircuit, AlertCircle, ChevronRight, BarChart3,
-  Sparkles,
-  ShoppingCart, Clock, AlertTriangle, CheckCircle2,
+  Sparkles, ShoppingCart, Clock, AlertTriangle, CheckCircle2,
   Store
 } from 'lucide-react';
 import {
@@ -13,8 +12,8 @@ import {
   AreaChart, Area, ReferenceLine
 } from 'recharts';
 import { API_BASE_URL } from '../../../services/api';
+import { cn } from '../../../lib/utils';
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 interface Product {
   id: number;
   name: string;
@@ -58,19 +57,18 @@ interface AgentForecast {
   model_used: string;
 }
 
-// ─── Custom Tooltip for chart ─────────────────────────────────────────────────
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     const isForecast = payload[0]?.payload?.is_forecast;
     return (
-      <div className="glass-card rounded-xl border border-border-color p-3 shadow-xl text-sm">
-        <p className="font-semibold text-text-primary mb-1">{label}</p>
-        <p className={`font-bold ${isForecast ? 'text-indigo-500' : 'text-olive-500'}`}>
+      <div className="bg-card border border-border p-3 shadow-xl text-xs rounded-lg">
+        <p className="font-bold text-foreground mb-1 font-mono">{label}</p>
+        <p className={cn("font-bold", isForecast ? 'text-foreground' : 'text-muted-foreground')}>
           {isForecast ? '🔮 Predicted: ' : '📦 Actual: '}
           {Math.round(payload[0]?.value)} units
         </p>
         {isForecast && (
-          <p className="text-xs text-text-secondary mt-1">AI Forecast</p>
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">AI Forecast Model</p>
         )}
       </div>
     );
@@ -78,7 +76,6 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-// ─── Main Component ───────────────────────────────────────────────────────────
 export default function Forecast() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -95,13 +92,11 @@ export default function Forecast() {
   const [error, setError] = useState<string | null>(null);
   const [agentRan, setAgentRan] = useState(false);
 
-  // Fetch product list on mount
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/products`)
       .then(r => r.json())
       .then((data: Product[]) => {
         setProducts(data);
-        // Auto-select first product if none selected
         if (!selectedProductId && data.length > 0) {
           setSelectedProductId(data[0].id);
         }
@@ -109,7 +104,6 @@ export default function Forecast() {
       .catch(() => setError('Failed to load products from server.'));
   }, []);
 
-  // Fetch multi-day forecast whenever product or days changes
   const loadForecast = useCallback(async () => {
     if (!selectedProductId) return;
     setLoadingChart(true);
@@ -134,7 +128,6 @@ export default function Forecast() {
     loadForecast();
   }, [loadForecast]);
 
-  // Run AI Agent forecast
   const handleRunAgents = async () => {
     if (!selectedProductId) return;
     setLoadingAgent(true);
@@ -167,9 +160,8 @@ export default function Forecast() {
 
   const selectedProduct = products.find(p => p.id === selectedProductId);
 
-  // Prepare chart data — blend actuals + forecast with a separator
   const chartData = forecastData?.data_points.map(pt => {
-    const shortDate = pt.date.slice(5); // MM-DD
+    const shortDate = pt.date.slice(5);
     return {
       date: shortDate,
       actual: pt.is_forecast ? null : pt.predicted_quantity,
@@ -179,61 +171,59 @@ export default function Forecast() {
     };
   }) ?? [];
 
-  // Find where forecast begins (for reference line)
   const forecastStartDate = forecastData?.data_points.find(p => p.is_forecast)?.date.slice(5);
-
   const summary = forecastData?.summary;
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto dot-bg relative">
+      <div className="absolute inset-0 glow-amber opacity-10 pointer-events-none" />
 
-      {/* ── Header ── */}
+      {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
+        className="mb-8 z-10 relative"
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="eyebrow mb-2">
-              <Sparkles className="h-3.5 w-3.5" />
-              AI-Powered Demand Forecasting
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-card text-muted-foreground text-[10px] font-bold uppercase tracking-widest mb-4">
+              <Sparkles className="h-3.5 w-3.5 text-foreground" />
+              <span>AI-Powered Demand forecasting</span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-gothic text-text-primary uppercase mb-2">
-              Product Demand Forecast
+            <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-foreground mb-2">
+              Demand Predictions
             </h1>
-            <p className="text-text-secondary text-sm">
-              Select a product to see the last 30 days of actual sales and the AI-predicted demand for the next {forecastDays} days.
+            <p className="text-muted-foreground text-xs uppercase tracking-wider leading-relaxed">
+              Analyze daily unit demands and execute cooperative adjustments for seasonality.
             </p>
           </div>
 
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/agents')}
-            className="flex items-center gap-2 px-4 py-2 glass-card border border-border-color rounded-xl text-sm text-text-secondary hover:text-text-primary transition-all"
+            className="flex items-center gap-2 px-4 py-2.5 bg-card border border-border rounded-lg text-xs font-bold uppercase tracking-widest text-foreground hover:bg-secondary transition-all shadow-brand"
           >
             <BrainCircuit className="w-4 h-4" />
-            View AI Agent Console
+            AI Agent Console
           </motion.button>
         </div>
       </motion.div>
 
-      {/* ── Controls Bar ── */}
+      {/* Controls Bar */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="glass-card rounded-2xl p-4 mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center"
+        className="bg-card/65 border border-border backdrop-blur-md rounded-xl p-4 mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center z-10 relative"
       >
-        {/* Product selector */}
         <div className="flex flex-col gap-1 flex-1 min-w-0">
-          <label className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
-            Select Product
+          <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
+            Select Product SKU
           </label>
           <select
             value={selectedProductId ?? ''}
             onChange={e => setSelectedProductId(Number(e.target.value))}
-            className="w-full px-4 py-2.5 rounded-xl border border-border-color bg-[var(--bg-color)] text-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground text-xs focus:outline-none focus:ring-1 focus:ring-foreground font-mono"
           >
             {products.map(p => (
               <option key={p.id} value={p.id}>
@@ -243,15 +233,14 @@ export default function Forecast() {
           </select>
         </div>
 
-        {/* Days selector */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
+          <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
             Forecast Horizon
           </label>
           <select
             value={forecastDays}
             onChange={e => setForecastDays(Number(e.target.value))}
-            className="px-4 py-2.5 rounded-xl border border-border-color bg-[var(--bg-color)] text-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="px-4 py-2.5 rounded-lg border border-border bg-background text-foreground text-xs focus:outline-none focus:ring-1 focus:ring-foreground font-bold uppercase tracking-wider"
           >
             <option value={3}>Next 3 Days</option>
             <option value={7}>Next 7 Days</option>
@@ -260,27 +249,26 @@ export default function Forecast() {
           </select>
         </div>
 
-        {/* Run AI Agents button */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
-            AI Enhancement
+          <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
+            AI Enrichment
           </label>
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={handleRunAgents}
             disabled={loadingAgent || !selectedProductId}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold text-sm shadow-lg hover:shadow-indigo-500/30 transition-all disabled:opacity-60 whitespace-nowrap"
+            className="flex items-center gap-2 px-5 py-2.5 bg-foreground text-background rounded-lg font-bold text-xs uppercase tracking-widest shadow-brand disabled:opacity-60 whitespace-nowrap"
           >
             {loadingAgent ? (
               <>
-                <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}>
-                  <RefreshCw className="w-4 h-4" />
+                <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }} className="mr-1">
+                  <RefreshCw className="w-3.5 h-3.5" />
                 </motion.div>
                 Running Agents...
               </>
             ) : (
               <>
-                <Zap className="w-4 h-4" />
+                <Zap className="w-3.5 h-3.5" />
                 Run AI Agents
               </>
             )}
@@ -288,25 +276,25 @@ export default function Forecast() {
         </div>
       </motion.div>
 
-      {/* ── Error Banner ── */}
+      {/* Error Banner */}
       {error && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="mb-6 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 flex items-center gap-3"
+          className="mb-6 rounded-lg bg-secondary/15 border border-border p-4 flex items-center gap-3 z-10 relative"
         >
-          <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+          <AlertCircle className="w-4 h-4 text-foreground flex-shrink-0" />
+          <p className="text-xs text-foreground font-semibold uppercase tracking-wider">{error}</p>
         </motion.div>
       )}
 
-      {/* ── Product KPI Strip ── */}
+      {/* Product KPI Strip */}
       {selectedProduct && summary && (
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 z-10 relative"
         >
           {[
             {
@@ -314,40 +302,40 @@ export default function Forecast() {
               value: `${selectedProduct.current_stock} units`,
               icon: <Package className="w-5 h-5" />,
               color: selectedProduct.current_stock < 20
-                ? 'text-red-500 bg-red-50 dark:bg-red-900/20'
+                ? 'text-foreground border border-border bg-secondary/20 font-bold'
                 : selectedProduct.current_stock < 50
-                  ? 'text-amber-500 bg-amber-50 dark:bg-amber-900/20'
-                  : 'text-green-500 bg-green-50 dark:bg-green-900/20',
-              sub: selectedProduct.current_stock < 20 ? 'Critical — Reorder now' : selectedProduct.current_stock < 50 ? 'Watch closely' : 'Healthy stock'
+                  ? 'text-muted-foreground border border-border bg-transparent'
+                  : 'bg-card border border-border/80 text-muted-foreground',
+              sub: selectedProduct.current_stock < 20 ? 'Critical restock' : selectedProduct.current_stock < 50 ? 'Watch closely' : 'Healthy stock'
             },
             {
               label: `${forecastDays}-Day Forecast`,
               value: `${Math.round(summary.total_7day_forecast)} units`,
               icon: <TrendingUp className="w-5 h-5" />,
-              color: 'text-indigo-500 bg-indigo-50 dark:bg-indigo-900/20',
-              sub: `~${Math.round(summary.avg_daily_forecast)} units/day average`
+              color: 'border border-border bg-secondary/10 text-foreground font-bold',
+              sub: `~${Math.round(summary.avg_daily_forecast)} units/day avg`
             },
             {
               label: 'Days of Stock Left',
               value: `${summary.days_of_stock_left} days`,
               icon: <Clock className="w-5 h-5" />,
               color: summary.days_of_stock_left < 3
-                ? 'text-red-500 bg-red-50 dark:bg-red-900/20'
+                ? 'text-foreground border border-border bg-secondary/20 font-bold'
                 : summary.days_of_stock_left < 7
-                  ? 'text-amber-500 bg-amber-50 dark:bg-amber-900/20'
-                  : 'text-green-500 bg-green-50 dark:bg-green-900/20',
-              sub: summary.reorder_recommended ? '⚠ Reorder recommended' : '✓ Stock sufficient'
+                  ? 'text-muted-foreground border border-border bg-transparent'
+                  : 'bg-card border border-border/80 text-muted-foreground',
+              sub: summary.reorder_recommended ? '⚠ Reorder advised' : '✓ Stock sufficient'
             },
             {
               label: 'Reorder Status',
               value: summary.reorder_recommended ? 'Order Now' : 'Not Needed',
               icon: summary.reorder_recommended ? <AlertTriangle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />,
               color: summary.reorder_recommended
-                ? 'text-red-500 bg-red-50 dark:bg-red-900/20'
-                : 'text-green-500 bg-green-50 dark:bg-green-900/20',
+                ? 'text-foreground border border-border bg-secondary/20 font-bold'
+                : 'bg-card border border-border/80 text-muted-foreground',
               sub: summary.reorder_recommended
-                ? `Need ~${Math.round(summary.total_7day_forecast - selectedProduct.current_stock)} more units`
-                : 'Sufficient for forecast period'
+                ? `Need ~${Math.max(0, Math.round(summary.total_7day_forecast - selectedProduct.current_stock))} units`
+                : 'Sufficient inventory'
             },
           ].map((kpi, i) => (
             <motion.div
@@ -355,93 +343,93 @@ export default function Forecast() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 + i * 0.06 }}
-              className="glass-card rounded-2xl p-4"
+              className="bg-card/45 border border-border p-4 rounded-xl"
             >
-              <div className={`flex items-center gap-2 rounded-xl p-2 w-fit mb-3 ${kpi.color}`}>
+              <div className={`flex items-center gap-2 rounded-lg p-2 w-fit mb-3 ${kpi.color}`}>
                 {kpi.icon}
               </div>
-              <p className="text-xs text-text-secondary font-medium uppercase tracking-wider mb-1">{kpi.label}</p>
-              <p className="text-xl font-bold text-text-primary">{kpi.value}</p>
-              <p className="text-xs text-text-secondary mt-1">{kpi.sub}</p>
+              <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">{kpi.label}</p>
+              <p className="text-base font-bold text-foreground">{kpi.value}</p>
+              <p className="text-[9px] text-muted-foreground mt-1 uppercase tracking-wider">{kpi.sub}</p>
             </motion.div>
           ))}
         </motion.div>
       )}
 
-      {/* ── Chart: Actuals + Forecast ── */}
+      {/* Chart: Actuals + Forecast */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25 }}
-        className="glass-card rounded-2xl p-6 mb-6"
+        className="bg-card/45 border border-border rounded-xl p-6 mb-6 z-10 relative"
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
-            <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-indigo-500" />
+            <h2 className="text-xs font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" />
               Sales History + {forecastDays}-Day Demand Forecast
             </h2>
             {selectedProduct && (
-              <p className="text-sm text-text-secondary mt-1">
-                {selectedProduct.name} — SKU: {selectedProduct.sku} — {selectedProduct.category}
+              <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1">
+                {selectedProduct.name} — SKU: {selectedProduct.sku}
               </p>
             )}
           </div>
-          <div className="flex gap-4 text-xs">
-            <span className="flex items-center gap-1.5 text-text-secondary">
-              <span className="w-3 h-0.5 bg-olive-400 inline-block rounded" />
+          <div className="flex gap-4 text-[10px] uppercase font-bold tracking-wider">
+            <span className="flex items-center gap-1.5 text-muted-foreground">
+              <span className="w-3 h-0.5 bg-muted-foreground inline-block rounded" />
               Actual Sales
             </span>
-            <span className="flex items-center gap-1.5 text-text-secondary">
-              <span className="w-3 h-0.5 bg-indigo-500 inline-block rounded border-dashed border-b" />
+            <span className="flex items-center gap-1.5 text-foreground">
+              <span className="w-3 h-0.5 bg-foreground inline-block rounded border-dashed border-b" />
               AI Forecast
             </span>
           </div>
         </div>
 
         {loadingChart ? (
-          <div className="h-72 flex items-center justify-center text-text-secondary">
+          <div className="h-72 flex items-center justify-center text-muted-foreground text-xs uppercase tracking-widest">
             <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }} className="mr-3">
-              <RefreshCw className="w-5 h-5" />
+              <RefreshCw className="w-4 h-4" />
             </motion.div>
             Loading forecast data...
           </div>
         ) : chartData.length === 0 ? (
-          <div className="h-72 flex items-center justify-center text-text-secondary text-sm">
-            No data available. Select a product with sales history.
+          <div className="h-72 flex items-center justify-center text-muted-foreground text-xs uppercase tracking-widest">
+            No sales data available. Select a valid SKU.
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
               <defs>
                 <linearGradient id="gradActual" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#a3a833" stopOpacity={0.35} />
-                  <stop offset="95%" stopColor="#a3a833" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#9B9B9B" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#9B9B9B" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="gradForecast" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6366f1" stopOpacity={0.35} />
-                  <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#FFFFFF" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#FFFFFF" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color)" />
-              <XAxis dataKey="date" stroke="#9ca3af" tick={{ fontSize: 11 }} interval={4} />
-              <YAxis stroke="#9ca3af" tick={{ fontSize: 11 }} />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+              <XAxis dataKey="date" stroke="#9B9B9B" tick={{ fontSize: 10 }} interval={4} />
+              <YAxis stroke="#9B9B9B" tick={{ fontSize: 10 }} />
               <Tooltip content={<CustomTooltip />} />
               {forecastStartDate && (
                 <ReferenceLine
                   x={forecastStartDate}
-                  stroke="#6366f1"
+                  stroke="#FFFFFF"
                   strokeDasharray="4 4"
-                  label={{ value: 'Forecast Starts', fill: '#6366f1', fontSize: 11, position: 'top' }}
+                  label={{ value: 'Forecast Starts', fill: '#FFFFFF', fontSize: 10, position: 'top' }}
                 />
               )}
               <Area
                 type="monotone"
                 dataKey="actual"
                 name="Actual Sales"
-                stroke="#a3a833"
+                stroke="#9B9B9B"
                 fill="url(#gradActual)"
-                strokeWidth={2.5}
+                strokeWidth={2}
                 dot={false}
                 connectNulls={false}
               />
@@ -449,9 +437,9 @@ export default function Forecast() {
                 type="monotone"
                 dataKey="forecast"
                 name="AI Forecast"
-                stroke="#6366f1"
+                stroke="#FFFFFF"
                 fill="url(#gradForecast)"
-                strokeWidth={2.5}
+                strokeWidth={2}
                 strokeDasharray="5 3"
                 dot={false}
                 connectNulls={false}
@@ -461,52 +449,52 @@ export default function Forecast() {
         )}
       </motion.div>
 
-      {/* ── AI Agent Results ── */}
+      {/* AI Agent Results */}
       <AnimatePresence>
         {agentRan && agentForecast && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="mb-6"
+            className="mb-6 z-10 relative"
           >
             <div className="flex items-center gap-2 mb-3">
-              <BrainCircuit className="w-4 h-4 text-purple-500" />
-              <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider">
-                AI Agent Analysis — {selectedProduct?.name}
+              <BrainCircuit className="w-4 h-4 text-foreground" />
+              <h2 className="text-xs font-bold uppercase tracking-widest text-foreground">
+                AI Agent Report — {selectedProduct?.name}
               </h2>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-300 font-semibold">
-                Live Result
+              <span className="text-[9px] px-2 py-0.5 border border-border bg-secondary/35 text-foreground font-bold uppercase tracking-widest">
+                Enriched
               </span>
             </div>
-            <div className="glass-card rounded-2xl p-6 border-l-4 border-purple-500">
+            <div className="bg-card border border-border border-l-4 border-l-foreground rounded-xl p-6 shadow-xl">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-                <div className="text-center p-4 rounded-xl bg-gray-50 dark:bg-slate-800/50">
-                  <p className="text-xs text-text-secondary uppercase tracking-wider mb-1">ML Baseline</p>
-                  <p className="text-2xl font-bold text-text-primary">
+                <div className="text-center p-4 rounded-lg bg-secondary/15">
+                  <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-1">ML Baseline</p>
+                  <p className="text-xl font-bold text-foreground font-mono">
                     {Math.round(agentForecast.predicted_quantity)} units
                   </p>
-                  <p className="text-xs text-text-secondary mt-1">Linear Regression</p>
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-wider mt-1">Linear Regression</p>
                 </div>
-                <div className="text-center p-4 rounded-xl bg-indigo-50 dark:bg-indigo-900/20">
-                  <p className="text-xs text-indigo-600 dark:text-indigo-300 uppercase tracking-wider mb-1">Agent-Adjusted</p>
-                  <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-300">
+                <div className="text-center p-4 rounded-lg bg-secondary/40">
+                  <p className="text-[9px] font-bold text-foreground uppercase tracking-widest mb-1">Agent-Adjusted</p>
+                  <p className="text-xl font-bold text-foreground font-mono">
                     {agentForecast.adjusted_quantity ? Math.round(agentForecast.adjusted_quantity) : Math.round(agentForecast.predicted_quantity)} units
                   </p>
-                  <p className="text-xs text-text-secondary mt-1">Weather + Market factors</p>
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-wider mt-1">Seasonality + Market factors</p>
                 </div>
-                <div className="text-center p-4 rounded-xl bg-green-50 dark:bg-green-900/20">
-                  <p className="text-xs text-green-600 dark:text-green-300 uppercase tracking-wider mb-1">Suggested Order</p>
-                  <p className="text-2xl font-bold text-green-600 dark:text-green-300">
+                <div className="text-center p-4 rounded-lg bg-card border border-border/80">
+                  <p className="text-[9px] font-bold text-foreground uppercase tracking-widest mb-1">Suggested Order</p>
+                  <p className="text-xl font-bold text-foreground font-mono">
                     {Math.max(0, Math.round((agentForecast.adjusted_quantity ?? agentForecast.predicted_quantity) - (selectedProduct?.current_stock ?? 0)))} units
                   </p>
-                  <p className="text-xs text-text-secondary mt-1">To cover next {forecastDays} days</p>
+                  <p className="text-[9px] text-muted-foreground uppercase tracking-wider mt-1">Stock coverage</p>
                 </div>
               </div>
               {agentForecast.agent_adjustments && (
-                <div className="rounded-xl bg-gray-50 dark:bg-slate-800/50 p-4">
-                  <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Agent Report</p>
-                  <pre className="text-xs text-text-primary leading-relaxed whitespace-pre-wrap font-sans">
+                <div className="rounded-lg bg-secondary/10 p-4">
+                  <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Agent Rationale</p>
+                  <pre className="text-xs text-foreground leading-relaxed whitespace-pre-wrap font-mono">
                     {agentForecast.agent_adjustments}
                   </pre>
                 </div>
@@ -516,35 +504,35 @@ export default function Forecast() {
         )}
       </AnimatePresence>
 
-      {/* ── Recommendations ── */}
+      {/* Recommendations */}
       {forecastData && summary && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 z-10 relative"
         >
           {[
             {
-              icon: <ShoppingCart className="w-5 h-5 text-green-500" />,
+              icon: <ShoppingCart className="w-5 h-5 text-foreground" />,
               title: 'Reorder Action',
-              color: 'border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-900/10',
+              color: 'border-border bg-card/60',
               items: summary.reorder_recommended
                 ? [
-                    `Order at least ${Math.round(summary.total_7day_forecast)} units to cover ${forecastDays} days`,
-                    `Current stock: ${selectedProduct?.current_stock} units — lasts ~${summary.days_of_stock_left} days`,
-                    `Peak daily demand expected: ${summary.max_day_forecast} units`,
+                    `Order at least ${Math.round(summary.total_7day_forecast)} units for ${forecastDays} days`,
+                    `Current stock lasts ~${summary.days_of_stock_left} days`,
+                    `Peak expected daily sales: ${summary.max_day_forecast} units`,
                   ]
                 : [
                     `Stock is sufficient for the next ${forecastDays} days`,
-                    `${selectedProduct?.current_stock} units covers forecasted ${Math.round(summary.total_7day_forecast)} units needed`,
-                    `Review again when stock drops below ${Math.round(summary.total_7day_forecast)} units`,
+                    `Current stock covers forecasted ${Math.round(summary.total_7day_forecast)} units`,
+                    `Review when stock drops below threshold`,
                   ]
             },
             {
-              icon: <BarChart3 className="w-5 h-5 text-indigo-500" />,
+              icon: <BarChart3 className="w-5 h-5 text-foreground" />,
               title: 'Demand Insights',
-              color: 'border-indigo-200 dark:border-indigo-800 bg-indigo-50/50 dark:bg-indigo-900/10',
+              color: 'border-border bg-card/60',
               items: [
                 `Avg daily demand: ${summary.avg_daily_forecast} units`,
                 `Peak forecast day: ${summary.max_day_forecast} units`,
@@ -552,22 +540,22 @@ export default function Forecast() {
               ]
             },
             {
-              icon: <Store className="w-5 h-5 text-amber-500" />,
-              title: 'Product Info',
-              color: 'border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/10',
+              icon: <Store className="w-5 h-5 text-foreground" />,
+              title: 'SKU Metadata',
+              color: 'border-border bg-card/60',
               items: [
                 `${forecastData.product_name}`,
-                `SKU: ${forecastData.sku}`,
+                `SKU Barcode: ${forecastData.sku}`,
                 `Category: ${forecastData.category}`,
               ]
             },
           ].map(({ icon, title, items, color }) => (
-            <div key={title} className={`glass-card rounded-xl p-5 border ${color}`}>
-              <h3 className="font-bold text-text-primary mb-3 flex items-center gap-2">{icon}{title}</h3>
+            <div key={title} className={cn("rounded-xl p-5 border", color)}>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-foreground mb-3 flex items-center gap-2">{icon}{title}</h3>
               <ul className="space-y-2">
                 {items.map(item => (
-                  <li key={item} className="flex items-start gap-2 text-sm text-text-secondary">
-                    <ChevronRight className="w-3.5 h-3.5 flex-shrink-0 text-text-secondary mt-0.5" />
+                  <li key={item} className="flex items-start gap-2 text-xs text-muted-foreground uppercase tracking-wider">
+                    <ChevronRight className="w-3.5 h-3.5 flex-shrink-0 text-muted-foreground mt-0.5" />
                     {item}
                   </li>
                 ))}
@@ -577,22 +565,22 @@ export default function Forecast() {
         </motion.div>
       )}
 
-      {/* ── How to use hint ── */}
+      {/* How to use hint */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
-        className="rounded-xl border border-border-color/60 bg-[var(--card-bg)]/50 p-4 text-sm text-text-secondary"
+        className="rounded-xl border border-border bg-card/30 p-4 text-xs text-muted-foreground z-10 relative"
       >
-        <p className="font-semibold text-text-primary mb-1 flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-olive-400" />
-          How to use this page
+        <p className="font-bold text-foreground mb-2 flex items-center gap-2 uppercase tracking-widest">
+          <Sparkles className="w-4 h-4 text-foreground" />
+          Instructions
         </p>
-        <ol className="list-decimal list-inside space-y-1 text-text-secondary">
-          <li>Select a product from the dropdown above</li>
-          <li>The chart shows <span className="text-olive-500 font-medium">actual sales</span> (last 30 days) and <span className="text-indigo-500 font-medium">AI predictions</span> (next {forecastDays} days)</li>
-          <li>Click <span className="font-semibold text-purple-600">Run AI Agents</span> for a full agent analysis with weather + market signals</li>
-          <li>Use the <span className="font-semibold">Reorder Action</span> card to decide how much to order</li>
+        <ol className="list-decimal list-inside space-y-1.5 uppercase tracking-wider text-[10px]">
+          <li>Select a product from the database drop-down</li>
+          <li>Chart renders actual sales and prediction metrics</li>
+          <li>Click <span className="font-bold text-foreground underline">Run AI Agents</span> to request weather + market validation</li>
+          <li>Act on the <span className="font-bold">Reorder Action</span> recommendation card</li>
         </ol>
       </motion.div>
     </div>

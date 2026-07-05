@@ -33,14 +33,14 @@
   --color-input:              hsl(var(--input));
   --color-ring:               hsl(var(--ring));
 
-  /* Brand amber/gold */
-  --color-brand:          #f59e0b;
-  --color-brand-muted:    #92400e;
+  /* Brand monochrome */
+  --color-brand:          #ffffff;
+  --color-brand-muted:    #666666;
 
   /* Legacy olive kept for chart color continuity */
-  --color-olive-300:      #F0E358;
-  --color-olive-400:      #a3a833;
-  --color-olive-500:      #706F62;
+  --color-olive-300:      #9B9B9B;
+  --color-olive-400:      #666666;
+  --color-olive-500:      #353535;
 
   --font-sans:   'Inter', system-ui, sans-serif;
   --font-mono:   'Geist Pixel', ui-monospace, monospace;
@@ -56,48 +56,48 @@
 @layer base {
   :root,
   .dark {
-    --background:         0 0% 3.9%;
-    --foreground:         0 0% 98%;
-    --card:               0 0% 6%;
-    --card-foreground:    0 0% 98%;
+    --background:         0 0% 2%;          /* Pure Black background */
+    --foreground:         0 0% 100%;        /* Pure White text */
+    --card:               0 0% 6%;          /* #101010 card */
+    --card-foreground:    0 0% 100%;
     --popover:            0 0% 6%;
-    --popover-foreground: 0 0% 98%;
-    --primary:            38 92% 50%;      /* amber brand */
-    --primary-foreground: 0 0% 4%;
-    --secondary:          0 0% 10%;
-    --secondary-foreground: 0 0% 98%;
-    --muted:              0 0% 12%;
-    --muted-foreground:   0 0% 55%;
-    --accent:             0 0% 12%;
-    --accent-foreground:  0 0% 98%;
-    --destructive:        0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border:             0 0% 14%;
-    --input:              0 0% 14%;
-    --ring:               38 92% 50%;
+    --popover-foreground: 0 0% 100%;
+    --primary:            0 0% 100%;        /* #FFFFFF primary */
+    --primary-foreground: 0 0% 2%;
+    --secondary:          0 0% 21%;         /* #353535 secondary */
+    --secondary-foreground: 0 0% 100%;
+    --muted:              0 0% 12%;         /* #1E1E1E muted */
+    --muted-foreground:   0 0% 61%;         /* #9B9B9B muted text */
+    --accent:             0 0% 40%;         /* #666666 accent */
+    --accent-foreground:  0 0% 100%;
+    --destructive:        0 0% 30%;
+    --destructive-foreground: 0 0% 100%;
+    --border:             0 0% 21%;         /* #353535 border */
+    --input:              0 0% 21%;         /* #353535 input border */
+    --ring:               0 0% 61%;         /* #9B9B9B ring */
     --radius:             0.5rem;
   }
 
   .light {
-    --background:         0 0% 100%;
-    --foreground:         240 10% 3.9%;
-    --card:               0 0% 100%;
-    --card-foreground:    240 10% 3.9%;
+    --background:         0 0% 100%;        /* Pure White background */
+    --foreground:         0 0% 2%;          /* Pure Black text */
+    --card:               0 0% 98%;         /* Off-white card */
+    --card-foreground:    0 0% 2%;
     --popover:            0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary:            38 92% 50%;      /* amber brand same */
-    --primary-foreground: 0 0% 4%;
-    --secondary:          240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted:              240 4.8% 95.9%;
-    --muted-foreground:   240 3.8% 46.1%;
-    --accent:             240 4.8% 95.9%;
-    --accent-foreground:  240 5.9% 10%;
-    --destructive:        0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border:             240 5.9% 90%;
-    --input:              240 5.9% 90%;
-    --ring:               38 92% 50%;
+    --popover-foreground: 0 0% 2%;
+    --primary:            0 0% 21%;         /* #353535 primary */
+    --primary-foreground: 0 0% 100%;
+    --secondary:          0 0% 83%;         /* #D4D4D4 secondary */
+    --secondary-foreground: 0 0% 2%;
+    --muted:              0 0% 95%;         /* Light gray muted */
+    --muted-foreground:   0 0% 40%;         /* #666666 muted text */
+    --accent:             0 0% 61%;         /* #9B9B9B accent */
+    --accent-foreground:  0 0% 2%;
+    --destructive:        0 0% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border:             0 0% 83%;         /* #D4D4D4 border */
+    --input:              0 0% 83%;         /* #D4D4D4 input */
+    --ring:               0 0% 21%;         /* #353535 ring */
     --radius:             0.5rem;
   }
 
@@ -152,11 +152,11 @@
 
   /* Radial glow overlay */
   .glow-amber {
-    background: radial-gradient(ellipse 80% 50% at 50% 60%, rgba(245,158,11,0.18) 0%, transparent 70%);
+    background: radial-gradient(ellipse 80% 50% at 50% 60%, rgba(255,255,255,0.06) 0%, transparent 70%);
   }
 
   .glow-amber-sm {
-    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(245,158,11,0.12) 0%, transparent 70%);
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(255,255,255,0.03) 0%, transparent 70%);
   }
 
   /* Gradient text */
@@ -250,7 +250,41 @@
   /* Animated gradient border */
   .gradient-border {
     background: linear-gradient(hsl(var(--card)), hsl(var(--card))) padding-box,
-                linear-gradient(135deg, rgba(245,158,11,0.4), transparent 50%, rgba(245,158,11,0.2)) border-box;
+                linear-gradient(135deg, rgba(255,255,255,0.25), transparent 50%, rgba(255,255,255,0.1)) border-box;
     border: 1px solid transparent;
   }
+
+  /* 3D Perspective and Transform Utilities */
+  .perspective-distant {
+    perspective: 3000px;
+  }
+  .rotate-z-15 {
+    transform: rotateZ(15deg);
+  }
+  .-rotate-y-20 {
+    transform: rotateY(-20deg);
+  }
+  .rotate-x-30 {
+    transform: rotateX(30deg);
+  }
+
+  /* Image masks for premium fade-outs */
+  .mask-radial-50 {
+    mask-image: radial-gradient(circle, black, transparent 70%);
+    -webkit-mask-image: radial-gradient(circle, black, transparent 70%);
+  }
+  .mask-b-20 {
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  }
+  .mask-r-20 {
+    mask-image: linear-gradient(to right, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 60%, transparent 100%);
+  }
+
+  /* Brand glow shadows */
+  .shadow-brand {
+    box-shadow: 0 0 40px 8px rgba(255, 255, 255, 0.08);
+  }
 }
+

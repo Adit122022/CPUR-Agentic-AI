@@ -1,6 +1,7 @@
 # Retail Demand Forecasting System
 
 A premium forecasting platform combining traditional machine learning algorithms with a collaborative multi-agent overlay powered by **CrewAI**.
+[liveLink]("https://clearstuff.vercel.app/")
 
 ## Architecture Overview
 

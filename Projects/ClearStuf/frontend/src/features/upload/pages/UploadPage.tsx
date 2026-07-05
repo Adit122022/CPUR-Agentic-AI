@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Upload, FileText, CheckCircle2, XCircle, AlertTriangle,
   Download, Trash2, ArrowRight, Table2, Loader2, RotateCcw,
@@ -9,7 +9,6 @@ import {
 import { API_BASE_URL } from '../../../services/api';
 import { cn } from '../../../lib/utils';
 
-/* ── types ── */
 interface ValidationResult {
   valid: boolean;
   error?: string;
@@ -31,25 +30,26 @@ interface ImportResult {
 
 type Step = 'idle' | 'validating' | 'preview' | 'importing' | 'done' | 'error';
 
-/* ── required columns info ── */
 const REQUIRED_COLS = [
-  { key: 'date',           label: 'Date',           desc: 'YYYY-MM-DD format',          example: '2024-06-01' },
-  { key: 'product_name',   label: 'Product Name',   desc: 'Display name of the product', example: 'Blue Denim Jeans' },
-  { key: 'sku',            label: 'SKU',            desc: 'Unique product identifier',   example: 'CLT-001' },
-  { key: 'category',       label: 'Category',       desc: 'Product category',            example: 'Apparels' },
-  { key: 'price',          label: 'Price (₹)',       desc: 'Selling price',               example: '1299' },
+  { key: 'date',           label: 'Date',           desc: 'YYYY-MM-DD format',          example: '2026-07-01' },
+  { key: 'product_name',   label: 'Product Name',   desc: 'Display name of product',    example: 'Blue Denim Jeans' },
+  { key: 'sku',            label: 'SKU',            desc: 'Unique identifier code',      example: 'SH-001' },
+  { key: 'category',       label: 'Category',       desc: 'Product category',            example: 'Apparel' },
+  { key: 'price',          label: 'Price (₹)',       desc: 'Selling price in INR',        example: '1299' },
   { key: 'quantity_sold',  label: 'Quantity Sold',  desc: 'Units sold that day',         example: '12' },
   { key: 'current_stock',  label: 'Current Stock',  desc: 'Inventory on hand',           example: '150' },
 ];
 
 const OPTIONAL_COLS = [
-  { key: 'brand',            example: 'Levi\'s' },
+  { key: 'brand',            example: 'Timberland' },
   { key: 'discounted_price', example: '999' },
   { key: 'description',      example: 'Slim-fit jeans' },
 ];
 
 export default function UploadPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectReason = location.state?.redirectReason;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
   const [file, setFile] = useState<File | null>(null);
@@ -59,7 +59,6 @@ export default function UploadPage() {
   const [clearOnImport, setClearOnImport] = useState(true);
   const [clearing, setClearing] = useState(false);
 
-  /* ── file handling ── */
   const handleFile = useCallback(async (f: File) => {
     if (!f.name.endsWith('.csv')) {
       setStep('error');
@@ -97,7 +96,6 @@ export default function UploadPage() {
     if (f) handleFile(f);
   };
 
-  /* ── import ── */
   const handleImport = async () => {
     if (!file) return;
     setStep('importing');
@@ -118,7 +116,6 @@ export default function UploadPage() {
     }
   };
 
-  /* ── clear DB ── */
   const handleClear = async () => {
     if (!window.confirm('This will delete ALL products and sales data. Are you sure?')) return;
     setClearing(true);
@@ -129,7 +126,6 @@ export default function UploadPage() {
     }
   };
 
-  /* ── reset ── */
   const reset = () => {
     setFile(null);
     setStep('idle');
@@ -139,26 +135,38 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background py-12 px-4">
-      <div className="page-shell max-w-5xl">
+    <div className="min-h-screen bg-background py-16 px-4 md:px-8 dot-bg relative">
+      <div className="absolute inset-0 glow-amber opacity-10 pointer-events-none" />
 
-        {/* ── Header ── */}
+      <div className="max-w-5xl mx-auto z-10 relative">
+        {redirectReason && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 rounded-lg border border-border bg-card/60 text-foreground text-xs flex items-center gap-3 backdrop-blur-md uppercase tracking-wider font-bold"
+          >
+            <AlertTriangle className="h-4 w-4 text-muted-foreground shrink-0" />
+            <span>{redirectReason}</span>
+          </motion.div>
+        )}
+
+        {/* Header */}
         <div className="mb-10">
-          <div className="brand-pill mb-4 w-fit">
-            <Upload className="h-3 w-3" />
-            Data Import
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-card text-muted-foreground text-[10px] font-bold uppercase tracking-widest mb-4">
+            <Upload className="h-3.5 w-3.5 text-foreground" />
+            <span>Data Ingestion Portal</span>
           </div>
-          <h1 className="text-4xl font-extrabold tracking-tight text-foreground mb-3">
-            Upload Your Shop Data
+          <h1 className="text-3xl font-black uppercase tracking-tight text-foreground mb-3">
+            Upload Inventory Sheet
           </h1>
-          <p className="text-muted-foreground max-w-xl">
-            Import your sales history as a CSV file. ClearShelf will automatically create your product catalog and run demand forecasting on your real data.
+          <p className="text-xs text-muted-foreground max-w-xl leading-relaxed uppercase tracking-wider">
+            Import your sales records. ClearShelf will automatically create your product catalog and run predictive demand forecasting.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
 
-          {/* ── LEFT: Upload + Preview ── */}
+          {/* LEFT: Upload + Preview */}
           <div className="space-y-6">
 
             {/* Drop zone */}
@@ -171,31 +179,31 @@ export default function UploadPage() {
                 onDrop={onDrop}
                 onClick={() => fileInputRef.current?.click()}
                 className={cn(
-                  'relative flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed cursor-pointer transition-all py-16 px-8 text-center',
+                  'relative flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed cursor-pointer transition-all py-16 px-8 text-center bg-card/45 backdrop-blur-md',
                   dragOver
-                    ? 'border-brand bg-brand/5 scale-[1.01]'
+                    ? 'border-foreground bg-foreground/5 scale-[1.01]'
                     : step === 'error'
-                    ? 'border-red-500/50 bg-red-500/5'
-                    : 'border-border bg-card hover:border-brand/50 hover:bg-brand/5'
+                    ? 'border-border bg-secondary/10'
+                    : 'border-border bg-card/30 hover:border-foreground/50 hover:bg-foreground/5'
                 )}
               >
                 <input ref={fileInputRef} type="file" accept=".csv" onChange={onFileInput} className="hidden" />
                 {step === 'validating' ? (
                   <>
-                    <Loader2 className="h-10 w-10 text-brand animate-spin" />
-                    <p className="font-medium text-foreground">Validating your CSV…</p>
+                    <Loader2 className="h-10 w-10 text-foreground animate-spin" />
+                    <p className="text-xs font-bold uppercase tracking-widest text-foreground">Validating CSV Logs…</p>
                   </>
                 ) : (
                   <>
-                    <div className={cn('flex h-16 w-16 items-center justify-center rounded-2xl', step === 'error' ? 'bg-red-500/10 text-red-400' : 'bg-brand/10 text-brand')}>
-                      {step === 'error' ? <XCircle className="h-8 w-8" /> : <Upload className="h-8 w-8" />}
+                    <div className={cn('flex h-16 w-16 items-center justify-center rounded-xl border border-border bg-background')}>
+                      {step === 'error' ? <XCircle className="h-8 w-8 text-foreground" /> : <Upload className="h-8 w-8 text-foreground" />}
                     </div>
                     <div>
-                      <p className="text-lg font-semibold text-foreground">
-                        {step === 'error' && file ? `"${file.name}" has issues` : 'Drop your CSV here'}
+                      <p className="text-sm font-bold uppercase tracking-wider text-foreground">
+                        {step === 'error' && file ? `"${file.name}" has format issues` : 'Drop your CSV transaction sheet here'}
                       </p>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        {step === 'error' ? 'Fix the errors below and re-upload' : 'or click to browse · .csv files only'}
+                      <p className="mt-1 text-xs text-muted-foreground uppercase tracking-widest">
+                        {step === 'error' ? 'Review validation logs and re-upload' : 'or click to browse local files'}
                       </p>
                     </div>
                   </>
@@ -210,21 +218,21 @@ export default function UploadPage() {
                   initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className="rounded-xl border border-red-500/30 bg-red-500/10 p-4"
+                  className="rounded-lg border border-border bg-secondary/10 p-5"
                 >
                   <div className="flex items-center gap-2 mb-2">
-                    <XCircle className="h-4 w-4 text-red-400" />
-                    <p className="text-sm font-semibold text-red-400">Validation Failed</p>
+                    <XCircle className="h-4 w-4 text-foreground" />
+                    <p className="text-xs font-bold uppercase tracking-widest text-foreground">Validation Log</p>
                   </div>
-                  <p className="text-sm text-red-300/80">{validation.error}</p>
+                  <p className="text-xs text-muted-foreground mb-3">{validation.error}</p>
                   {validation.errors && validation.errors.length > 0 && (
-                    <ul className="mt-2 space-y-1">
+                    <ul className="mt-2 space-y-1.5 border-t border-border pt-3">
                       {validation.errors.map((e, i) => (
-                        <li key={i} className="text-xs text-red-300/70">• {e}</li>
+                        <li key={i} className="text-xs text-muted-foreground font-mono">• {e}</li>
                       ))}
                     </ul>
                   )}
-                  <button onClick={reset} className="mt-3 flex items-center gap-1.5 text-xs text-red-400 hover:text-red-300 transition-colors">
+                  <button onClick={reset} className="mt-4 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-foreground hover:opacity-80 transition-opacity">
                     <RotateCcw className="h-3 w-3" /> Try again
                   </button>
                 </motion.div>
@@ -240,50 +248,52 @@ export default function UploadPage() {
                   className="space-y-4"
                 >
                   {/* File info bar */}
-                  <div className="flex items-center gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4">
-                    <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-400" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-emerald-400">Valid CSV — Ready to import</p>
-                      <p className="text-xs text-emerald-300/70 truncate">{file?.name}</p>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-xl border border-border bg-card/65 p-5 backdrop-blur-md">
+                    <div className="flex items-center gap-3">
+                      <CheckCircle2 className="h-5 w-5 shrink-0 text-foreground" />
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold uppercase tracking-widest text-foreground">Verified CSV File</p>
+                        <p className="text-xs text-muted-foreground font-mono truncate">{file?.name}</p>
+                      </div>
                     </div>
-                    <div className="flex gap-4 text-center shrink-0">
+                    <div className="flex gap-4 text-center">
                       <div>
-                        <p className="text-lg font-bold text-foreground">{validation.unique_products}</p>
-                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Products</p>
+                        <p className="text-base font-bold text-foreground">{validation.unique_products}</p>
+                        <p className="text-[9px] uppercase tracking-wider text-muted-foreground">SKUs</p>
                       </div>
                       <div>
-                        <p className="text-lg font-bold text-foreground">{validation.total_rows}</p>
-                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Sales rows</p>
+                        <p className="text-base font-bold text-foreground">{validation.total_rows}</p>
+                        <p className="text-[9px] uppercase tracking-wider text-muted-foreground">Sales Rows</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Preview table */}
                   {validation.preview.length > 0 && (
-                    <div className="rounded-xl border border-border overflow-hidden">
-                      <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-muted/30">
+                    <div className="rounded-xl border border-border bg-card/30 overflow-hidden">
+                      <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-secondary/20">
                         <Table2 className="h-4 w-4 text-muted-foreground" />
-                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                          Preview (first {validation.preview.length} rows)
+                        <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
+                          Spreadsheet Preview (first {validation.preview.length} rows)
                         </p>
                       </div>
                       <div className="overflow-x-auto">
                         <table className="w-full text-xs">
-                          <thead className="bg-muted/20">
+                          <thead className="bg-secondary/40 text-foreground border-b border-border uppercase text-[9px] tracking-widest">
                             <tr>
                               {Object.keys(validation.preview[0]).map(col => (
-                                <th key={col} className="px-3 py-2 text-left font-semibold text-muted-foreground uppercase tracking-wider whitespace-nowrap">
+                                <th key={col} className="px-3 py-2 text-left font-bold tracking-wider whitespace-nowrap">
                                   {col}
                                 </th>
                               ))}
                             </tr>
                           </thead>
-                          <tbody>
+                          <tbody className="divide-y divide-border/40 text-muted-foreground font-mono text-[10px]">
                             {validation.preview.map((row, i) => (
-                              <tr key={i} className={cn('border-t border-border', i % 2 === 0 ? 'bg-background' : 'bg-muted/10')}>
+                              <tr key={i} className={cn(i % 2 === 0 ? 'bg-background' : 'bg-secondary/10')}>
                                 {Object.values(row).map((val, j) => (
-                                  <td key={j} className="px-3 py-2 text-foreground whitespace-nowrap max-w-[160px] truncate" title={val}>
-                                    {val || <span className="text-muted-foreground/40">—</span>}
+                                  <td key={j} className="px-3 py-2 whitespace-nowrap max-w-[160px] truncate" title={val}>
+                                    {val || <span className="text-muted-foreground/30">—</span>}
                                   </td>
                                 ))}
                               </tr>
@@ -295,16 +305,16 @@ export default function UploadPage() {
                   )}
 
                   {/* Options */}
-                  <label className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 cursor-pointer hover:border-brand/40 transition-colors">
+                  <label className="flex items-center gap-3 rounded-xl border border-border bg-card/60 p-4 cursor-pointer hover:border-foreground/45 transition-colors">
                     <input
                       type="checkbox"
                       checked={clearOnImport}
                       onChange={e => setClearOnImport(e.target.checked)}
-                      className="h-4 w-4 rounded accent-brand"
+                      className="h-4 w-4 rounded accent-foreground"
                     />
                     <div>
-                      <p className="text-sm font-medium text-foreground">Clear existing data before import</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">Removes all previous products and sales history first</p>
+                      <p className="text-xs font-bold uppercase tracking-wider text-foreground">Clear existing tables</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5 uppercase tracking-widest">Wipes previous catalog records first</p>
                     </div>
                   </label>
 
@@ -315,18 +325,18 @@ export default function UploadPage() {
                       whileTap={{ scale: 0.98 }}
                       onClick={handleImport}
                       disabled={step === 'importing'}
-                      className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-brand py-3 text-sm font-bold text-background shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_32px_rgba(245,158,11,0.45)] disabled:opacity-70 transition-all"
+                      className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-foreground py-3 text-xs font-bold uppercase tracking-widest text-background shadow-brand disabled:opacity-70 transition-all"
                     >
                       {step === 'importing' ? (
                         <><Loader2 className="h-4 w-4 animate-spin" /> Importing…</>
                       ) : (
-                        <><Database className="h-4 w-4" /> Import to Database</>
+                        <><Database className="h-4 w-4" /> Load to neon db</>
                       )}
                     </motion.button>
                     <button
                       onClick={reset}
                       disabled={step === 'importing'}
-                      className="flex items-center gap-1.5 rounded-xl border border-border bg-card px-4 text-sm text-muted-foreground hover:bg-secondary transition-colors disabled:opacity-50"
+                      className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-4 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:bg-secondary transition-colors disabled:opacity-50"
                     >
                       <RotateCcw className="h-4 w-4" /> Reset
                     </button>
@@ -335,35 +345,35 @@ export default function UploadPage() {
               )}
             </AnimatePresence>
 
-            {/* ── SUCCESS STATE ── */}
+            {/* SUCCESS STATE */}
             <AnimatePresence>
               {step === 'done' && importResult && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.97 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-8 text-center"
+                  className="rounded-xl border border-border bg-card/75 p-8 text-center backdrop-blur-md"
                 >
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.1 }}
-                    className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20 mx-auto mb-4"
+                    className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary border border-border mx-auto mb-4"
                   >
-                    <CheckCircle2 className="h-8 w-8 text-emerald-400" />
+                    <CheckCircle2 className="h-8 w-8 text-foreground" />
                   </motion.div>
-                  <h2 className="text-xl font-bold text-foreground mb-2">Import Complete!</h2>
-                  <p className="text-sm text-muted-foreground mb-6">{importResult.message}</p>
+                  <h2 className="text-lg font-bold uppercase tracking-wider text-foreground mb-2">Import Successful</h2>
+                  <p className="text-xs text-muted-foreground mb-6 uppercase tracking-wider leading-relaxed">{importResult.message}</p>
 
                   <div className="grid grid-cols-3 gap-4 mb-8">
                     {[
-                      { icon: <Package className="h-5 w-5" />, value: importResult.products_created, label: 'Products Created' },
-                      { icon: <BarChart2 className="h-5 w-5" />, value: importResult.sales_inserted, label: 'Sales Records' },
-                      { icon: <CalendarDays className="h-5 w-5" />, value: importResult.products_updated, label: 'Products Updated' },
+                      { icon: <Package className="h-4 w-4" />, value: importResult.products_created, label: 'SKUs Created' },
+                      { icon: <BarChart2 className="h-4 w-4" />, value: importResult.sales_inserted, label: 'Sales Records' },
+                      { icon: <CalendarDays className="h-4 w-4" />, value: importResult.products_updated, label: 'SKUs Updated' },
                     ].map(s => (
-                      <div key={s.label} className="rounded-xl border border-border bg-card/60 p-4">
-                        <div className="mb-2 flex justify-center text-brand">{s.icon}</div>
-                        <p className="text-2xl font-bold text-foreground">{s.value}</p>
-                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">{s.label}</p>
+                      <div key={s.label} className="rounded-lg border border-border bg-background p-4">
+                        <div className="mb-2 flex justify-center text-foreground">{s.icon}</div>
+                        <p className="text-xl font-black text-foreground font-mono">{s.value}</p>
+                        <p className="text-[9px] uppercase tracking-wider text-muted-foreground mt-1 leading-tight">{s.label}</p>
                       </div>
                     ))}
                   </div>
@@ -373,19 +383,19 @@ export default function UploadPage() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => navigate('/products')}
-                      className="flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-background"
+                      className="flex items-center justify-center gap-2 rounded-lg bg-foreground px-6 py-3 text-xs font-bold uppercase tracking-widest text-background"
                     >
-                      View Products <ArrowRight className="h-4 w-4" />
+                      View Catalog <ArrowRight className="h-4 w-4" />
                     </motion.button>
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => navigate('/forecast')}
-                      className="flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-6 py-3 text-sm font-medium text-foreground hover:bg-secondary transition-colors"
+                      className="flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-6 py-3 text-xs font-bold uppercase tracking-widest text-foreground hover:bg-secondary transition-colors"
                     >
-                      Run Forecast <BarChart2 className="h-4 w-4" />
+                      Run Predictions <BarChart2 className="h-4 w-4" />
                     </motion.button>
-                    <button onClick={reset} className="text-sm text-muted-foreground hover:text-foreground transition-colors px-4">
+                    <button onClick={reset} className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors px-4 pt-2 sm:pt-0">
                       Upload another
                     </button>
                   </div>
@@ -394,90 +404,75 @@ export default function UploadPage() {
             </AnimatePresence>
           </div>
 
-          {/* ── RIGHT SIDEBAR: Guide ── */}
+          {/* RIGHT SIDEBAR: Guide */}
           <div className="space-y-5">
 
             {/* Download template */}
-            <div className="rounded-2xl border border-brand/30 bg-brand/5 p-5">
+            <div className="rounded-xl border border-border bg-card/65 p-5 backdrop-blur-md">
               <div className="flex items-center gap-2 mb-3">
-                <FileText className="h-4 w-4 text-brand" />
-                <h3 className="text-sm font-semibold text-foreground">Start with our template</h3>
+                <FileText className="h-4 w-4 text-foreground" />
+                <h3 className="text-xs font-bold uppercase tracking-widest text-foreground">Spreadsheet template</h3>
               </div>
-              <p className="text-xs text-muted-foreground mb-4">
-                Download the sample CSV pre-filled with clothing store data. Replace with your own shop's numbers.
+              <p className="text-xs text-muted-foreground mb-4 uppercase tracking-wider leading-relaxed">
+                Download a pre-filled sample spreadsheet with clothing SKU logs to test the pipeline.
               </p>
               <a
                 href={`${API_BASE_URL}/api/upload/template`}
                 download="clearshelf_template.csv"
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-brand/40 bg-brand/10 py-2.5 text-sm font-semibold text-brand hover:bg-brand/20 transition-colors"
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-secondary/40 py-2.5 text-xs font-bold uppercase tracking-widest text-foreground hover:bg-secondary transition-colors"
               >
                 <Download className="h-4 w-4" />
-                Download Template CSV
+                Download template
               </a>
             </div>
 
             {/* Required columns */}
-            <div className="rounded-2xl border border-border bg-card p-5">
-              <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
-                <Table2 className="h-4 w-4 text-brand" />
-                Required Columns
+            <div className="rounded-xl border border-border bg-card/60 p-5">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-foreground mb-4 flex items-center gap-2">
+                <Table2 className="h-4 w-4 text-foreground" />
+                Required Schema
               </h3>
-              <div className="space-y-2.5">
+              <div className="space-y-3">
                 {REQUIRED_COLS.map(col => (
                   <div key={col.key} className="flex items-start gap-2">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="h-3.5 w-3.5 text-foreground shrink-0 mt-0.5" />
                     <div>
-                      <span className="text-xs font-mono font-semibold text-foreground">{col.key}</span>
-                      <span className="text-xs text-muted-foreground ml-1.5">— {col.desc}</span>
-                      <div className="text-[10px] text-muted-foreground/60 mt-0.5">e.g. {col.example}</div>
+                      <span className="text-[10px] font-mono font-bold text-foreground">{col.key}</span>
+                      <span className="text-[10px] text-muted-foreground ml-1.5">— {col.desc}</span>
+                      <div className="text-[9px] text-muted-foreground/60 mt-0.5">e.g. {col.example}</div>
                     </div>
                   </div>
                 ))}
               </div>
 
               <div className="mt-4 pt-4 border-t border-border">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">Optional</p>
+                <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Optional Parameters</p>
                 {OPTIONAL_COLS.map(col => (
                   <div key={col.key} className="flex items-center gap-2 mb-1.5">
                     <div className="h-3.5 w-3.5 shrink-0 rounded-full border border-border" />
-                    <span className="text-xs font-mono text-muted-foreground">{col.key}</span>
-                    <span className="text-[10px] text-muted-foreground/50">e.g. {col.example}</span>
+                    <span className="text-[10px] font-mono text-muted-foreground font-semibold">{col.key}</span>
+                    <span className="text-[9px] text-muted-foreground/50 ml-2">e.g. {col.example}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Tips */}
-            <div className="rounded-2xl border border-border bg-card p-5">
-              <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-amber-400" />
-                Tips for best results
-              </h3>
-              <ul className="space-y-2 text-xs text-muted-foreground">
-                <li>• <strong className="text-foreground">At least 7 days</strong> of sales history per product for accurate forecasts</li>
-                <li>• <strong className="text-foreground">Consistent SKUs</strong> — same SKU across all rows = same product</li>
-                <li>• <strong className="text-foreground">One row per day</strong> per product (not per transaction)</li>
-                <li>• Dates in <strong className="text-foreground">YYYY-MM-DD</strong> format (e.g. 2024-06-01)</li>
-                <li>• <strong className="text-foreground">quantity_sold</strong> = units sold that day (the ML model trains on this)</li>
-              </ul>
-            </div>
-
             {/* Danger zone */}
-            <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-5">
-              <h3 className="text-sm font-semibold text-red-400 mb-2 flex items-center gap-2">
+            <div className="rounded-xl border border-border bg-card/60 p-5">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-foreground mb-2 flex items-center gap-2">
                 <Trash2 className="h-4 w-4" />
                 Danger Zone
               </h3>
-              <p className="text-xs text-muted-foreground mb-3">
-                Manually clear all products and sales data from the database.
+              <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wider">
+                Manually wipe all product indices and sales tables from Neon replica.
               </p>
               <button
                 onClick={handleClear}
                 disabled={clearing}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 py-2 text-xs font-semibold text-red-400 hover:bg-red-500/20 disabled:opacity-50 transition-colors"
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-secondary/20 py-2 text-xs font-bold uppercase tracking-widest text-foreground hover:bg-secondary transition-colors"
               >
                 {clearing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
-                {clearing ? 'Clearing…' : 'Clear All Data'}
+                {clearing ? 'Clearing…' : 'Clear Data Tables'}
               </button>
             </div>
           </div>
