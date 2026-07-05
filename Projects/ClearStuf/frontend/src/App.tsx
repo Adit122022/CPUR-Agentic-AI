@@ -9,6 +9,7 @@ import Forecast from './features/forecast/pages/Forecast';
 import AgentConsole from './features/agents/pages/AgentConsole';
 import UploadPage from './features/upload/pages/UploadPage';
 import Login from './features/auth/pages/Login';
+
 import ProtectedRoute from './components/ProtectedRoute';
 import UploadGuard from './components/UploadGuard';
 import Documentation from './features/documentation/pages/Documentation';
@@ -19,7 +20,6 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/"         element={<Home />} />
-        <Route path="/login"    element={<Login />} />
         <Route path="/documentation" element={<Documentation />} />
         <Route path="/products" element={<ProtectedRoute><UploadGuard><Products /></UploadGuard></ProtectedRoute>} />
 
@@ -27,6 +27,7 @@ function AnimatedRoutes() {
         <Route path="/forecast" element={<ProtectedRoute><UploadGuard><Forecast /></UploadGuard></ProtectedRoute>} />
         <Route path="/agents"   element={<ProtectedRoute><UploadGuard><AgentConsole /></UploadGuard></ProtectedRoute>} />
         <Route path="/upload"   element={<ProtectedRoute><UploadPage /></ProtectedRoute>} />
+        <Route path="/login"    element={<Login />} />
 
       </Routes>
     </AnimatePresence>

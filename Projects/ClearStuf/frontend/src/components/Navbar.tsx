@@ -41,14 +41,14 @@ export default function Navbar() {
   };
 
   const navLinks = [
-    { name: 'Home',          path: '/' },
-    { name: 'Upload Data',   path: '/upload',       show: isSignedIn },
-    { name: 'Products',      path: '/products',     show: isSignedIn && hasUploaded },
-    { name: 'Stock',         path: '/stock',        show: isSignedIn && hasUploaded },
-    { name: 'Forecast',      path: '/forecast',     show: isSignedIn && hasUploaded },
-    { name: 'AI Agents',     path: '/agents',       show: isSignedIn && hasUploaded },
-    { name: 'Features',      path: '/#features',    show: !hasUploaded },
-    { name: 'FAQs',          path: '/#faqs',        show: !hasUploaded },
+    { name: 'Home', path: '/' },
+    { name: 'Upload Data', path: '/upload', show: isSignedIn },
+    { name: 'Products', path: '/products', show: isSignedIn && hasUploaded },
+    { name: 'Stock', path: '/stock', show: isSignedIn && hasUploaded },
+    { name: 'Forecast', path: '/forecast', show: isSignedIn && hasUploaded },
+    { name: 'AI Agents', path: '/agents', show: isSignedIn && hasUploaded },
+    { name: 'Features', path: '/#features', show: !hasUploaded },
+    { name: 'FAQs', path: '/#faqs', show: !hasUploaded },
     { name: 'Documentation', path: '/documentation' },
   ].filter(link => link.show !== false);
 
@@ -71,10 +71,10 @@ export default function Navbar() {
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => {
               const isHash = link.path.startsWith('/#');
-              const isActive = isHash 
-                ? false 
+              const isActive = isHash
+                ? false
                 : location.pathname === link.path;
-                
+
               return (
                 <button
                   key={link.name}
@@ -94,7 +94,7 @@ export default function Navbar() {
 
           {/* Right Area: Theme + Auth buttons */}
           <div className="flex items-center gap-4">
-            
+
             {/* Theme toggle */}
             <button
               onClick={toggleTheme}
@@ -116,7 +116,7 @@ export default function Navbar() {
 
             {/* Clerk User Avatar (SignedIn) */}
             <SignedIn>
-              <UserButton 
+              <UserButton
                 appearance={{
                   elements: {
                     userButtonAvatarBox: 'h-9 w-9 rounded-md border border-border bg-background',
@@ -128,18 +128,15 @@ export default function Navbar() {
 
             {/* Auth CTAs (SignedOut) */}
             <SignedOut>
-              <NavLink
-                to="/login"
-                className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Login
+              <NavLink to="/login">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md text-xs font-bold uppercase tracking-widest bg-foreground text-background hover:bg-foreground/90 h-9 px-5 shadow-brand transition-all"
+                >
+                  Login
+                </motion.button>
               </NavLink>
-              <button
-                onClick={() => navigate('/login')}
-                className="hidden sm:inline-flex cursor-pointer items-center justify-center rounded-md text-xs font-bold uppercase tracking-wider bg-foreground text-background hover:bg-foreground/90 transition-all h-9 px-4 shadow-brand"
-              >
-                Get Started
-              </button>
             </SignedOut>
 
             {/* Mobile menu button */}
@@ -172,11 +169,11 @@ export default function Navbar() {
                   {link.name}
                 </button>
               ))}
-              
+
               <div className="pt-4 border-t border-border/50">
                 <SignedIn>
                   <div className="flex items-center gap-3 px-3 py-1.5">
-                    <UserButton 
+                    <UserButton
                       appearance={{
                         elements: {
                           userButtonAvatarBox: 'h-8 w-8',
@@ -187,20 +184,13 @@ export default function Navbar() {
                   </div>
                 </SignedIn>
                 <SignedOut>
-                  <div className="grid grid-cols-2 gap-2 mt-2">
+                  <div className="pt-2">
                     <NavLink
                       to="/login"
                       onClick={() => setIsOpen(false)}
-                      className="block rounded-md px-3 py-2 text-xs font-bold uppercase tracking-wider text-center border border-border text-foreground hover:bg-secondary transition-colors"
+                      className="w-full block rounded-md px-3 py-2 text-xs font-bold uppercase tracking-wider text-center bg-foreground text-background hover:bg-foreground/90 transition-all shadow-brand"
                     >
-                      Login
-                    </NavLink>
-                    <NavLink
-                      to="/login"
-                      onClick={() => setIsOpen(false)}
-                      className="block rounded-md px-3 py-2 text-xs font-bold uppercase tracking-wider text-center bg-foreground text-background hover:bg-foreground/90 transition-all shadow-brand"
-                    >
-                      Get Started
+                      Login / Get Started
                     </NavLink>
                   </div>
                 </SignedOut>
