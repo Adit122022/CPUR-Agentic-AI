@@ -7,17 +7,19 @@ import Products from './features/products/pages/Products';
 import StockDashboard from './features/stock/pages/StockDashboard';
 import Forecast from './features/forecast/pages/Forecast';
 import AgentConsole from './features/agents/pages/AgentConsole';
+import UploadPage from './features/upload/pages/UploadPage';
 
 function AnimatedRoutes() {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/"        element={<Home />} />
+        <Route path="/"         element={<Home />} />
         <Route path="/products" element={<Products />} />
-        <Route path="/stock"   element={<StockDashboard />} />
+        <Route path="/stock"    element={<StockDashboard />} />
         <Route path="/forecast" element={<Forecast />} />
-        <Route path="/agents"  element={<AgentConsole />} />
+        <Route path="/agents"   element={<AgentConsole />} />
+        <Route path="/upload"   element={<UploadPage />} />
       </Routes>
     </AnimatePresence>
   );

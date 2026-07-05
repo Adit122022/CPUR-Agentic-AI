@@ -6,11 +6,12 @@ import { useTheme } from './ThemeProvider';
 import { cn } from '../lib/utils';
 
 const navLinks = [
-  { name: 'Home',      path: '/' },
-  { name: 'Products',  path: '/products' },
-  { name: 'Stock',     path: '/stock' },
-  { name: 'Forecast',  path: '/forecast' },
-  { name: 'AI Agents', path: '/agents' },
+  { name: 'Home',        path: '/' },
+  { name: 'Upload Data', path: '/upload' },
+  { name: 'Products',    path: '/products' },
+  { name: 'Stock',       path: '/stock' },
+  { name: 'Forecast',    path: '/forecast' },
+  { name: 'AI Agents',   path: '/agents' },
 ];
 
 export default function Navbar() {

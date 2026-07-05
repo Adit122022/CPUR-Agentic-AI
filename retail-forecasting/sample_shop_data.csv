@@ -1,0 +1,71 @@
+date,product_name,sku,category,brand,price,quantity_sold,current_stock,discounted_price,description
+2024-06-01,Blue Denim Jeans,CLT-001,Apparels,Levi's,1299,12,150,999,Slim-fit blue denim jeans
+2024-06-02,Blue Denim Jeans,CLT-001,Apparels,Levi's,1299,15,150,999,Slim-fit blue denim jeans
+2024-06-03,Blue Denim Jeans,CLT-001,Apparels,Levi's,1299,9,150,999,Slim-fit blue denim jeans
+2024-06-04,Blue Denim Jeans,CLT-001,Apparels,Levi's,1299,20,150,999,Slim-fit blue denim jeans
+2024-06-05,Blue Denim Jeans,CLT-001,Apparels,Levi's,1299,18,150,999,Slim-fit blue denim jeans
+2024-06-06,Blue Denim Jeans,CLT-001,Apparels,Levi's,1299,25,150,999,Slim-fit blue denim jeans
+2024-06-07,Blue Denim Jeans,CLT-001,Apparels,Levi's,1299,11,150,999,Slim-fit blue denim jeans
+2024-06-08,Blue Denim Jeans,CLT-001,Apparels,Levi's,1299,14,150,999,Slim-fit blue denim jeans
+2024-06-09,Blue Denim Jeans,CLT-001,Apparels,Levi's,1299,17,150,999,Slim-fit blue denim jeans
+2024-06-10,Blue Denim Jeans,CLT-001,Apparels,Levi's,1299,10,150,999,Slim-fit blue denim jeans
+2024-06-11,Blue Denim Jeans,CLT-001,Apparels,Levi's,1299,22,150,999,Slim-fit blue denim jeans
+2024-06-12,Blue Denim Jeans,CLT-001,Apparels,Levi's,1299,19,150,999,Slim-fit blue denim jeans
+2024-06-13,Blue Denim Jeans,CLT-001,Apparels,Levi's,1299,8,150,999,Slim-fit blue denim jeans
+2024-06-14,Blue Denim Jeans,CLT-001,Apparels,Levi's,1299,23,150,999,Slim-fit blue denim jeans
+2024-06-01,White Cotton Shirt,CLT-002,Apparels,Arrow,799,8,200,,Regular-fit white cotton shirt
+2024-06-02,White Cotton Shirt,CLT-002,Apparels,Arrow,799,6,200,,Regular-fit white cotton shirt
+2024-06-03,White Cotton Shirt,CLT-002,Apparels,Arrow,799,10,200,,Regular-fit white cotton shirt
+2024-06-04,White Cotton Shirt,CLT-002,Apparels,Arrow,799,7,200,,Regular-fit white cotton shirt
+2024-06-05,White Cotton Shirt,CLT-002,Apparels,Arrow,799,14,200,,Regular-fit white cotton shirt
+2024-06-06,White Cotton Shirt,CLT-002,Apparels,Arrow,799,16,200,,Regular-fit white cotton shirt
+2024-06-07,White Cotton Shirt,CLT-002,Apparels,Arrow,799,5,200,,Regular-fit white cotton shirt
+2024-06-08,White Cotton Shirt,CLT-002,Apparels,Arrow,799,9,200,,Regular-fit white cotton shirt
+2024-06-09,White Cotton Shirt,CLT-002,Apparels,Arrow,799,11,200,,Regular-fit white cotton shirt
+2024-06-10,White Cotton Shirt,CLT-002,Apparels,Arrow,799,13,200,,Regular-fit white cotton shirt
+2024-06-11,White Cotton Shirt,CLT-002,Apparels,Arrow,799,7,200,,Regular-fit white cotton shirt
+2024-06-12,White Cotton Shirt,CLT-002,Apparels,Arrow,799,15,200,,Regular-fit white cotton shirt
+2024-06-13,White Cotton Shirt,CLT-002,Apparels,Arrow,799,4,200,,Regular-fit white cotton shirt
+2024-06-14,White Cotton Shirt,CLT-002,Apparels,Arrow,799,18,200,,Regular-fit white cotton shirt
+2024-06-01,Black Formal Trousers,CLT-003,Formals,Raymond,1599,4,80,1299,Slim-fit black formal trousers
+2024-06-02,Black Formal Trousers,CLT-003,Formals,Raymond,1599,6,80,1299,Slim-fit black formal trousers
+2024-06-03,Black Formal Trousers,CLT-003,Formals,Raymond,1599,3,80,1299,Slim-fit black formal trousers
+2024-06-04,Black Formal Trousers,CLT-003,Formals,Raymond,1599,8,80,1299,Slim-fit black formal trousers
+2024-06-05,Black Formal Trousers,CLT-003,Formals,Raymond,1599,5,80,1299,Slim-fit black formal trousers
+2024-06-06,Black Formal Trousers,CLT-003,Formals,Raymond,1599,9,80,1299,Slim-fit black formal trousers
+2024-06-07,Black Formal Trousers,CLT-003,Formals,Raymond,1599,2,80,1299,Slim-fit black formal trousers
+2024-06-08,Black Formal Trousers,CLT-003,Formals,Raymond,1599,7,80,1299,Slim-fit black formal trousers
+2024-06-09,Black Formal Trousers,CLT-003,Formals,Raymond,1599,4,80,1299,Slim-fit black formal trousers
+2024-06-10,Black Formal Trousers,CLT-003,Formals,Raymond,1599,6,80,1299,Slim-fit black formal trousers
+2024-06-11,Black Formal Trousers,CLT-003,Formals,Raymond,1599,10,80,1299,Slim-fit black formal trousers
+2024-06-12,Black Formal Trousers,CLT-003,Formals,Raymond,1599,5,80,1299,Slim-fit black formal trousers
+2024-06-13,Black Formal Trousers,CLT-003,Formals,Raymond,1599,3,80,1299,Slim-fit black formal trousers
+2024-06-14,Black Formal Trousers,CLT-003,Formals,Raymond,1599,8,80,1299,Slim-fit black formal trousers
+2024-06-01,Red Kurti,CLT-004,Ethnic Wear,FabIndia,599,20,300,499,Cotton embroidered red kurti
+2024-06-02,Red Kurti,CLT-004,Ethnic Wear,FabIndia,599,24,300,499,Cotton embroidered red kurti
+2024-06-03,Red Kurti,CLT-004,Ethnic Wear,FabIndia,599,16,300,499,Cotton embroidered red kurti
+2024-06-04,Red Kurti,CLT-004,Ethnic Wear,FabIndia,599,30,300,499,Cotton embroidered red kurti
+2024-06-05,Red Kurti,CLT-004,Ethnic Wear,FabIndia,599,27,300,499,Cotton embroidered red kurti
+2024-06-06,Red Kurti,CLT-004,Ethnic Wear,FabIndia,599,35,300,499,Cotton embroidered red kurti
+2024-06-07,Red Kurti,CLT-004,Ethnic Wear,FabIndia,599,18,300,499,Cotton embroidered red kurti
+2024-06-08,Red Kurti,CLT-004,Ethnic Wear,FabIndia,599,22,300,499,Cotton embroidered red kurti
+2024-06-09,Red Kurti,CLT-004,Ethnic Wear,FabIndia,599,26,300,499,Cotton embroidered red kurti
+2024-06-10,Red Kurti,CLT-004,Ethnic Wear,FabIndia,599,19,300,499,Cotton embroidered red kurti
+2024-06-11,Red Kurti,CLT-004,Ethnic Wear,FabIndia,599,28,300,499,Cotton embroidered red kurti
+2024-06-12,Red Kurti,CLT-004,Ethnic Wear,FabIndia,599,31,300,499,Cotton embroidered red kurti
+2024-06-13,Red Kurti,CLT-004,Ethnic Wear,FabIndia,599,15,300,499,Cotton embroidered red kurti
+2024-06-14,Red Kurti,CLT-004,Ethnic Wear,FabIndia,599,33,300,499,Cotton embroidered red kurti
+2024-06-01,Sports Joggers,CLT-005,Sportswear,Nike,1899,6,60,1499,Dry-fit navy blue joggers
+2024-06-02,Sports Joggers,CLT-005,Sportswear,Nike,1899,8,60,1499,Dry-fit navy blue joggers
+2024-06-03,Sports Joggers,CLT-005,Sportswear,Nike,1899,5,60,1499,Dry-fit navy blue joggers
+2024-06-04,Sports Joggers,CLT-005,Sportswear,Nike,1899,12,60,1499,Dry-fit navy blue joggers
+2024-06-05,Sports Joggers,CLT-005,Sportswear,Nike,1899,14,60,1499,Dry-fit navy blue joggers
+2024-06-06,Sports Joggers,CLT-005,Sportswear,Nike,1899,18,60,1499,Dry-fit navy blue joggers
+2024-06-07,Sports Joggers,CLT-005,Sportswear,Nike,1899,7,60,1499,Dry-fit navy blue joggers
+2024-06-08,Sports Joggers,CLT-005,Sportswear,Nike,1899,9,60,1499,Dry-fit navy blue joggers
+2024-06-09,Sports Joggers,CLT-005,Sportswear,Nike,1899,11,60,1499,Dry-fit navy blue joggers
+2024-06-10,Sports Joggers,CLT-005,Sportswear,Nike,1899,6,60,1499,Dry-fit navy blue joggers
+2024-06-11,Sports Joggers,CLT-005,Sportswear,Nike,1899,13,60,1499,Dry-fit navy blue joggers
+2024-06-12,Sports Joggers,CLT-005,Sportswear,Nike,1899,16,60,1499,Dry-fit navy blue joggers
+2024-06-13,Sports Joggers,CLT-005,Sportswear,Nike,1899,4,60,1499,Dry-fit navy blue joggers
+2024-06-14,Sports Joggers,CLT-005,Sportswear,Nike,1899,15,60,1499,Dry-fit navy blue joggers
