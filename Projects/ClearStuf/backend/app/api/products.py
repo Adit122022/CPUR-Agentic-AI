@@ -7,8 +7,10 @@ from pydantic import BaseModel
 
 from app.database.connection import get_db
 from app.database import models
+from app.core.auth import get_current_user
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(get_current_user)])
+
 
 class ProductBase(BaseModel):
     name: str

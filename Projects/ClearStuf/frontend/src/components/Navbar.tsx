@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Sun, Moon, Activity } from 'lucide-react';
+import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 import { useTheme } from './ThemeProvider';
 import { cn } from '../lib/utils';
 
@@ -67,7 +68,7 @@ export default function Navbar() {
           </nav>
 
           {/* Right: theme toggle + mobile menu */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
               onClick={toggleTheme}
               className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
@@ -86,12 +87,25 @@ export default function Navbar() {
               </AnimatePresence>
             </button>
 
-            <NavLink
-              to="/forecast"
-              className="hidden md:inline-flex h-9 items-center gap-1.5 rounded-md bg-brand px-4 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-            >
-              Launch Forecast
-            </NavLink>
+            <SignedIn>
+              <UserButton 
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: 'h-9 w-9 rounded-md border border-border bg-background',
+                    userButtonTrigger: 'focus:shadow-none focus:outline-none focus:ring-0',
+                  }
+                }}
+              />
+            </SignedIn>
+
+            <SignedOut>
+              <NavLink
+                to="/login"
+                className="hidden md:inline-flex h-9 items-center gap-1.5 rounded-md bg-indigo-600 px-4 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              >
+                Sign In
+              </NavLink>
+            </SignedOut>
 
             {/* Mobile menu button */}
             <button
@@ -132,6 +146,30 @@ export default function Navbar() {
                   {link.name}
                 </NavLink>
               ))}
+              
+              <div className="pt-2 border-t border-border/50">
+                <SignedIn>
+                  <div className="flex items-center gap-3 px-3 py-1.5">
+                    <UserButton 
+                      appearance={{
+                        elements: {
+                          userButtonAvatarBox: 'h-8 w-8',
+                        }
+                      }}
+                    />
+                    <span className="text-sm font-medium text-foreground">My Account</span>
+                  </div>
+                </SignedIn>
+                <SignedOut>
+                  <NavLink
+                    to="/login"
+                    onClick={() => setIsOpen(false)}
+                    className="block rounded-md px-3 py-2 text-sm font-medium bg-indigo-600 text-white text-center hover:bg-indigo-700 transition-colors"
+                  >
+                    Sign In
+                  </NavLink>
+                </SignedOut>
+              </div>
             </div>
           </motion.div>
         )}
@@ -139,3 +177,4 @@ export default function Navbar() {
     </header>
   );
 }
+

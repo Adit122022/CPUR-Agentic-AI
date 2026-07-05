@@ -9,8 +9,10 @@ from app.database.connection import get_db
 from app.database import models
 from app.services.forecast_service import ForecastService
 from app.models.linear_regression import LinearRegressionModel
+from app.core.auth import get_current_user
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(get_current_user)])
+
 
 class ForecastRequest(BaseModel):
     product_id: int

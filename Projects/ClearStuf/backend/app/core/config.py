@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
     GROQ_MODEL_NAME: str = os.getenv("GROQ_MODEL_NAME", "llama-3.1-70b-versatile")
 
+    # Clerk Auth
+    CLERK_PUBLISHABLE_KEY: str = os.getenv("CLERK_PUBLISHABLE_KEY", "")
+    CLERK_JWKS_URL: str = os.getenv("CLERK_JWKS_URL", "")
+
     class Config:
         case_sensitive = True
 

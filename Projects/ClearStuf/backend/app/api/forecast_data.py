@@ -4,8 +4,14 @@ from app.database.connection import get_db
 from app.database.models import DailySales
 from sqlalchemy import func
 from datetime import datetime, timedelta
+from app.core.auth import get_current_user
 
-router = APIRouter(prefix="/api/forecast-data", tags=["Forecast Data"])
+router = APIRouter(
+    prefix="/api/forecast-data",
+    tags=["Forecast Data"],
+    dependencies=[Depends(get_current_user)]
+)
+
 
 @router.get("/categories")
 def get_category_demand(db: Session = Depends(get_db)):
