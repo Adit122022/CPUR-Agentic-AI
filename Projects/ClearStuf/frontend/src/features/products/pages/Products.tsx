@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, Sparkles, TrendingUp, ChevronDown, ChevronRight, LayoutGrid, List } from 'lucide-react';
+import { Search, X, Sparkles, TrendingUp, ChevronDown, LayoutGrid, List } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import type { Product } from '../types/products.types';
 import { useProducts } from '../hook/useProducts';
