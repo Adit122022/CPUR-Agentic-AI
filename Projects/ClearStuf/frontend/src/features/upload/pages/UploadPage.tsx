@@ -1,6 +1,9 @@
 import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '../../../store';
+import { fetchProducts } from '../../products/products.slice';
 import {
   Upload, FileText, CheckCircle2, XCircle, AlertTriangle,
   Download, Trash2, ArrowRight, Table2, Loader2, RotateCcw,
@@ -49,6 +52,7 @@ const OPTIONAL_COLS = [
 export default function UploadPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch<AppDispatch>();
   const redirectReason = location.state?.redirectReason;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -110,6 +114,9 @@ export default function UploadPage() {
       );
       const data: ImportResult = await res.json();
       setImportResult(data);
+      if (data.success) {
+        dispatch(fetchProducts());
+      }
       setStep(data.success ? 'done' : 'error');
     } catch {
       setStep('error');
@@ -121,6 +128,7 @@ export default function UploadPage() {
     setClearing(true);
     try {
       await fetch(`${API_BASE_URL}/api/upload/clear`, { method: 'DELETE' });
+      dispatch(fetchProducts());
     } finally {
       setClearing(false);
     }

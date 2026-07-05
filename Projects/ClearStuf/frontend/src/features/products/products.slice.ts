@@ -1,4 +1,3 @@
-
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { Product } from './types/products.types';
@@ -8,12 +7,14 @@ interface ProductsState {
   products: Product[];
   loading: boolean;
   error: string | null;
+  initialized: boolean;
 }
 
 const initialState: ProductsState = {
   products: [],
   loading: false,
   error: null,
+  initialized: false,
 };
 
 export const fetchProducts = createAsyncThunk('products/fetch', async () => {
@@ -33,10 +34,12 @@ const productsSlice = createSlice({
       .addCase(fetchProducts.fulfilled, (state, action: PayloadAction<Product[]>) => {
         state.loading = false;
         state.products = action.payload;
+        state.initialized = true;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to load products';
+        state.initialized = true;
       });
   },
 });

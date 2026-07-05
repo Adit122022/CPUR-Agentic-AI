@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import { 
-  ArrowRight, CheckCircle2, Loader2, Sparkles, Brain, Zap, 
-  Activity, Database, ShieldAlert, LineChart, ChevronDown, ChevronUp 
+import {
+  ArrowRight, CheckCircle2, Loader2, Sparkles, Brain, Zap,
+  Activity, Database, ShieldAlert, LineChart, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { API_BASE_URL } from '../../../services/api';
 import { cn } from '../../../lib/utils';
@@ -27,7 +27,7 @@ export default function Home() {
   const [categoryCount, setCategoryCount] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
-  
+
   // Interactive micro-interaction states for hero screens
   const [hoveredBar, setHoveredBar] = useState<number | null>(null);
   const [hoveredThreshold, setHoveredThreshold] = useState<string | null>(null);
@@ -73,7 +73,7 @@ export default function Home() {
         setAlertCount(data.filter(p => p.current_stock <= 20).length);
         setCategoryCount(new Set(data.map(p => p.category)).size);
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const toggleFaq = (idx: number) => {
@@ -82,15 +82,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
-      
+
       {/* ══════════════════════════════════════════════
           1. HERO SECTION (Overlapping 3D Screens - B&W Style)
           ══════════════════════════════════════════════ */}
-      <section className="pt-20 md:pt-32 lg:pt-40 pb-28 relative border-b border-border bg-background dot-bg">
+      <section className="pt-10 md:pt-10 lg:pt-20 pb-28 relative border-b border-border bg-background dot-bg">
         <div className="absolute inset-0 glow-amber opacity-10 pointer-events-none" />
-        
+
         <div className="max-w-7xl px-4 md:px-8 mx-auto grid grid-cols-2 lg:grid-cols-[1.1fr_1fr] gap-4 md:gap-16 items-center">
-          
+
           {/* Left Column Text */}
           <div className="space-y-4 sm:space-y-6">
             <motion.div
@@ -101,7 +101,7 @@ export default function Home() {
               <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-foreground" />
               <span>Cooperative Retail AI Agents</span>
             </motion.div>
-            
+
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -127,7 +127,7 @@ export default function Home() {
               transition={{ delay: 0.3, duration: 0.6 }}
               className="flex flex-wrap items-center gap-2 sm:gap-4 pt-2 sm:pt-4"
             >
-              <motion.button 
+              <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => navigate('/login')}
@@ -136,7 +136,7 @@ export default function Home() {
                 Start Free Trial
                 <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4" />
               </motion.button>
-              <motion.button 
+              <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => navigate('/documentation')}
@@ -149,9 +149,9 @@ export default function Home() {
 
           {/* Right Column: Overlapping Rotated Screens with Mouse Interactive Tilt */}
           <div className="relative min-h-[220px] sm:min-h-[450px] lg:min-h-[550px] w-full flex items-center justify-center scale-[0.65] sm:scale-100 origin-center translate-x-2 sm:translate-x-12 z-10">
-            
+
             {/* Dynamic Spotlight tracker behind screens */}
-            <motion.div 
+            <motion.div
               style={{
                 left: glowX,
                 top: glowY,
@@ -160,8 +160,8 @@ export default function Home() {
             />
 
             <div className="relative w-full h-full perspective-distant">
-              
-              <motion.div 
+
+              <motion.div
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
                 style={{
@@ -172,7 +172,7 @@ export default function Home() {
                 }}
                 className="relative w-full h-full"
               >
-                
+
                 {/* Back Overlapping Screen (Screen 4 Layout) */}
                 <motion.div
                   initial={{ opacity: 0, y: -50 }}
@@ -189,7 +189,7 @@ export default function Home() {
                     </div>
                     <span className="text-[9px] text-muted-foreground font-mono">clearshelf.ai/metrics</span>
                   </div>
-                  
+
                   {/* Dashboard mock list */}
                   <div className="space-y-2">
                     <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold font-mono">CRITICAL SAFETY THRESHOLDS</p>
@@ -197,8 +197,8 @@ export default function Home() {
                       { sku: 'AP-002', name: 'Organic Cotton Tee', qty: '45 items left', alert: 'Medium Risk' },
                       { sku: 'SH-001', name: 'Premium Leather Boots', qty: '14 items left', alert: 'Critical Alert' },
                     ].map(item => (
-                      <motion.div 
-                        key={item.sku} 
+                      <motion.div
+                        key={item.sku}
                         onHoverStart={() => setHoveredThreshold(item.sku)}
                         onHoverEnd={() => setHoveredThreshold(null)}
                         animate={{
@@ -259,7 +259,7 @@ export default function Home() {
                       <p className="text-[9px] font-mono text-muted-foreground">SEASONALITY REGRESSION INDEX</p>
                       <AnimatePresence>
                         {hoveredBar !== null && (
-                          <motion.span 
+                          <motion.span
                             initial={{ opacity: 0, x: 5 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0 }}
@@ -272,8 +272,8 @@ export default function Home() {
                     </div>
                     <div className="h-16 flex items-end justify-between gap-1 pt-2">
                       {BAR_VALUES.map((h, i) => (
-                        <motion.div 
-                          key={i} 
+                        <motion.div
+                          key={i}
                           onHoverStart={() => setHoveredBar(i)}
                           onHoverEnd={() => setHoveredBar(null)}
                           animate={{
@@ -304,8 +304,8 @@ export default function Home() {
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8 items-center justify-center">
             {BRAND_LOGOS.map((brand) => (
-              <motion.div 
-                key={brand.name} 
+              <motion.div
+                key={brand.name}
                 whileHover={{ scale: 1.05, opacity: 1 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 15 }}
                 className="flex items-center justify-center gap-1.5 cursor-pointer opacity-35 hover:opacity-100 transition-opacity duration-300"
@@ -323,7 +323,7 @@ export default function Home() {
           ══════════════════════════════════════════════ */}
       <section id="features" className="py-20 lg:py-28 bg-background border-b border-border scroll-mt-16">
         <div className="max-w-7xl px-4 md:px-8 mx-auto">
-          
+
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16">
             <div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl tracking-tight font-black leading-none uppercase">
@@ -336,9 +336,9 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
+
             {/* Feature 1 */}
-            <motion.div 
+            <motion.div
               whileHover={{ y: -4, borderColor: 'rgba(255, 255, 255, 0.18)' }}
               transition={{ duration: 0.2 }}
               className="bg-card border border-border rounded-xl p-6 flex flex-col justify-between transition-colors"
@@ -371,7 +371,7 @@ export default function Home() {
             </motion.div>
 
             {/* Feature 2 */}
-            <motion.div 
+            <motion.div
               whileHover={{ y: -4, borderColor: 'rgba(255, 255, 255, 0.18)' }}
               transition={{ duration: 0.2 }}
               className="bg-card border border-border rounded-xl p-6 flex flex-col justify-between transition-colors"
@@ -396,15 +396,15 @@ export default function Home() {
                   const isDone = idx < activeStep;
                   const isCurrent = idx === activeStep;
                   return (
-                    <div 
-                      key={step.title} 
+                    <div
+                      key={step.title}
                       className={cn(
                         "flex items-center justify-between p-2 rounded-lg border transition-all duration-300",
-                        isCurrent 
-                          ? "border-foreground bg-foreground/5 scale-[1.01]" 
-                          : isDone 
-                          ? "border-border/60 bg-secondary/15" 
-                          : "border-border/20 opacity-40 bg-transparent"
+                        isCurrent
+                          ? "border-foreground bg-foreground/5 scale-[1.01]"
+                          : isDone
+                            ? "border-border/60 bg-secondary/15"
+                            : "border-border/20 opacity-40 bg-transparent"
                       )}
                     >
                       <div className="flex items-center gap-2">
@@ -428,7 +428,7 @@ export default function Home() {
             </motion.div>
 
             {/* Feature 3 */}
-            <motion.div 
+            <motion.div
               whileHover={{ y: -4, borderColor: 'rgba(255, 255, 255, 0.18)' }}
               transition={{ duration: 0.2 }}
               className="bg-card border border-border rounded-xl p-6 flex flex-col justify-between transition-colors"
@@ -485,9 +485,9 @@ export default function Home() {
               Hover over each option to reveal visual guides and navigate ClearShelf resources.
             </p>
           </div>
-          
+
           <div className="border border-border rounded-xl overflow-hidden shadow-2xl relative" style={{ height: '400px' }}>
-            <FlowingMenu 
+            <FlowingMenu
               items={[
                 { link: '/upload', text: 'Data Ingestion', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60' },
                 { link: '/products', text: 'Product Catalog', image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&auto=format&fit=crop&q=60' },
@@ -495,11 +495,6 @@ export default function Home() {
                 { link: '/documentation', text: 'System Guide', image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=60' }
               ]}
               speed={12}
-              textColor="var(--muted-foreground)"
-              bgColor="var(--background)"
-              marqueeBgColor="var(--foreground)"
-              marqueeTextColor="var(--background)"
-              borderColor="var(--border)"
             />
           </div>
         </div>
@@ -536,8 +531,8 @@ export default function Home() {
             ].map((faq, idx) => {
               const isOpen = faqOpen === idx;
               return (
-                <div 
-                  key={idx} 
+                <div
+                  key={idx}
                   className="border border-border rounded-lg bg-card/40 overflow-hidden transition-all duration-300"
                 >
                   <button
