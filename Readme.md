@@ -23,7 +23,10 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 | [Day 15](./03_Phase/15_Day_26-06-2026) | 26 Jun 2026 | Introduction to Generative AI & Large Language Models    | [📂 View](./03_Phase/15_Day_26-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1YkZzqprLk3q1wGMRT7-8I69cZdCAAJD9?usp=sharing) |
 | [Day 16](./03_Phase/16_Day_29-06-2026) | 29 Jun 2026 | APIs & Generative AI Integration                          | [📂 View](./03_Phase/16_Day_29-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1DzZ-nK9NRtZsPHz1sOaYw56CrjYuehtZ?usp=sharing) |
 | [Day 17](./03_Phase/17_Day_30-06-2026) | 30 Jun 2026 | Deep Learning & Artificial Neural Networks                | [📂 View](./03_Phase/17_Day_30-06-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1kTD0xPAXOnMhnYWakYbD67NFcy1PZ2K0?usp=sharing#scrollTo=ncD2OSPcsNj8) |
+| [Day 18](./03_Phase/18_Day_01-07-2026) | 01 Jul 2026 | DL Training Process & MNIST Digit Recognition            | [📂 View](./03_Phase/18_Day_01-07-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1DJFUktoEruUz4TPRbMrCdWiu8gDFoPXR?usp=sharing) |
+| [Day 20](./04_phase/20_Day_3-07-2026) | 03 Jul 2026 | Agentic AI Concepts & LLM Foundations                    | [📂 View](./04_phase/20_Day_3-07-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1ofVZr8a7gCMBzHSDbXMwvlkt6SWlt0ff?usp=sharing#scrollTo=OiEEVR0MDsOF) |
 | [Day 21](./04_phase/21_Day_4-07-2026) | 04 Jul 2026 | Introduction to LangChain & Chat Models                  | [📂 View](./04_phase/21_Day_4-07-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/13osBRlwH82GfCqIJohqhQOB0VoDK4wpp?usp=sharing#scrollTo=rpuSPitE__Aa) |
+| [Day 22](./04_phase/22_Day_5-07-2026) | 05 Jul 2026 | Gemini SDK, Embeddings, Vector DBs & Document Parsing    | [📂 View](./04_phase/22_Day_5-07-2026) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1mu-jeF5cr8ddKrx6uGwiYzqZHxoxa7R6?usp=sharing#scrollTo=HkKj3aE2eYVP) |
 
 
 > 📝 **Asif Sir's Notes** — These are the live in-class Google Colab notebooks shared by our instructor during each session.
@@ -49,7 +52,10 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 - [Day 15: Introduction to Generative AI & Large Language Models (LLMs)](#day-15---introduction-to-generative-ai--large-language-models-llms)
 - [Day 16: APIs (Application Programming Interfaces) & Gen AI Integration](#day-16---apis-application-programming-interfaces--gen-ai-integration)
 - [Day 17: Deep Learning & Artificial Neural Networks (ANNs)](#day-17---deep-learning--artificial-neural-networks-anns)
+- [Day 18: Deep Learning Training Process & MNIST Digit Recognition](#day-18---deep-learning-training-process--mnist-digit-recognition)
+- [Day 20: Agentic AI & LLM Foundations](#day-20---agentic-ai--llm-foundations)
 - [Day 21: Introduction to LangChain & Chat Models](#day-21---introduction-to-langchain--chat-models)
+- [Day 22: Gemini SDK, Embeddings, Vector DBs & Document Processing](#day-22---gemini-sdk-embeddings-vector-dbs--document-processing)
 
 
 ---
@@ -457,6 +463,52 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 
 <br>
 
+# Day 18 - Deep Learning Training Process & MNIST Digit Recognition
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 18 Details</summary>
+
+## 📚 [Day 18: Deep Learning Training Process & MNIST Digit Recognition](./03_Phase/18_Day_01-07-2026)
+
+### 💻 [**18.1 - Theoretical Concepts**](./03_Phase/18_Day_01-07-2026/Readme.md)
+
+> **`Topics Covered:` DL Training Process & MNIST -** Deep Learning training cycle (Forward prop, Loss, Cost, Backpropagation, Chain Rule, Gradient Descent, Weight Update), Loss vs Cost Functions, MSE, BCE, and CCE functions explanation.
+
+### 💻 [**18.2 - Practical Implementations**](./03_Phase/18_Day_01-07-2026/day18_notebook.ipynb)
+
+> **`Topics Covered:` Practical Concepts Covered -** Building a multi-layer Neural Network with TensorFlow Keras Sequential API, training and evaluating model on MNIST handwritten digits dataset, plotting loss/accuracy history curves, predicting single/multiple/random digits, saving and reloading `.keras` models, and custom local image preprocessing steps.
+
+- 📓 [**Deep Learning Training & MNIST Notebook**](./03_Phase/18_Day_01-07-2026/day18_notebook.ipynb)
+- 📖 [**Notes/Slides & Articles/Blogs Link**](./03_Phase/18_Day_01-07-2026/Readme.md)
+- 🖊️ **Asif Sir's Notes:** [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1DJFUktoEruUz4TPRbMrCdWiu8gDFoPXR?usp=sharing)
+
+</details>
+
+<br>
+
+# Day 20 - Agentic AI & LLM Foundations
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 20 Details</summary>
+
+## 📚 [Day 20: Agentic AI & LLM Foundations](./04_phase/20_Day_3-07-2026)
+
+### 💻 [**20.1 - Theoretical Concepts**](./04_phase/20_Day_3-07-2026/Readme.md)
+
+> **`Topics Covered:` Agentic AI & LLM Foundations -** Agentic AI definition, Traditional vs Agentic AI comparison, Workflow & 11 steps of Agentic AI, Transformers architecture ("Attention Is All You Need"), Attention, Self-Attention, Multi-Head Attention, Tokens & Tokenization, Word/Character/Subword Tokenizers, Embeddings, Positional Encoding, Prompt Engineering types, Context Window, Temperature, Top-k, Top-p, and Function Calling.
+
+### 💻 [**20.2 - Practical Implementations**](./04_phase/20_Day_3-07-2026/day20_notebook.ipynb)
+
+> **`Topics Covered:` Practical Concepts Covered -** Custom ReAct (Reason + Act) Agent loop simulation, Custom vocabulary encoder & tokenizer mapping, Word Embedding Cosine Similarity calculation using NumPy, and Temperature scaling of logits with softmax sampling representation.
+
+- 📓 [**Agentic AI & LLM Foundations Notebook**](./04_phase/20_Day_3-07-2026/day20_notebook.ipynb)
+- 📖 [**Notes/Slides & Articles/Blogs Link**](./04_phase/20_Day_3-07-2026/Readme.md)
+- 🖊️ **Asif Sir's Notes:** [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1ofVZr8a7gCMBzHSDbXMwvlkt6SWlt0ff?usp=sharing#scrollTo=OiEEVR0MDsOF)
+
+</details>
+
+<br>
+
 # Day 21 - Introduction to LangChain & Chat Models
 
 <details>
@@ -477,6 +529,29 @@ Welcome to the repository for my in-house internship on **Agentic AI** at Career
 - 📖 [**Part 1 Notes**](./04_phase/21_Day_4-07-2026/Part_01_LangChain_Intro.md)
 - 📖 [**Part 2 Notes**](./04_phase/21_Day_4-07-2026/Part_02_Models_And_Messages.md)
 - 🖊️ **Asif Sir's Notes:** [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/13osBRlwH82GfCqIJohqhQOB0VoDK4wpp?usp=sharing#scrollTo=rpuSPitE__Aa)
+
+</details>
+
+<br>
+
+# Day 22 - Gemini SDK, Embeddings, Vector DBs & Document Processing
+
+<details>
+<summary style="display: inline; font-size: 20px; font-weight: 700; cursor: pointer;" title="Click on me to Expand">Click to Expand Day 22 Details</summary>
+
+## 📚 [Day 22: Gemini SDK, Embeddings, Vector DBs & Document Processing](./04_phase/22_Day_5-07-2026)
+
+### 💻 [**22.1 - Theoretical Concepts**](./04_phase/22_Day_5-07-2026/Readme.md)
+
+> **`Topics Covered:` Gemini SDK, Embeddings, Vector DBs & Document Parsing -** Gemini client generation with new GenAI SDK, Embeddings vectors meaning, Keyword vs Semantic search, Cosine Similarity similarity scale values, SQL vs Vector DB, RAG Pipeline flow, ChromaDB/FAISS/Pinecone features, Document loaders (PDF, CSV, Web), and character text splitting parameters.
+
+### 💻 [**22.2 - Practical Implementations**](./04_phase/22_Day_5-07-2026/day22_notebook.ipynb)
+
+> **`Topics Covered:` Practical Concepts Covered -** Generating content and embeddings via Latest Gemini SDK Client API, performing semantic search on document vectors using Sentence Transformers and Scikit-Learn Cosine Similarity, programmatically setting up mock CSV/TXT datasets, and loading and splitting documents using LangChain loaders and RecursiveCharacterTextSplitter.
+
+- 📓 [**Gemini, Embeddings & Document Loading Notebook**](./04_phase/22_Day_5-07-2026/day22_notebook.ipynb)
+- 📖 [**Notes/Slides & Articles/Blogs Link**](./04_phase/22_Day_5-07-2026/Readme.md)
+- 🖊️ **Asif Sir's Notes:** [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1mu-jeF5cr8ddKrx6uGwiYzqZHxoxa7R6?usp=sharing#scrollTo=HkKj3aE2eYVP)
 
 </details>
 
