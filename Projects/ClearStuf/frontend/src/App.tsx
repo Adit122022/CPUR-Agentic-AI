@@ -38,15 +38,16 @@ function AnimatedRoutes() {
 
 function AppContent() {
   const location = useLocation();
-  const showNavAndFooter = location.pathname !== '/login';
+  const showNav = location.pathname !== '/login';
+  const showFooter = location.pathname !== '/login' && location.pathname !== '/agents';
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
-      {showNavAndFooter && <Navbar />}
+      {showNav && <Navbar />}
       <main className="grow">
         <AnimatedRoutes />
       </main>
-      {showNavAndFooter && <Footer />}
+      {showFooter && <Footer />}
     </div>
   );
 }

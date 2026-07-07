@@ -107,11 +107,16 @@ export default function AgentConsole() {
     searchParams.get('product_id') ? Number(searchParams.get('product_id')) : null
   );
   const [selectOpen, setSelectOpen] = useState(false);
-  const logsEndRef = useRef<HTMLDivElement>(null);
+  const terminalBodyRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (terminalBodyRef.current) {
+      terminalBodyRef.current.scrollTo({
+        top: terminalBodyRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   }, [logs, activeAgent]);
 
   useEffect(() => {
@@ -334,7 +339,7 @@ export default function AgentConsole() {
           </div>
 
           {/* Terminal Logs viewport (Scrollable section) */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-1.5 max-h-full">
+          <div ref={terminalBodyRef} className="flex-1 overflow-y-auto p-4 space-y-1.5 max-h-full">
             <AnimatePresence>
               {socketError && (
                 <motion.div
@@ -403,7 +408,6 @@ export default function AgentConsole() {
                 </motion.div>
               )}
             </AnimatePresence>
-            <div ref={logsEndRef} />
           </div>
 
           {/* Terminal Command Input Prompt Footer */}
