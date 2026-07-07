@@ -7,7 +7,7 @@ import { fetchProducts } from '../../products/products.slice';
 import {
   Upload, FileText, CheckCircle2, XCircle, AlertTriangle,
   Download, Trash2, ArrowRight, Table2, Loader2, RotateCcw,
-  Package, BarChart2, CalendarDays, Database,
+  Package, BarChart2, CalendarDays, Database, Terminal,
 } from 'lucide-react';
 import { API_BASE_URL } from '../../../services/api';
 import { cn } from '../../../lib/utils';
@@ -16,6 +16,7 @@ interface ValidationResult {
   valid: boolean;
   error?: string;
   errors?: string[];
+  eda_logs?: string[];
   total_rows: number;
   unique_products: number;
   columns_found: string[];
@@ -276,6 +277,26 @@ export default function UploadPage() {
                     </div>
                   </div>
 
+                  {/* Preprocessing logs */}
+                  {validation.eda_logs && validation.eda_logs.length > 0 && (
+                    <div className="rounded-xl border border-border bg-card/30 overflow-hidden p-4">
+                      <div className="flex items-center gap-2 mb-3 border-b border-border/40 pb-2">
+                        <Terminal className="h-3.5 w-3.5 text-foreground" />
+                        <p className="text-[9px] font-bold uppercase tracking-widest text-foreground">
+                          EDA & Preprocessing Operations
+                        </p>
+                      </div>
+                      <div className="max-h-40 overflow-y-auto space-y-1.5 font-mono text-[9px] text-muted-foreground uppercase tracking-wider">
+                        {validation.eda_logs.map((log, idx) => (
+                          <div key={idx} className="flex gap-2 items-start text-left">
+                            <span className="text-foreground shrink-0">›</span>
+                            <span>{log}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Preview table */}
                   {validation.preview.length > 0 && (
                     <div className="rounded-xl border border-border bg-card/30 overflow-hidden">
@@ -372,7 +393,7 @@ export default function UploadPage() {
                   <h2 className="text-lg font-bold uppercase tracking-wider text-foreground mb-2">Import Successful</h2>
                   <p className="text-xs text-muted-foreground mb-6 uppercase tracking-wider leading-relaxed">{importResult.message}</p>
 
-                  <div className="grid grid-cols-3 gap-4 mb-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                     {[
                       { icon: <Package className="h-4 w-4" />, value: importResult.products_created, label: 'SKUs Created' },
                       { icon: <BarChart2 className="h-4 w-4" />, value: importResult.sales_inserted, label: 'Sales Records' },

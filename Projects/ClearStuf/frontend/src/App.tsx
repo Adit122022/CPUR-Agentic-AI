@@ -9,6 +9,7 @@ import Forecast from './features/forecast/pages/Forecast';
 import AgentConsole from './features/agents/pages/AgentConsole';
 import UploadPage from './features/upload/pages/UploadPage';
 import Login from './features/auth/pages/Login';
+import HistoryPage from './features/history/pages/HistoryPage';
 
 import ProtectedRoute from './components/ProtectedRoute';
 import UploadGuard from './components/UploadGuard';
@@ -27,6 +28,7 @@ function AnimatedRoutes() {
         <Route path="/forecast" element={<ProtectedRoute><UploadGuard><Forecast /></UploadGuard></ProtectedRoute>} />
         <Route path="/agents"   element={<ProtectedRoute><UploadGuard><AgentConsole /></UploadGuard></ProtectedRoute>} />
         <Route path="/upload"   element={<ProtectedRoute><UploadPage /></ProtectedRoute>} />
+        <Route path="/history"  element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
         <Route path="/login"    element={<Login />} />
 
       </Routes>

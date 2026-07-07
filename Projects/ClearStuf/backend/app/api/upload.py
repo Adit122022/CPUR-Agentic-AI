@@ -15,13 +15,16 @@ router = APIRouter(dependencies=[Depends(get_current_user)])
 
 
 
+from app.services.preprocessing_service import calculate_file_hash, preprocess_csv_dataframe
+
 # ─────────────────────────────────────────────────────────────────────────────
 #  CLEAR ALL DATA
 # ─────────────────────────────────────────────────────────────────────────────
 @router.delete("/clear")
 def clear_all_data(db: Session = Depends(get_db)):
-    """Wipe all products, sales history, and forecasts from the database."""
+    """Wipe all products, sales history, forecasts, and upload history from the database."""
     try:
+        deleted_history   = db.query(models.UploadHistory).delete()
         deleted_forecasts = db.query(models.Forecast).delete()
         deleted_sales     = db.query(models.HistoricalSales).delete()
         deleted_products  = db.query(models.Product).delete()
@@ -32,6 +35,7 @@ def clear_all_data(db: Session = Depends(get_db)):
                 "products": deleted_products,
                 "sales_records": deleted_sales,
                 "forecasts": deleted_forecasts,
+                "upload_history": deleted_history,
             }
         }
     except Exception as e:
@@ -84,62 +88,50 @@ def download_template():
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-#  VALIDATE CSV STRUCTURE (preview without importing)
+#  VALIDATE CSV STRUCTURE (preview + EDA preprocessing)
 # ─────────────────────────────────────────────────────────────────────────────
-REQUIRED_COLUMNS = {"date", "product_name", "sku", "category", "price", "quantity_sold", "current_stock"}
-
 @router.post("/validate")
-async def validate_csv(file: UploadFile = File(...)):
-    """Parse CSV and return validation result + preview rows. Does NOT write to DB."""
+async def validate_csv(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    """Parse CSV, check hashes, run preprocessing & return preview rows with EDA logs. Does NOT write to DB."""
     if not file.filename.endswith(".csv"):
         raise HTTPException(status_code=400, detail="Only .csv files are accepted.")
 
     content = await file.read()
-    try:
-        text_content = content.decode("utf-8-sig")  # handle Excel BOM
-    except UnicodeDecodeError:
-        text_content = content.decode("latin-1")
-
-    reader = csv.DictReader(io.StringIO(text_content))
-    columns = set(reader.fieldnames or [])
-    missing = REQUIRED_COLUMNS - columns
-
-    if missing:
+    
+    # Calculate SHA-256 hash to detect duplicate uploads
+    file_hash = calculate_file_hash(content)
+    existing_upload = db.query(models.UploadHistory).filter(models.UploadHistory.file_hash == file_hash).first()
+    if existing_upload:
         return {
             "valid": False,
-            "error": f"Missing required columns: {', '.join(sorted(missing))}",
-            "columns_found": list(columns),
-            "columns_required": list(REQUIRED_COLUMNS),
+            "error": "Duplicate upload: This spreadsheet has already been loaded to the database.",
+            "duplicate": True
         }
 
-    rows = list(reader)
-    if len(rows) == 0:
-        return {"valid": False, "error": "CSV file has no data rows."}
+    # Run robust data preprocessing
+    try:
+        df, eda_logs = preprocess_csv_dataframe(content)
+    except ValueError as ve:
+        return {
+            "valid": False,
+            "error": str(ve),
+            "columns_found": [],
+        }
+    except Exception as e:
+        return {
+            "valid": False,
+            "error": f"Failed to parse CSV: {str(e)}",
+            "columns_found": [],
+        }
 
-    # Count unique skus and dates
-    skus   = set(r["sku"] for r in rows if r.get("sku"))
-    errors = []
-    for i, row in enumerate(rows[:200], start=2):  # check first 200 rows
-        if not row.get("date"):
-            errors.append(f"Row {i}: missing date")
-        if not row.get("sku"):
-            errors.append(f"Row {i}: missing sku")
-        try:
-            float(row.get("price", ""))
-        except ValueError:
-            errors.append(f"Row {i}: invalid price '{row.get('price')}'")
-        try:
-            int(row.get("quantity_sold", ""))
-        except ValueError:
-            errors.append(f"Row {i}: invalid quantity_sold '{row.get('quantity_sold')}'")
-
+    preview_rows = df.head(8).to_dict(orient="records")
     return {
-        "valid": len(errors) == 0,
-        "errors": errors[:10],  # return at most 10 errors
-        "total_rows": len(rows),
-        "unique_products": len(skus),
-        "columns_found": list(columns),
-        "preview": rows[:8],    # first 8 rows for preview table
+        "valid": True,
+        "eda_logs": eda_logs,
+        "total_rows": len(df),
+        "unique_products": len(df["sku"].unique()),
+        "columns_found": list(df.columns),
+        "preview": preview_rows,
     }
 
 
@@ -153,62 +145,72 @@ async def import_csv(
     db: Session = Depends(get_db),
 ):
     """
-    Parse and import a CSV file into the database.
+    Parse, clean, and import a CSV file into the database.
+    - Blocks duplicate uploads using the unique content SHA-256 hash.
     - Groups rows by SKU to create/update Product records.
-    - Each row becomes one HistoricalSales record.
-    - If clear_existing=True, wipes the DB first.
+    - Inserts HistoricalSales records (skipping duplicate date/sku conflicts).
+    - Records metadata in the UploadHistory table.
     """
     if not file.filename.endswith(".csv"):
         raise HTTPException(status_code=400, detail="Only .csv files are accepted.")
 
     content = await file.read()
-    try:
-        text_content = content.decode("utf-8-sig")
-    except UnicodeDecodeError:
-        text_content = content.decode("latin-1")
-
-    reader = csv.DictReader(io.StringIO(text_content))
-    columns = set(reader.fieldnames or [])
-    missing = REQUIRED_COLUMNS - columns
-    if missing:
+    
+    # Calculate and verify unique hash
+    file_hash = calculate_file_hash(content)
+    existing_upload = db.query(models.UploadHistory).filter(models.UploadHistory.file_hash == file_hash).first()
+    if existing_upload:
         raise HTTPException(
             status_code=400,
-            detail=f"Missing required columns: {', '.join(sorted(missing))}"
+            detail="Duplicate upload: This spreadsheet file has already been loaded to Neon DB."
         )
 
-    rows = list(reader)
-    if not rows:
-        raise HTTPException(status_code=400, detail="CSV file has no data rows.")
+    # Preprocess and clean the raw data
+    try:
+        df, eda_logs = preprocess_csv_dataframe(content)
+    except Exception as e:
+        # Create a failed record in history
+        failed_history = models.UploadHistory(
+            filename=file.filename,
+            file_hash=file_hash,
+            total_rows=0,
+            unique_products=0,
+            status=f"Failed: {str(e)}"
+        )
+        db.add(failed_history)
+        db.commit()
+        raise HTTPException(status_code=400, detail=f"Data preprocessing failed: {str(e)}")
 
+    rows = df.to_dict(orient="records")
     try:
         if clear_existing:
             db.query(models.Forecast).delete()
             db.query(models.HistoricalSales).delete()
             db.query(models.Product).delete()
+            db.query(models.UploadHistory).delete()
             db.flush()
 
-        # ── Group rows by SKU ──────────────────────────────────────────────
+        # Group rows by SKU
         sku_map: dict[str, dict] = {}
         for row in rows:
-            sku = row["sku"].strip().upper()
+            sku = row["sku"]
             if sku not in sku_map:
                 sku_map[sku] = {
-                    "name":             row["product_name"].strip(),
+                    "name":             row["product_name"],
                     "sku":              sku,
-                    "category":         row["category"].strip(),
-                    "brand":            row.get("brand", "").strip() or None,
-                    "price":            float(row["price"]),
-                    "discounted_price": float(row["discounted_price"]) if row.get("discounted_price","").strip() else None,
-                    "description":      row.get("description", "").strip() or None,
-                    "current_stock":    int(row["current_stock"]),
+                    "category":         row["category"],
+                    "brand":            row["brand"] if row.get("brand") else None,
+                    "price":            row["price"],
+                    "discounted_price": row["discounted_price"] if row.get("discounted_price") else None,
+                    "description":      row["description"] if row.get("description") else None,
+                    "current_stock":    row["current_stock"],
                     "sales":            [],
                 }
             sku_map[sku]["sales"].append({
-                "date":     row["date"].strip(),
-                "quantity": int(row["quantity_sold"]),
+                "date":     row["date"],
+                "quantity": row["quantity_sold"],
             })
 
-        # ── Upsert products and insert sales ──────────────────────────────
         products_created = 0
         products_updated = 0
         sales_inserted   = 0
@@ -217,7 +219,6 @@ async def import_csv(
             existing = db.query(models.Product).filter(models.Product.sku == sku).first()
 
             if existing:
-                # Update product metadata
                 existing.name             = data["name"]
                 existing.category         = data["category"]
                 existing.brand            = data["brand"]
@@ -239,10 +240,10 @@ async def import_csv(
                     current_stock    = data["current_stock"],
                 )
                 db.add(product)
-                db.flush()  # get product.id
+                db.flush()
                 products_created += 1
 
-            # Insert sales rows (skip duplicates by date)
+            # Insert sales rows (skip duplicate date-product pairs)
             existing_dates = {
                 s.date for s in db.query(models.HistoricalSales)
                 .filter(models.HistoricalSales.product_id == product.id).all()
@@ -256,6 +257,15 @@ async def import_csv(
                     ))
                     sales_inserted += 1
 
+        # Save success logs in UploadHistory
+        success_history = models.UploadHistory(
+            filename=file.filename,
+            file_hash=file_hash,
+            total_rows=len(df),
+            unique_products=len(sku_map),
+            status="Success"
+        )
+        db.add(success_history)
         db.commit()
 
         return {

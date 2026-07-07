@@ -89,7 +89,7 @@ export default function Home() {
       <section className="pt-10 md:pt-10 lg:pt-20 pb-28 relative border-b border-border bg-background dot-bg">
         <div className="absolute inset-0 glow-amber opacity-10 pointer-events-none" />
 
-        <div className="max-w-7xl px-4 md:px-8 mx-auto grid grid-cols-2 lg:grid-cols-[1.1fr_1fr] gap-4 md:gap-16 items-center">
+        <div className="max-w-7xl px-4 md:px-8 mx-auto grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-16 items-center">
 
           {/* Left Column Text */}
           <div className="space-y-4 sm:space-y-6">

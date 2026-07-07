@@ -216,7 +216,7 @@ export default function Forecast() {
         transition={{ delay: 0.1 }}
         className="bg-card/65 border border-border backdrop-blur-md rounded-xl p-4 mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center z-10 relative"
       >
-        <div className="flex flex-col gap-1 flex-1 min-w-0">
+        <div className="flex flex-col gap-1 flex-1 min-w-0 w-full">
           <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
             Select Product SKU
           </label>
@@ -233,14 +233,14 @@ export default function Forecast() {
           </select>
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 w-full sm:w-auto">
           <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
             Forecast Horizon
           </label>
           <select
             value={forecastDays}
             onChange={e => setForecastDays(Number(e.target.value))}
-            className="px-4 py-2.5 rounded-lg border border-border bg-background text-foreground text-xs focus:outline-none focus:ring-1 focus:ring-foreground font-bold uppercase tracking-wider"
+            className="w-full sm:w-auto px-4 py-2.5 rounded-lg border border-border bg-background text-foreground text-xs focus:outline-none focus:ring-1 focus:ring-foreground font-bold uppercase tracking-wider"
           >
             <option value={3}>Next 3 Days</option>
             <option value={7}>Next 7 Days</option>
@@ -249,7 +249,7 @@ export default function Forecast() {
           </select>
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 w-full sm:w-auto">
           <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
             AI Enrichment
           </label>
@@ -257,7 +257,7 @@ export default function Forecast() {
             whileTap={{ scale: 0.95 }}
             onClick={handleRunAgents}
             disabled={loadingAgent || !selectedProductId}
-            className="flex items-center gap-2 px-5 py-2.5 bg-foreground text-background rounded-lg font-bold text-xs uppercase tracking-widest shadow-brand disabled:opacity-60 whitespace-nowrap"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-foreground text-background rounded-lg font-bold text-xs uppercase tracking-widest shadow-brand disabled:opacity-60 whitespace-nowrap"
           >
             {loadingAgent ? (
               <>
@@ -294,7 +294,7 @@ export default function Forecast() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 z-10 relative"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 z-10 relative"
         >
           {[
             {

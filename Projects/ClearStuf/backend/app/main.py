@@ -2,7 +2,7 @@ import asyncio
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.api import products, forecast, websocket, forecast_data, upload
+from app.api import products, forecast, websocket, forecast_data, upload, history
 from app.database.connection import engine, Base
 from app.services import forecast_service
 
@@ -26,6 +26,7 @@ app.include_router(forecast.router,      prefix="/api/forecast",   tags=["Foreca
 app.include_router(forecast_data.router)
 app.include_router(websocket.router,     prefix="/api",            tags=["Websocket Logs"])
 app.include_router(upload.router,        prefix="/api/upload",     tags=["Data Upload"])
+app.include_router(history.router,       prefix="/api/history",    tags=["System History"])
 
 @app.on_event("startup")
 async def startup_event():

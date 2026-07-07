@@ -61,3 +61,15 @@ class DailySales(Base):
     sales_qty = Column(Integer, nullable=False)
     price = Column(Float, nullable=False)
     promotion = Column(Integer, nullable=False) # 1 or 0
+
+class UploadHistory(Base):
+    __tablename__ = "upload_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+    filename = Column(String, nullable=False)
+    file_hash = Column(String, unique=True, index=True, nullable=False)
+    total_rows = Column(Integer, nullable=False)
+    unique_products = Column(Integer, nullable=False)
+    uploaded_at = Column(DateTime, default=datetime.utcnow)
+    status = Column(String, nullable=False) # e.g., 'Success', 'Failed'
+

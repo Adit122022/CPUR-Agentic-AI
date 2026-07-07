@@ -47,6 +47,7 @@ export default function Navbar() {
     { name: 'Stock', path: '/stock', show: isSignedIn && hasUploaded },
     { name: 'Forecast', path: '/forecast', show: isSignedIn && hasUploaded },
     { name: 'AI Agents', path: '/agents', show: isSignedIn && hasUploaded },
+    { name: 'History', path: '/history', show: isSignedIn },
     { name: 'Features', path: '/#features', show: !hasUploaded },
     { name: 'FAQs', path: '/#faqs', show: !hasUploaded },
     { name: 'Documentation', path: '/documentation' },

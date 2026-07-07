@@ -288,3 +288,77 @@
   }
 }
 
+/* Clerk User Button Popover adjustments for dark mode */
+.dark .cl-userButtonPopoverCard {
+  background-color: #0c0c0c !important;
+  border-color: #27272a !important;
+}
+
+.dark .cl-userButtonPopoverFooter {
+  background-color: #0c0c0c !important;
+  border-top-color: #27272a !important;
+}
+
+.dark .cl-userButtonPopoverActionButton {
+  color: #e4e4e7 !important;
+}
+
+.dark .cl-userButtonPopoverActionButton:hover {
+  color: #ffffff !important;
+  background-color: #18181b !important;
+}
+
+.dark .cl-userButtonPopoverActionButtonText {
+  color: #e4e4e7 !important;
+}
+
+.dark .cl-userButtonPopoverActionButton:hover .cl-userButtonPopoverActionButtonText {
+  color: #ffffff !important;
+}
+
+.dark .cl-userButtonPopoverActionButtonIcon,
+.dark .cl-userButtonPopoverActionButtonIconBox {
+  color: #a1a1aa !important;
+}
+
+.dark .cl-userButtonPopoverActionButton:hover .cl-userButtonPopoverActionButtonIcon,
+.dark .cl-userButtonPopoverActionButton:hover .cl-userButtonPopoverActionButtonIconBox {
+  color: #ffffff !important;
+}
+
+/* Clerk Sign In component responsive adjustments for small viewports */
+.cl-rootBox,
+.cl-cardBox,
+.cl-card,
+.cl-main,
+.cl-form,
+.cl-formField,
+.cl-formFieldRow,
+.cl-socialButtons,
+.cl-socialButtonsBlockButton {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.cl-socialButtonsBlockButtonText {
+  font-size: 10px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Fix Clerk Google Sign-in "LAST USED" badge alignment to stay inside button margins */
+.cl-socialButtonsBlockButtonBadge,
+.cl-badge {
+  right: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
+  position: absolute !important;
+}
+
+
+
+

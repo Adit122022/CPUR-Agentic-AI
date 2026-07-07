@@ -359,14 +359,14 @@ export default function Products() {
                 </div>
 
                 <div className="p-6">
-                  <div className="mb-6 flex items-start justify-between gap-4">
+                  <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 text-left">
                     <div className="flex-1 min-w-0">
                       <h2 className="text-xl font-bold text-text-primary">{selectedProduct.name}</h2>
                       <p className="text-text-secondary text-sm mt-1">{selectedProduct.brand} • {selectedProduct.category}</p>
                       {selectedProduct.quantity && <p className="mt-1 text-xs text-text-secondary">Pack Size: {selectedProduct.quantity}</p>}
                       <p className="mt-1 text-xs font-mono text-text-secondary">SKU: {selectedProduct.sku}</p>
                     </div>
-                    <div className="text-right flex-shrink-0">
+                    <div className="text-left sm:text-right flex-shrink-0">
                       <p className="text-2xl font-bold text-foreground">₹{selectedProduct.discounted_price || selectedProduct.price}</p>
                       {selectedProduct.discounted_price && selectedProduct.discounted_price < selectedProduct.price && (
                         <p className="text-sm text-text-secondary line-through">₹{selectedProduct.price}</p>
@@ -388,14 +388,14 @@ export default function Products() {
                   )}
 
                   {/* Action buttons */}
-                  <div className="mb-6 flex gap-3">
+                  <div className="mb-6 flex flex-col sm:flex-row gap-3">
                     <motion.button
                       whileTap={{ scale: 0.97 }}
                       onClick={() => {
                         setSelectedProduct(null);
                         navigate(`/forecast?product_id=${selectedProduct.id}`);
                       }}
-                      className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-foreground text-background rounded-xl font-bold text-xs uppercase tracking-widest shadow-brand transition-all"
+                      className="w-full sm:flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-foreground text-background rounded-xl font-bold text-xs uppercase tracking-widest shadow-brand transition-all"
                     >
                       <TrendingUp className="w-4 h-4" />
                       View Demand Forecast →
@@ -403,7 +403,7 @@ export default function Products() {
                     <motion.button
                       whileTap={{ scale: 0.97 }}
                       onClick={() => setSelectedProduct(null)}
-                      className="py-2.5 px-4 border border-border rounded-xl text-xs font-bold uppercase tracking-widest text-text-secondary hover:bg-secondary transition-colors"
+                      className="w-full sm:w-auto py-2.5 px-4 border border-border rounded-xl text-xs font-bold uppercase tracking-widest text-text-secondary hover:bg-secondary transition-colors"
                     >
                       Close
                     </motion.button>

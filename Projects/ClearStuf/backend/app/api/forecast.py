@@ -65,7 +65,8 @@ def get_sales_history(product_id: int, db: Session = Depends(get_db)):
 def get_multi_day_forecast(product_id: int, days: int = 7, db: Session = Depends(get_db)):
     """
     Returns the last 30 days of actual sales history + next N days of predicted demand
-    for a given product. This powers the Forecast page chart.
+    for a given product. Also auto-persists each future predicted date into the
+    forecasts table so they appear in the History page predictions tab.
     """
     product = db.query(models.Product).filter(models.Product.id == product_id).first()
     if not product:
@@ -96,9 +97,18 @@ def get_multi_day_forecast(product_id: int, days: int = 7, db: Session = Depends
     history = [{"date": s.date, "quantity": s.quantity} for s in sorted_sales]
     model = LinearRegressionModel()
 
+    # Fetch existing saved forecast dates for this product to avoid duplicates
+    existing_forecast_dates = {
+        row.forecast_date for row in
+        db.query(models.Forecast.forecast_date)
+          .filter(models.Forecast.product_id == product_id)
+          .all()
+    }
+
     # Generate N future predictions
     last_date = datetime.strptime(sorted_sales[-1].date, "%Y-%m-%d")
     predictions = []
+    new_forecasts = []
     for i in range(1, days + 1):
         future_date = last_date + timedelta(days=i)
         future_str = future_date.strftime("%Y-%m-%d")
@@ -113,6 +123,24 @@ def get_multi_day_forecast(product_id: int, days: int = 7, db: Session = Depends
         )
         predictions.append(pt)
         data_points.append(pt)
+
+        # Auto-persist to DB if not already saved for this product+date
+        if future_str not in existing_forecast_dates:
+            new_forecasts.append(models.Forecast(
+                product_id=product_id,
+                forecast_date=future_str,
+                predicted_quantity=float(max(0, pred)),
+                model_used="linear_regression",
+                agent_adjustments=None,
+                adjusted_quantity=None
+            ))
+
+    if new_forecasts:
+        db.add_all(new_forecasts)
+        try:
+            db.commit()
+        except Exception:
+            db.rollback()
 
     forecast_qtys = [p.predicted_quantity for p in predictions]
     summary = {
