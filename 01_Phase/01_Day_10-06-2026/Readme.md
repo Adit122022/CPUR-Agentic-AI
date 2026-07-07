@@ -9,7 +9,7 @@
 
 Jab tum Python ka code likhte ho, toh peeche ek chamatkar hota hai. Tum code likhte ho English me, par tumhara computer sirf `0` aur `1` (Binary) samajhta hai. Beech me yeh sab hota hai:
 
-![Alt text](/01_Day_10-06-2026/media/compile.png)
+![Alt text](./media/compile.png)
 
 > [!TIP]
 > **Pro Tip:** Bas itna samajh lo, tum `print("Hello")` bolte ho, aur Python apni internal army ko bhej kar usko CPU se process karwata hai!
@@ -84,7 +84,7 @@ Guido bhai ko ek aisi language chahiye thi jo **C jaisi powerful** ho, par **ABC
 
 Samjho, AI ek bada sa universe hai, aur baaki sab uske chhote-chhote planet:
 
-![Alt text](/01_Day_10-06-2026/media/ai.png)
+![Alt text](./media/ai.png)
 
 ---
 
