@@ -80,6 +80,14 @@ export default function HistoryPage() {
   const [runResults, setRunResults] = useState<Map<number, ForecastRunResult>>(new Map());
   const [runningAll, setRunningAll] = useState(false);
 
+  // Upload Preview and Delete state
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewUploadId, setPreviewUploadId] = useState<number | null>(null);
+  const [previewFilename, setPreviewFilename] = useState<string>('');
+  const [previewRows, setPreviewRows] = useState<any[]>([]);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [deletingUploadId, setDeletingUploadId] = useState<number | null>(null);
+
   const fetchData = async () => {
     setLoading(true);
     setError(null);
@@ -113,6 +121,61 @@ export default function HistoryPage() {
   };
 
   useEffect(() => { fetchData(); }, []);
+
+  useEffect(() => {
+    if (showForecastPanel || previewOpen) {
+      document.documentElement.style.height = '100%';
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.height = '100%';
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.documentElement.style.height = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.height = '';
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.documentElement.style.height = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.height = '';
+      document.body.style.overflow = '';
+    };
+  }, [showForecastPanel, previewOpen]);
+
+  const handlePreviewUpload = async (uploadId: number, filename: string) => {
+    setPreviewUploadId(uploadId);
+    setPreviewFilename(filename);
+    setPreviewOpen(true);
+    setPreviewLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/history/uploads/${uploadId}/preview`);
+      if (!res.ok) throw new Error('Failed to fetch preview');
+      setPreviewRows(await res.json());
+    } catch (e: any) {
+      console.error(e);
+      setPreviewRows([]);
+    } finally {
+      setPreviewLoading(false);
+    }
+  };
+
+  const handleDeleteUpload = async (uploadId: number) => {
+    if (!window.confirm('Are you sure you want to delete this spreadsheet upload? This will remove all associated sales records and orphaned products.')) {
+      return;
+    }
+    setDeletingUploadId(uploadId);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/history/uploads/${uploadId}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) throw new Error('Failed to delete upload');
+      await fetchData();
+    } catch (e: any) {
+      alert(e.message || 'Failed to delete upload.');
+    } finally {
+      setDeletingUploadId(null);
+    }
+  };
 
   const openForecastPanel = () => {
     setShowForecastPanel(true);
@@ -368,6 +431,25 @@ export default function HistoryPage() {
                       <button onClick={openForecastPanel}
                         className="inline-flex items-center gap-1.5 px-3 py-1 rounded border border-border bg-secondary/20 hover:bg-secondary/40 text-[9px] font-bold uppercase tracking-wider text-foreground transition-colors">
                         <Zap className="h-2.5 w-2.5" /> Run Forecast
+                      </button>
+
+                      {/* Preview CTA */}
+                      <button onClick={() => handlePreviewUpload(item.id, item.filename)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded border border-border bg-secondary/20 hover:bg-secondary/40 text-[9px] font-bold uppercase tracking-wider text-foreground transition-colors">
+                        <BarChart3 className="h-2.5 w-2.5" /> Preview
+                      </button>
+
+                      {/* Delete CTA */}
+                      <button 
+                        onClick={() => handleDeleteUpload(item.id)}
+                        disabled={deletingUploadId === item.id}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded border border-red-500/30 bg-red-500/10 hover:bg-red-500/25 text-[9px] font-bold uppercase tracking-wider text-red-400 transition-colors disabled:opacity-40">
+                        {deletingUploadId === item.id ? (
+                          <RefreshCw className="h-2.5 w-2.5 animate-spin" />
+                        ) : (
+                          <XCircle className="h-2.5 w-2.5" />
+                        )}
+                        Delete
                       </button>
                     </div>
                   </div>
@@ -647,9 +729,9 @@ export default function HistoryPage() {
                         className={cn(
                           "flex items-center justify-between gap-3 p-3 rounded-lg border transition-all",
                           result?.status === 'done' ? "border-border bg-secondary/10" :
-                          result?.status === 'error' ? "border-red-500/30 bg-red-500/5" :
-                          result?.status === 'running' ? "border-foreground/40 bg-foreground/5" :
-                          "border-border bg-secondary/5 hover:bg-secondary/10"
+                            result?.status === 'error' ? "border-red-500/30 bg-red-500/5" :
+                              result?.status === 'running' ? "border-foreground/40 bg-foreground/5" :
+                                "border-border bg-secondary/5 hover:bg-secondary/10"
                         )}>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 min-w-0">
@@ -736,6 +818,93 @@ export default function HistoryPage() {
                     View Results <ChevronRight className="h-3.5 w-3.5" />
                   </button>
                 )}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* ═══════════ UPLOAD PREVIEW MODAL ═══════════ */}
+      <AnimatePresence>
+        {previewOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40"
+              onClick={() => setPreviewOpen(false)} />
+
+            {/* Modal Dialog */}
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+              className="fixed inset-x-4 top-10 bottom-10 md:inset-x-20 md:top-20 md:bottom-20 max-w-4xl mx-auto bg-card border border-border z-50 flex flex-col rounded-2xl shadow-2xl overflow-hidden"
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between px-6 py-5 border-b border-border shrink-0">
+                <div>
+                  <div className="inline-flex items-center gap-2 text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
+                    <FileSpreadsheet className="h-3 w-3" /> Data Ingestion Preview
+                  </div>
+                  <h2 className="text-lg font-black uppercase tracking-tight text-foreground truncate max-w-lg">{previewFilename}</h2>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Showing first 100 imported transaction records from Neon DB.</p>
+                </div>
+                <button onClick={() => setPreviewOpen(false)}
+                  className="p-2 rounded-lg hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground">
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="flex-1 overflow-auto p-6">
+                {previewLoading ? (
+                  <div className="h-full flex flex-col items-center justify-center text-muted-foreground text-xs uppercase tracking-widest gap-3">
+                    <RefreshCw className="w-5 h-5 text-foreground animate-spin" />
+                    Loading preview rows...
+                  </div>
+                ) : previewRows.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-center gap-2 text-muted-foreground">
+                    <AlertCircle className="h-8 w-8 text-foreground mb-2" />
+                    <p className="text-xs font-bold uppercase tracking-wider text-foreground">No data found</p>
+                    <p className="text-[10px]">No historical sales associated with this upload in the database.</p>
+                  </div>
+                ) : (
+                  <div className="border border-border rounded-xl overflow-hidden bg-secondary/5">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-secondary/20 text-[9px] uppercase tracking-widest text-muted-foreground border-b border-border">
+                          <th className="px-4 py-3">Sales Date</th>
+                          <th className="px-4 py-3">Product Name</th>
+                          <th className="px-4 py-3">SKU</th>
+                          <th className="px-4 py-3">Category</th>
+                          <th className="px-4 py-3 text-right">Price</th>
+                          <th className="px-4 py-3 text-right">Qty Sold</th>
+                          <th className="px-4 py-3 text-right">Stock</th>
+                        </tr>
+                      </thead>
+                      <tbody className="text-xs font-mono">
+                        {previewRows.map((row, idx) => (
+                          <tr key={idx} className="border-b border-border/30 last:border-0 hover:bg-secondary/10 transition-colors">
+                            <td className="px-4 py-3 text-foreground whitespace-nowrap">{row.date}</td>
+                            <td className="px-4 py-3 font-sans font-medium text-foreground max-w-xs truncate">{row.product_name}</td>
+                            <td className="px-4 py-3 text-muted-foreground">{row.sku}</td>
+                            <td className="px-4 py-3 text-muted-foreground font-sans">{row.category}</td>
+                            <td className="px-4 py-3 text-right text-foreground">₹{row.price}</td>
+                            <td className="px-4 py-3 text-right text-foreground font-bold">{row.quantity_sold}</td>
+                            <td className="px-4 py-3 text-right text-muted-foreground">{row.current_stock}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+
+              {/* Modal Footer */}
+              <div className="px-6 py-4 border-t border-border shrink-0 flex justify-end">
+                <button onClick={() => setPreviewOpen(false)}
+                  className="px-4 py-2 border border-border rounded-lg text-xs font-bold uppercase tracking-widest text-foreground hover:bg-secondary transition-colors"
+                >
+                  Close Preview
+                </button>
               </div>
             </motion.div>
           </>

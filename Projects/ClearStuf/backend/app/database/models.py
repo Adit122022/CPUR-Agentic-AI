@@ -31,6 +31,7 @@ class HistoricalSales(Base):
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
     date = Column(String, nullable=False)  # YYYY-MM-DD
     quantity = Column(Integer, nullable=False)
+    upload_id = Column(Integer, ForeignKey("upload_history.id"), nullable=True)
 
     # Relationships
     product = relationship("Product", back_populates="sales_history")

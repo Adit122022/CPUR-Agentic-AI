@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from pydantic import BaseModel
@@ -80,3 +80,71 @@ def get_prediction_history(db: Session = Depends(get_db)):
         ))
         
     return mapped_results
+
+class UploadPreviewItem(BaseModel):
+    date: str
+    product_name: str
+    sku: str
+    category: str
+    price: float
+    quantity_sold: int
+    current_stock: int
+
+@router.get("/uploads/{upload_id}/preview", response_model=List[UploadPreviewItem])
+def get_upload_preview(upload_id: int, db: Session = Depends(get_db), limit: int = 100):
+    """
+    Reconstruct and preview the first N rows imported from the spreadsheet.
+    """
+    sales = db.query(models.HistoricalSales)\
+        .filter(models.HistoricalSales.upload_id == upload_id)\
+        .limit(limit)\
+        .all()
+        
+    preview_items = []
+    for s in sales:
+        preview_items.append(UploadPreviewItem(
+            date=s.date,
+            product_name=s.product.name,
+            sku=s.product.sku,
+            category=s.product.category,
+            price=s.product.price,
+            quantity_sold=s.quantity,
+            current_stock=s.product.current_stock
+        ))
+        
+    return preview_items
+
+@router.delete("/uploads/{upload_id}")
+def delete_upload(upload_id: int, db: Session = Depends(get_db)):
+    """
+    Deletes the upload history log, all associated sales records, and cleans up orphaned products.
+    """
+    upload = db.query(models.UploadHistory).filter(models.UploadHistory.id == upload_id).first()
+    if not upload:
+        raise HTTPException(status_code=404, detail="Upload record not found")
+        
+    try:
+        # Delete associated sales records
+        db.query(models.HistoricalSales).filter(models.HistoricalSales.upload_id == upload_id).delete()
+        
+        # Delete the upload log
+        db.query(models.UploadHistory).filter(models.UploadHistory.id == upload_id).delete()
+        db.flush()
+        
+        # Clean up products with no remaining sales history (orphaned products)
+        orphaned_products = db.query(models.Product).filter(
+            ~models.Product.sales_history.any()
+        ).all()
+        
+        num_products_deleted = len(orphaned_products)
+        for p in orphaned_products:
+            db.delete(p)
+            
+        db.commit()
+        return {
+            "success": True,
+            "message": f"Upload '{upload.filename}' deleted successfully. Cleaned up {num_products_deleted} orphaned products."
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to delete upload: {str(e)}")

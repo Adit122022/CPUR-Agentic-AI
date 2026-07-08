@@ -3,6 +3,7 @@ import io
 import time
 import asyncio
 from typing import Callable
+from datetime import datetime
 try:
     from crewai import Crew, Task, Process
     from langchain_openai import ChatOpenAI
@@ -35,6 +36,7 @@ def run_simulated_crew(
     ml_prediction: float,
     weather_info: dict,
     social_info: dict,
+    sales_history: list[dict],
     log_callback: Callable[[str, str], None]
 ) -> dict:
     """
@@ -47,9 +49,50 @@ def run_simulated_crew(
     log_and_wait("System", "Initializing CrewAI orchestrator pipeline...")
     log_and_wait("System", "Loading Agent roles, backstory, and target configurations.")
     
-    log_and_wait("Data Analyst", f"Reading 30-day transaction logs for '{product_name}' ({sku}).")
-    log_and_wait("Data Analyst", f"Detected weekly seasonality. Weekend sales average 45% higher than weekdays.")
-    log_and_wait("Data Analyst", "Calculated standard baseline trend trajectory.")
+    # Calculate statistics from sales_history
+    num_days = len(sales_history)
+    total_sales = sum(s["quantity"] for s in sales_history)
+    avg_sales = total_sales / num_days if num_days > 0 else 0
+    
+    weekend_sales = []
+    weekday_sales = []
+    for s in sales_history:
+        try:
+            dt = datetime.strptime(s["date"], "%Y-%m-%d")
+            if dt.weekday() in [4, 5, 6]:  # Fri, Sat, Sun
+                weekend_sales.append(s["quantity"])
+            else:
+                weekday_sales.append(s["quantity"])
+        except Exception:
+            pass
+            
+    avg_weekend = sum(weekend_sales) / len(weekend_sales) if weekend_sales else 0
+    avg_weekday = sum(weekday_sales) / len(weekday_sales) if weekday_sales else 0
+    
+    if avg_weekday > 0 and avg_weekend > 0:
+        pct_diff = ((avg_weekend - avg_weekday) / avg_weekday) * 100
+        seasonality_msg = f"Weekend sales average {pct_diff:+.1f}% compared to weekdays."
+    else:
+        seasonality_msg = "Insufficient sales history to determine weekend/weekday seasonality."
+        
+    sorted_sales = sorted(sales_history, key=lambda x: x["date"])
+    half = len(sorted_sales) // 2
+    if half > 0:
+        first_half_avg = sum(s["quantity"] for s in sorted_sales[:half]) / half
+        second_half_avg = sum(s["quantity"] for s in sorted_sales[half:]) / (len(sorted_sales) - half)
+        if second_half_avg > first_half_avg:
+            trend_msg = f"baseline trend is upward (averaging {second_half_avg:.1f} vs {first_half_avg:.1f} in the first half)."
+        elif second_half_avg < first_half_avg:
+            trend_msg = f"baseline trend is downward (averaging {second_half_avg:.1f} vs {first_half_avg:.1f} in the first half)."
+        else:
+            trend_msg = "baseline trend is stable."
+    else:
+        trend_msg = "baseline trend is stable."
+
+    log_and_wait("Data Analyst", f"Reading {num_days}-day transaction logs for '{product_name}' ({sku}).")
+    log_and_wait("Data Analyst", f"Calculated baseline average daily sales: {avg_sales:.1f} units.")
+    log_and_wait("Data Analyst", f"Seasonality check: {seasonality_msg}")
+    log_and_wait("Data Analyst", f"Calculated baseline trajectory: {trend_msg}")
     
     log_and_wait("Market Scout", f"Fetching social sentiment index for product '{sku}'.")
     log_and_wait("Market Scout", f"Promo active: {social_info['active_campaign']}. Weekly mentions: {social_info['weekly_mentions']}.")
@@ -102,6 +145,7 @@ def run_forecast_crew(
     ml_prediction: float,
     weather_info: dict,
     social_info: dict,
+    sales_history: list[dict],
     log_callback: Callable[[str, str], None]
 ) -> dict:
     """
@@ -119,6 +163,7 @@ def run_forecast_crew(
             ml_prediction=ml_prediction,
             weather_info=weather_info,
             social_info=social_info,
+            sales_history=sales_history,
             log_callback=log_callback
         )
         
@@ -144,9 +189,13 @@ def run_forecast_crew(
         synthesizer = get_synthesizer_agent(llm)
         
         # Define Tasks
+        sales_summary = "\n".join([f"- Date: {s['date']}, Quantity Sold: {s['quantity']}" for s in sorted(sales_history, key=lambda x: x["date"])])
+        
         task_data = Task(
-            description=f"Analyze historical trends for {product_name} (SKU: {sku}). Report core seasonal parameters.",
-            expected_output="A brief summary of historical trends and baseline sales patterns.",
+            description=f"""Analyze the following historical sales data for {product_name} (SKU: {sku}) to identify key demand patterns, baseline trends, and seasonal spikes:
+{sales_summary}
+Report the baseline average daily sales, note if there are weekend/weekday differences, and state the general direction of the trend (increasing, decreasing, or stable).""",
+            expected_output="A brief summary of historical trends and baseline sales patterns based on the provided sales data.",
             agent=data_analyst
         )
         
@@ -210,5 +259,6 @@ def run_forecast_crew(
             ml_prediction=ml_prediction,
             weather_info=weather_info,
             social_info=social_info,
+            sales_history=sales_history,
             log_callback=log_callback
         )

@@ -31,6 +31,17 @@ app.include_router(history.router,       prefix="/api/history",    tags=["System
 @app.on_event("startup")
 async def startup_event():
     Base.metadata.create_all(bind=engine)
+    
+    # Ensure upload_id column exists in historical_sales (migration fallback)
+    from sqlalchemy import text
+    with engine.connect() as conn:
+        try:
+            conn.execute(text("ALTER TABLE historical_sales ADD COLUMN IF NOT EXISTS upload_id INTEGER REFERENCES upload_history(id) ON DELETE CASCADE;"))
+            conn.commit()
+            print("Database migration check complete: upload_id column verified.")
+        except Exception as e:
+            print(f"Database migration note: {e}")
+            
     forecast_service.main_loop = asyncio.get_running_loop()
     print("FastAPI backend initialized — CSV upload mode active.")
 

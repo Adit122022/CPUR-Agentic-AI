@@ -215,6 +215,18 @@ async def import_csv(
         products_updated = 0
         sales_inserted   = 0
 
+        # Save success logs in UploadHistory first to get the upload_id
+        success_history = models.UploadHistory(
+            filename=file.filename,
+            file_hash=file_hash,
+            total_rows=len(df),
+            unique_products=len(sku_map),
+            status="Success"
+        )
+        db.add(success_history)
+        db.flush()
+        upload_id = success_history.id
+
         for sku, data in sku_map.items():
             existing = db.query(models.Product).filter(models.Product.sku == sku).first()
 
@@ -254,18 +266,10 @@ async def import_csv(
                         product_id = product.id,
                         date       = sale["date"],
                         quantity   = sale["quantity"],
+                        upload_id  = upload_id
                     ))
                     sales_inserted += 1
 
-        # Save success logs in UploadHistory
-        success_history = models.UploadHistory(
-            filename=file.filename,
-            file_hash=file_hash,
-            total_rows=len(df),
-            unique_products=len(sku_map),
-            status="Success"
-        )
-        db.add(success_history)
         db.commit()
 
         return {

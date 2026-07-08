@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import CustomCursor from './components/CustomCursor';
 import Home from './features/home/pages/Home';
 import Products from './features/products/pages/Products';
 import StockDashboard from './features/stock/pages/StockDashboard';
@@ -43,6 +44,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
+      <CustomCursor />
       {showNav && <Navbar />}
       <main className="grow">
         <AnimatedRoutes />

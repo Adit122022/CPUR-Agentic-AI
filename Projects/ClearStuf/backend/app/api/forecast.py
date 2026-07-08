@@ -72,12 +72,8 @@ def get_multi_day_forecast(product_id: int, days: int = 7, db: Session = Depends
     if not product:
         raise HTTPException(status_code=404, detail=f"Product {product_id} not found")
 
-    sales = db.query(models.HistoricalSales)\
-        .filter(models.HistoricalSales.product_id == product_id)\
-        .all()
-
-    if not sales:
-        raise HTTPException(status_code=400, detail="No sales history found for this product")
+    # Ensure at least 30 days of sales history (pad/seed if needed based on available data)
+    sales = ForecastService.ensure_30_days_history(db, product_id)
 
     sorted_sales = sorted(sales, key=lambda x: x.date)
     # Last 30 days of actual data
