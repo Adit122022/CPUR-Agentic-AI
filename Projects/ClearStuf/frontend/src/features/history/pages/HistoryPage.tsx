@@ -62,6 +62,90 @@ interface ProductPredictionGroup {
   hasAgentRuns: boolean;
 }
 
+function parseAndRenderConsensus(text: string) {
+  if (!text) return null;
+  
+  const lines = text.split('\n');
+  const items: React.ReactNode[] = [];
+  let header = '';
+  let footer = '';
+  
+  lines.forEach((line, idx) => {
+    const trimmed = line.trim();
+    if (!trimmed) return;
+    
+    if (trimmed.startsWith('###')) {
+      header = trimmed.replace(/^###\s*/, '');
+    } else if (trimmed.startsWith('*') && trimmed.endsWith('*') && !trimmed.includes('**')) {
+      footer = trimmed.replace(/^\*\s*/, '').replace(/\*$/, '');
+    } else if (trimmed.startsWith('-') || trimmed.startsWith('*')) {
+      // It's a list item: - **Key**: Value
+      const cleanLine = trimmed.replace(/^[-*]\s*/, '');
+      const boldMatch = cleanLine.match(/^\*\*(.*?)\*\*:(.*)/);
+      if (boldMatch) {
+        const key = boldMatch[1];
+        const val = boldMatch[2].trim();
+        
+        let bgStyle = "bg-secondary/10 border-l-2 border-border";
+        let textStyle = "text-foreground";
+        
+        if (key.toLowerCase().includes('baseline')) {
+          bgStyle = "bg-secondary/20 border-l-2 border-zinc-500/80";
+        } else if (key.toLowerCase().includes('market')) {
+          bgStyle = "bg-pink-500/5 border-l-2 border-pink-500/50";
+        } else if (key.toLowerCase().includes('weather')) {
+          bgStyle = "bg-amber-500/5 border-l-2 border-amber-500/50";
+        } else if (key.toLowerCase().includes('total')) {
+          bgStyle = "bg-secondary/40 border-l-2 border-border/80";
+          textStyle = "text-foreground font-bold";
+        } else if (key.toLowerCase().includes('final')) {
+          bgStyle = "bg-emerald-500/5 border-l-2 border-emerald-500/50";
+          textStyle = "text-emerald-400 font-bold";
+        }
+
+        items.push(
+          <div key={idx} className={cn("p-3 rounded-lg border border-border/40 flex flex-col gap-1 text-[11px] leading-relaxed transition-all hover:bg-secondary/15", bgStyle)}>
+            <span className="font-bold text-muted-foreground uppercase tracking-widest text-[9px]">{key}</span>
+            <span className={cn("text-zinc-200", textStyle)}>{val.replace(/\*\*/g, '')}</span>
+          </div>
+        );
+      } else {
+        items.push(
+          <div key={idx} className="p-2.5 rounded-lg border border-border/30 bg-secondary/5 text-[11px] text-zinc-300">
+            {cleanLine}
+          </div>
+        );
+      }
+    } else {
+      items.push(
+        <p key={idx} className="text-[11px] text-zinc-400 leading-relaxed py-1">
+          {trimmed.replace(/\*\*/g, '')}
+        </p>
+      );
+    }
+  });
+
+  return (
+    <div className="space-y-3.5">
+      {header && (
+        <h4 className="text-[10px] font-black uppercase tracking-widest text-foreground pb-2 border-b border-border/60 mb-2">
+          {header}
+        </h4>
+      )}
+      
+      <div className="flex flex-col gap-2.5">
+        {items}
+      </div>
+      
+      {footer && (
+        <div className="mt-4 p-3 rounded-lg border border-emerald-500/20 bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-widest text-center shadow-inner">
+          {footer}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function HistoryPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
@@ -620,9 +704,9 @@ export default function HistoryPage() {
                                                 <BrainCircuit className="h-4 w-4 text-foreground" />
                                                 <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground">AI Agent Deliberation Rationale</h4>
                                               </div>
-                                              <pre className="text-xs text-foreground leading-relaxed whitespace-pre-wrap font-mono max-h-72 overflow-y-auto">
-                                                {pred.agent_adjustments}
-                                              </pre>
+                                              <div className="max-h-72 overflow-y-auto scrollbar-thin">
+                                                {parseAndRenderConsensus(pred.agent_adjustments)}
+                                              </div>
                                             </div>
                                           </td>
                                         </tr>

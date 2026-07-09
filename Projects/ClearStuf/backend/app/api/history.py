@@ -46,6 +46,23 @@ def get_upload_history(db: Session = Depends(get_db)):
 @router.get("/predictions", response_model=List[PredictionHistoryResponse])
 def get_prediction_history(db: Session = Depends(get_db)):
     """Fetch history of all agent forecasts, joined with product info."""
+    # Check if there are upload history items but no forecasts, and if so, auto-generate them
+    has_history = db.query(models.UploadHistory).count() > 0
+    forecast_count = db.query(models.Forecast).count()
+    if has_history and forecast_count == 0:
+        from app.services.forecast_service import ForecastService
+        products = db.query(models.Product).all()
+        for p in products:
+            try:
+                ForecastService.generate_forecast(
+                    db=db,
+                    product_id=p.id,
+                    model_type="linear_regression",
+                    use_agents=False
+                )
+            except Exception as e:
+                print(f"Auto-generating forecast failed for product {p.id}: {e}")
+
     results = db.query(
         models.Forecast.id,
         models.Forecast.product_id,

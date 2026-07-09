@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '@clerk/clerk-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Square, Activity, BrainCircuit, Package, Wifi, WifiOff, ChevronDown } from 'lucide-react';
 import type { AgentLog } from '../../../types';
@@ -95,8 +96,94 @@ function LogLine({ log }: { log: AgentLog }) {
   );
 }
 
+function parseAndRenderConsensus(text: string) {
+  if (!text) return null;
+  
+  const lines = text.split('\n');
+  const items: React.ReactNode[] = [];
+  let header = '';
+  let footer = '';
+  
+  lines.forEach((line, idx) => {
+    const trimmed = line.trim();
+    if (!trimmed) return;
+    
+    if (trimmed.startsWith('###')) {
+      header = trimmed.replace(/^###\s*/, '');
+    } else if (trimmed.startsWith('*') && trimmed.endsWith('*') && !trimmed.includes('**')) {
+      footer = trimmed.replace(/^\*\s*/, '').replace(/\*$/, '');
+    } else if (trimmed.startsWith('-') || trimmed.startsWith('*')) {
+      // It's a list item: - **Key**: Value
+      const cleanLine = trimmed.replace(/^[-*]\s*/, '');
+      const boldMatch = cleanLine.match(/^\*\*(.*?)\*\*:(.*)/);
+      if (boldMatch) {
+        const key = boldMatch[1];
+        const val = boldMatch[2].trim();
+        
+        let bgStyle = "bg-secondary/10 border-l-2 border-border";
+        let textStyle = "text-foreground";
+        
+        if (key.toLowerCase().includes('baseline')) {
+          bgStyle = "bg-secondary/20 border-l-2 border-zinc-500/80";
+        } else if (key.toLowerCase().includes('market')) {
+          bgStyle = "bg-pink-500/5 border-l-2 border-pink-500/50";
+        } else if (key.toLowerCase().includes('weather')) {
+          bgStyle = "bg-amber-500/5 border-l-2 border-amber-500/50";
+        } else if (key.toLowerCase().includes('total')) {
+          bgStyle = "bg-secondary/40 border-l-2 border-border/80";
+          textStyle = "text-foreground font-bold";
+        } else if (key.toLowerCase().includes('final')) {
+          bgStyle = "bg-emerald-500/5 border-l-2 border-emerald-500/50";
+          textStyle = "text-emerald-400 font-bold";
+        }
+
+        items.push(
+          <div key={idx} className={cn("p-3 rounded-lg border border-border/40 flex flex-col gap-1 text-[11px] leading-relaxed transition-all hover:bg-secondary/15", bgStyle)}>
+            <span className="font-bold text-muted-foreground uppercase tracking-widest text-[9px]">{key}</span>
+            <span className={cn("text-zinc-200", textStyle)}>{val.replace(/\*\*/g, '')}</span>
+          </div>
+        );
+      } else {
+        items.push(
+          <div key={idx} className="p-2.5 rounded-lg border border-border/30 bg-secondary/5 text-[11px] text-zinc-300">
+            {cleanLine}
+          </div>
+        );
+      }
+    } else {
+      items.push(
+        <p key={idx} className="text-[11px] text-zinc-400 leading-relaxed py-1">
+          {trimmed.replace(/\*\*/g, '')}
+        </p>
+      );
+    }
+  });
+
+  return (
+    <div className="space-y-3.5">
+      {header && (
+        <h4 className="text-[10px] font-black uppercase tracking-widest text-foreground pb-2 border-b border-border/60 mb-2">
+          {header}
+        </h4>
+      )}
+      
+      <div className="flex flex-col gap-2.5">
+        {items}
+      </div>
+      
+      {footer && (
+        <div className="mt-4 p-3 rounded-lg border border-emerald-500/20 bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-widest text-center shadow-inner">
+          {footer}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AgentConsole() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { isLoaded, isSignedIn } = useAuth();
   const [logs, setLogs] = useState<AgentLog[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const [activeAgent, setActiveAgent] = useState<string | null>(null);
@@ -107,8 +194,10 @@ export default function AgentConsole() {
     searchParams.get('product_id') ? Number(searchParams.get('product_id')) : null
   );
   const [selectOpen, setSelectOpen] = useState(false);
+  const [forecastResult, setForecastResult] = useState<any | null>(null);
   const terminalBodyRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
+  const lastFetchedProductIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (terminalBodyRef.current) {
@@ -120,19 +209,102 @@ export default function AgentConsole() {
   }, [logs, activeAgent]);
 
   useEffect(() => {
+    if (!isLoaded || !isSignedIn) return;
+
     fetch(`${API_BASE_URL}/api/products`)
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error('Failed to fetch products');
+        return r.json();
+      })
       .then((data: Product[]) => {
-        setProducts(data);
-        if (!selectedProductId && data.length > 0) setSelectedProductId(data[0].id);
+        if (Array.isArray(data)) {
+          setProducts(data);
+          if (!selectedProductId && data.length > 0) setSelectedProductId(data[0].id);
+        } else {
+          setProducts([]);
+        }
       })
       .catch(console.error);
-  }, []);
+  }, [isLoaded, isSignedIn]);
+
+  useEffect(() => {
+    if (!selectedProductId || !isLoaded || !isSignedIn) return;
+    if (isRunning) return;
+
+    // Avoid double fetching/overwriting detailed logs after running a fresh forecast
+    if (lastFetchedProductIdRef.current === selectedProductId) return;
+    lastFetchedProductIdRef.current = selectedProductId;
+
+    fetch(`${API_BASE_URL}/api/forecast/results/${selectedProductId}`)
+      .then(r => {
+        if (!r.ok) throw new Error('Failed to fetch past results');
+        return r.json();
+      })
+      .then((data: any[]) => {
+        if (Array.isArray(data) && data.length > 0) {
+          const lastRun = data[0];
+          setForecastResult(lastRun);
+          
+          const timestamp = new Date(lastRun.created_at || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          const dateStr = new Date(lastRun.created_at || Date.now()).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
+          
+          setLogs([
+            {
+              id: 'restore-start',
+              agent: 'System',
+              role: 'Orchestrator',
+              emoji: '⚙️',
+              message: `Loading historical forecast run from database (Generated on ${dateStr} at ${timestamp})`,
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+              color: '',
+            },
+            {
+              id: 'restore-ml',
+              agent: 'Data Analyst',
+              role: 'Quantitative Analysis',
+              emoji: '📊',
+              message: `Restored baseline mathematical projection: ${Math.round(lastRun.predicted_quantity)} units`,
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+              color: '',
+            },
+            {
+              id: 'restore-agents',
+              agent: 'Synthesizer',
+              role: 'Consensus Builder',
+              emoji: '🧠',
+              message: lastRun.adjusted_quantity 
+                ? `Restored agent consensus forecast: ${Math.round(lastRun.adjusted_quantity)} units (Adjustment: ${Math.round((lastRun.adjusted_quantity - lastRun.predicted_quantity)/lastRun.predicted_quantity * 100)}% applied)`
+                : `Restored baseline forecast: ${Math.round(lastRun.predicted_quantity)} units (No adjustments applied)`,
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+              color: '',
+            },
+            {
+              id: 'restore-end',
+              agent: 'System',
+              role: 'Orchestrator',
+              emoji: '⚙️',
+              message: `Historical results loaded. Ready for new analysis.`,
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+              color: '',
+            }
+          ]);
+        } else {
+          setForecastResult(null);
+          setLogs([]);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        setForecastResult(null);
+        setLogs([]);
+      });
+  }, [selectedProductId, isLoaded, isSignedIn, isRunning]);
 
   useEffect(() => {
     if (isRunning) {
       if (!selectedProductId) { setIsRunning(false); return; }
       setLogs([]);
+      setForecastResult(null);
       setSocketError(null);
 
       const wsProtocol = API_BASE_URL.startsWith('https') ? 'wss' : 'ws';
@@ -163,7 +335,8 @@ export default function AgentConsole() {
             if (!res.ok) throw new Error('Agent forecast run failed');
             return res.json();
           })
-          .then(() => {
+          .then((data) => {
+            setForecastResult(data.forecast);
             setTimeout(() => setIsRunning(false), 2000);
           })
           .catch(err => {
@@ -209,7 +382,7 @@ export default function AgentConsole() {
     return () => { wsRef.current?.close(); };
   }, [isRunning]);
 
-  const selectedProduct = products.find(p => p.id === selectedProductId);
+  const selectedProduct = Array.isArray(products) ? products.find(p => p.id === selectedProductId) : undefined;
 
   return (
     <div className="h-[calc(100vh-4rem)] flex flex-col md:flex-row bg-background dot-bg overflow-hidden">
@@ -304,10 +477,14 @@ export default function AgentConsole() {
         </div>
       </aside>
 
-      {/* MAIN TERMINAL PANEL */}
-      <div className="flex-1 flex flex-col min-h-0 z-10 relative h-full p-4 sm:p-6 overflow-hidden">
+      {/* MAIN TERMINAL & RESULTS PANEL */}
+      <div className="flex-1 flex flex-col lg:flex-row gap-6 min-h-0 z-10 relative h-full p-4 sm:p-6 overflow-y-auto lg:overflow-hidden">
+        
         {/* Terminal Window Wrapper */}
-        <div className="flex-1 flex flex-col bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden shadow-2xl">
+        <div className={cn(
+          "flex flex-col bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden shadow-2xl transition-all duration-300",
+          forecastResult ? "flex-grow lg:w-1/2 h-[45vh] lg:h-[calc(100vh-7rem)] shrink-0" : "flex-grow w-full lg:h-[calc(100vh-7rem)] h-full"
+        )}>
           
           {/* Terminal Window Header Bar */}
           <div className="flex items-center justify-between gap-4 px-4 py-3 bg-zinc-900 border-b border-zinc-800 shrink-0">
@@ -416,6 +593,104 @@ export default function AgentConsole() {
           </div>
 
         </div>
+
+        {/* Consensus Result Panel */}
+        {forecastResult && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4 }}
+            className="flex-grow lg:w-1/2 lg:h-[calc(100vh-7rem)] h-auto flex flex-col bg-card border border-border rounded-xl overflow-hidden shadow-2xl"
+          >
+            {/* Header */}
+            <div className="px-5 py-4 border-b border-border bg-secondary/15 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2">
+                <BrainCircuit className="h-5 w-5 text-foreground animate-pulse" />
+                <h2 className="text-xs font-bold uppercase tracking-widest text-foreground">Consensus Synthesis Report</h2>
+              </div>
+              <span className="text-[9px] px-2 py-0.5 border border-border bg-background text-foreground font-bold uppercase tracking-widest animate-pulse">
+                Enriched
+              </span>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 min-h-0 overflow-y-auto p-5 space-y-5 scrollbar-thin">
+              
+              {/* Product Info */}
+              <div className="flex items-center justify-between gap-3 p-3 rounded-lg border border-border bg-secondary/10">
+                <div className="min-w-0">
+                  <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest block">Selected Product</span>
+                  <span className="text-xs font-bold text-foreground truncate block">{selectedProduct?.name}</span>
+                </div>
+                <div className="text-right shrink-0">
+                  <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest block">SKU Barcode</span>
+                  <span className="text-xs font-mono font-bold text-foreground block">{selectedProduct?.sku}</span>
+                </div>
+              </div>
+
+              {/* Quantities Side-by-side */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 rounded-xl border border-border bg-secondary/5 flex flex-col justify-center">
+                  <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mb-1">ML Baseline Forecast</span>
+                  <span className="text-2xl font-black text-foreground font-mono">
+                    {Math.round(forecastResult.predicted_quantity)}{' '}
+                    <span className="text-xs font-normal text-muted-foreground uppercase">Units</span>
+                  </span>
+                  <span className="text-[8px] text-muted-foreground uppercase tracking-wider mt-1">Linear Regression</span>
+                </div>
+                
+                <div className="p-4 rounded-xl border border-border bg-foreground/5 flex flex-col justify-center relative overflow-hidden">
+                  <span className="text-[8px] font-bold text-foreground uppercase tracking-widest mb-1">Agent Consensus Forecast</span>
+                  <span className="text-2xl font-black text-foreground font-mono">
+                    {forecastResult.adjusted_quantity ? Math.round(forecastResult.adjusted_quantity) : Math.round(forecastResult.predicted_quantity)}{' '}
+                    <span className="text-xs font-normal text-muted-foreground uppercase">Units</span>
+                  </span>
+                  <span className="text-[8px] text-muted-foreground uppercase tracking-wider mt-1">
+                    {forecastResult.adjusted_quantity && forecastResult.adjusted_quantity !== forecastResult.predicted_quantity ? (
+                      <span className="text-foreground font-bold">
+                        {forecastResult.adjusted_quantity > forecastResult.predicted_quantity ? '↑' : '↓'}{' '}
+                        {Math.round(Math.abs((forecastResult.adjusted_quantity - forecastResult.predicted_quantity) / forecastResult.predicted_quantity * 100))}% Adjustment Applied
+                      </span>
+                    ) : 'No Adjustment Required'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Rationale Report */}
+              <div className="rounded-xl border border-border bg-zinc-950 p-4">
+                <h3 className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mb-3 border-b border-border/40 pb-1.5 flex items-center gap-1.5">
+                  <Activity className="h-3.5 w-3.5" />
+                  Consensus Rationale Report
+                </h3>
+                {forecastResult.agent_adjustments ? (
+                  <div className="space-y-3">
+                    {parseAndRenderConsensus(forecastResult.agent_adjustments)}
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground italic">No consensus rationale report generated.</p>
+                )}
+              </div>
+
+              {/* Navigation CTAs */}
+              <div className="flex gap-3 justify-end pt-2">
+                <button
+                  onClick={() => navigate(`/forecast?product_id=${selectedProductId}`)}
+                  className="px-4 py-2 border border-border rounded-lg text-[9px] font-bold uppercase tracking-widest text-foreground hover:bg-secondary transition-colors"
+                >
+                  View Forecast Chart
+                </button>
+                <button
+                  onClick={() => navigate('/history')}
+                  className="px-4 py-2 bg-foreground text-background rounded-lg text-[9px] font-bold uppercase tracking-widest hover:opacity-90 transition-opacity shadow-brand"
+                >
+                  View History Logs
+                </button>
+              </div>
+
+            </div>
+          </motion.div>
+        )}
+
       </div>
     </div>
   );

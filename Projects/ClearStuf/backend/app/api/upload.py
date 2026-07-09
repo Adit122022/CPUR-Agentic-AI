@@ -272,9 +272,24 @@ async def import_csv(
 
         db.commit()
 
+        # Auto-populate tomorrow's forecasts for all imported products to seed history
+        from app.services.forecast_service import ForecastService
+        for sku in sku_map.keys():
+            product = db.query(models.Product).filter(models.Product.sku == sku).first()
+            if product:
+                try:
+                    ForecastService.generate_forecast(
+                        db=db,
+                        product_id=product.id,
+                        model_type="linear_regression",
+                        use_agents=False
+                    )
+                except Exception as e:
+                    print(f"Auto-seeding initial forecast failed for SKU {sku}: {e}")
+
         return {
             "success": True,
-            "message": f"Import complete! {products_created} products created, {products_updated} updated, {sales_inserted} sales records added.",
+            "message": f"Import complete! {products_created} products created, {products_updated} updated, {sales_inserted} sales records added. Seeding forecast history...",
             "products_created": products_created,
             "products_updated": products_updated,
             "sales_inserted":   sales_inserted,

@@ -69,8 +69,58 @@ export default function Products() {
   };
 
   const getFallbackImage = (product: Product) => {
-    const shortName = product.name.split(' ').slice(0, 3).join(' ');
-    return `https://placehold.co/400x400/312e81/ffffff/png?text=${encodeURIComponent(shortName)}`;
+    const name = product.name.toLowerCase();
+    
+    // Curated Unsplash images for common items
+    if (name.includes('jeans') || name.includes('denim')) {
+      return 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&q=80'; // denim jeans
+    }
+    if (name.includes('shirt') || name.includes('t-shirt')) {
+      return 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&q=80'; // white shirt
+    }
+    if (name.includes('trouser') || name.includes('pant')) {
+      return 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500&q=80'; // trousers
+    }
+    if (name.includes('espresso') || name.includes('coffee') || name.includes('bean')) {
+      return 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=500&q=80'; // coffee beans
+    }
+    if (name.includes('matcha') || name.includes('tea')) {
+      return 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=500&q=80'; // matcha green tea
+    }
+    if (name.includes('olive oil') || name.includes('oil')) {
+      return 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500&q=80'; // olive oil
+    }
+    if (name.includes('salt') || name.includes('spice')) {
+      return 'https://images.unsplash.com/photo-1608797178974-15b35a61d121?w=500&q=80'; // pink salt
+    }
+    if (name.includes('honey')) {
+      return 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500&q=80'; // honey
+    }
+    if (name.includes('flour') || name.includes('baking')) {
+      return 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&q=80'; // flour
+    }
+    if (name.includes('jacket') || name.includes('coat')) {
+      return 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&q=80'; // jacket
+    }
+    if (name.includes('boots') || name.includes('shoe')) {
+      return 'https://images.unsplash.com/photo-1520639888713-7851133b1ed0?w=500&q=80'; // boots
+    }
+    
+    // Category mappings
+    const cat = product.category.toLowerCase();
+    if (cat.includes('apparel') || cat.includes('clothing') || cat.includes('formal') || cat.includes('wear')) {
+      return 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=500&q=80';
+    }
+    if (cat.includes('beverage') || cat.includes('drink')) {
+      return 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&q=80';
+    }
+    if (cat.includes('pantry') || cat.includes('food') || cat.includes('baking')) {
+      return 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&q=80';
+    }
+
+    // Dynamic keyword search fallback using loremflickr (returns real, high-quality stock photo)
+    const keywords = product.name.split(' ').slice(0, 2).join(',');
+    return `https://loremflickr.com/400/400/${encodeURIComponent(keywords)}?lock=${product.id}`;
   };
 
   useEffect(() => {
