@@ -1,15 +1,18 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, FileSpreadsheet, Shield, Sparkles, BookOpen, Layers, Terminal } from 'lucide-react';
+import {
+  Download, FileSpreadsheet, Shield, Sparkles, BookOpen, Layers,
+  Info, Database, BrainCircuit, Zap, Lock
+} from 'lucide-react';
 import { cn } from '../../../lib/utils';
 
 const DUMMY_CSV_DATA = [
-  { date: '2026-07-01', product_name: 'Premium Leather Boots', sku: 'SH-001', category: 'Footwear', price: '4500', quantity_sold: '14', current_stock: '120', brand: 'Timberland' },
-  { date: '2026-07-01', product_name: 'Organic Cotton Tee', sku: 'AP-002', category: 'Apparel', price: '1200', quantity_sold: '45', current_stock: '300', brand: 'Adidas' },
-  { date: '2026-07-02', product_name: 'Smart Running Watch', sku: 'WT-003', category: 'Electronics', price: '8999', quantity_sold: '8', current_stock: '45', brand: 'Garmin' },
-  { date: '2026-07-02', product_name: 'Wireless ANC Headphones', sku: 'WT-004', category: 'Electronics', price: '12500', quantity_sold: '12', current_stock: '60', brand: 'Sony' },
-  { date: '2026-07-03', product_name: 'Ergonomic Desk Chair', sku: 'FN-005', category: 'Furniture', price: '15400', quantity_sold: '3', current_stock: '25', brand: 'Herman Miller' },
-  { date: '2026-07-03', product_name: 'Double Walled Mug', sku: 'FN-006', category: 'Kitchenware', price: '750', quantity_sold: '32', current_stock: '150', brand: 'Bodum' },
+  { date: '2026-07-01', product_name: 'Organic Espresso Beans (1kg)', sku: 'GP-101', category: 'Beverages', price: '1499', quantity_sold: '24', current_stock: '85', brand: 'Blue Bottle' },
+  { date: '2026-07-01', product_name: 'Ceremonial Matcha Tin (40g)', sku: 'GP-102', category: 'Beverages', price: '2499', quantity_sold: '15', current_stock: '42', brand: 'Ippodo' },
+  { date: '2026-07-02', product_name: 'Cold Pressed Olive Oil (500ml)', sku: 'GP-103', category: 'Pantry', price: '1899', quantity_sold: '10', current_stock: '68', brand: 'Brightland' },
+  { date: '2026-07-02', product_name: 'Himalayan Pink Salt Grinder', sku: 'GP-104', category: 'Pantry', price: '399', quantity_sold: '35', current_stock: '210', brand: 'Spice House' },
+  { date: '2026-07-03', product_name: 'Raw Manuka Honey (MGO 250+)', sku: 'GP-105', category: 'Pantry', price: '3299', quantity_sold: '6', current_stock: '28', brand: 'Comvita' },
+  { date: '2026-07-03', product_name: 'Gluten-Free Almond Flour (1kg)', sku: 'GP-106', category: 'Baking', price: '799', quantity_sold: '18', current_stock: '115', brand: 'Bob\'s Red Mill' },
 ];
 
 export default function Documentation() {
@@ -26,7 +29,7 @@ export default function Documentation() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'clearshelf_sample_retail_data.csv');
+    link.setAttribute('download', 'clearshelf_sample_pantry_data.csv');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -34,22 +37,22 @@ export default function Documentation() {
 
   const menuGroups = [
     {
-      title: 'Getting Started',
+      title: 'Guide & Basics',
       items: [
         { id: 'intro', label: 'Introduction', icon: <BookOpen className="h-3.5 w-3.5" /> },
-        { id: 'security', label: 'Security & Auth', icon: <Shield className="h-3.5 w-3.5" /> },
+        { id: 'security', label: 'Security & Access', icon: <Shield className="h-3.5 w-3.5" /> },
       ],
     },
     {
-      title: 'CSV Integration',
+      title: 'Data Ingestion',
       items: [
-        { id: 'csv', label: 'Format & Schemas', icon: <FileSpreadsheet className="h-3.5 w-3.5" /> },
+        { id: 'csv', label: 'CSV Schema & Template', icon: <FileSpreadsheet className="h-3.5 w-3.5" /> },
       ],
     },
     {
-      title: 'AI Models',
+      title: 'Intelligence',
       items: [
-        { id: 'models', label: 'Forecasting Logic', icon: <Layers className="h-3.5 w-3.5" /> },
+        { id: 'models', label: 'AI Forecasting Logic', icon: <Layers className="h-3.5 w-3.5" /> },
       ],
     },
   ];
@@ -59,23 +62,23 @@ export default function Documentation() {
       <div className="absolute inset-0 glow-amber opacity-10 pointer-events-none" />
 
       {/* Main layout container matching Shadcn UI Documentation grid */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 grid grid-cols-1 md:grid-cols-[220px_1fr] gap-10 items-start z-10 relative">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 grid grid-cols-1 md:grid-cols-[240px_1fr] gap-10 items-start z-10 relative">
         
         {/* Left Sidebar Navigation (Shadcn Style) */}
-        <aside className="sticky top-20 space-y-6 border-r border-border/40 pr-6 hidden md:block">
+        <aside className="sticky top-24 space-y-6 border-r border-border/40 pr-6 hidden md:block">
           {menuGroups.map(group => (
-            <div key={group.title} className="space-y-2">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{group.title}</h3>
+            <div key={group.title} className="space-y-2.5">
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 px-3">{group.title}</h3>
               <ul className="space-y-1">
                 {group.items.map(item => (
                   <li key={item.id}>
                     <button
                       onClick={() => setActiveTab(item.id as any)}
                       className={cn(
-                        "w-full flex items-center gap-2.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all text-left uppercase tracking-wider",
+                        "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all text-left uppercase tracking-wider",
                         activeTab === item.id 
-                          ? "bg-secondary text-foreground border-l-2 border-foreground" 
-                          : "text-muted-foreground hover:bg-secondary/40 hover:text-foreground"
+                          ? "bg-secondary text-foreground shadow-sm border-l-2 border-foreground" 
+                          : "text-muted-foreground hover:bg-secondary/35 hover:text-foreground"
                       )}
                     >
                       {item.icon}
@@ -89,14 +92,16 @@ export default function Documentation() {
         </aside>
 
         {/* Mobile Sidebar Dropdown */}
-        <div className="md:hidden flex gap-2 overflow-x-auto pb-4 border-b border-border/40 mb-6">
+        <div className="md:hidden flex gap-2 overflow-x-auto pb-4 border-b border-border/40 mb-4 scrollbar-none">
           {menuGroups.flatMap(g => g.items).map(item => (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id as any)}
               className={cn(
-                "flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold whitespace-nowrap uppercase tracking-wider shrink-0",
-                activeTab === item.id ? "bg-foreground text-background" : "bg-card border border-border text-muted-foreground"
+                "flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap uppercase tracking-wider shrink-0 border transition-all",
+                activeTab === item.id 
+                  ? "bg-foreground border-foreground text-background" 
+                  : "bg-card border-border text-muted-foreground hover:text-foreground"
               )}
             >
               {item.icon}
@@ -106,7 +111,7 @@ export default function Documentation() {
         </div>
 
         {/* Right Content Panel Viewport */}
-        <main className="min-h-[60vh] bg-card/40 border border-border/80 rounded-xl p-6 md:p-10 backdrop-blur-xl shadow-xl">
+        <main className="min-h-[65vh] bg-card/35 border border-border/80 rounded-2xl p-6 md:p-10 backdrop-blur-md shadow-xl">
           <AnimatePresence mode="wait">
             
             {/* Tab 1: Introduction */}
@@ -118,24 +123,63 @@ export default function Documentation() {
                 exit={{ opacity: 0, y: -10 }}
                 className="space-y-6"
               >
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-background text-muted-foreground text-[10px] font-bold uppercase tracking-widest">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-background/50 text-muted-foreground text-[10px] font-bold uppercase tracking-widest">
                   <Sparkles className="h-3.5 w-3.5 text-foreground animate-pulse" />
-                  <span>Introduction to ClearShelf</span>
+                  <span>Interactive System Walkthrough</span>
                 </div>
-                <h1 className="text-3xl font-black uppercase tracking-tight text-foreground">ClearShelf System Guide</h1>
+                
+                <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-foreground">
+                  Welcome to ClearShelf
+                </h1>
+                
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Welcome to the official developer guide. ClearShelf is designed for modern retail business managers and inventory coordinators. By combining simple, row-based sales logs with advanced AI regression algorithms, ClearShelf automates weekly demand forecasting and optimizes store shelving.
+                  ClearShelf is an intelligent inventory management and demand forecasting portal designed for modern retailers. By analyzing your store's transaction history, ClearShelf maps sales velocity, identifies low-stock vulnerabilities, and runs predictive machine learning models to forecast future inventory requirements.
                 </p>
-                <div className="p-4 rounded-lg border border-border bg-secondary/20 space-y-2">
-                  <h3 className="text-xs font-bold uppercase tracking-wide flex items-center gap-2">
-                    <Terminal className="h-4 w-4" /> Quick System Workflow
-                  </h3>
-                  <ul className="text-xs text-muted-foreground space-y-1.5 list-disc pl-4 leading-relaxed">
-                    <li>Create an account securely using Clerk Email OTP or Social Sign-In.</li>
-                    <li>Download the Sample CSV dataset template from the Integration tab.</li>
-                    <li>Upload your daily transactions sheet inside the Upload Portal.</li>
-                    <li>Access regression forecasts, low-stock warnings, and seasonality indices.</li>
-                  </ul>
+
+                <hr className="border-border/40" />
+
+                <h2 className="text-sm font-bold uppercase tracking-widest text-foreground">
+                  Step-by-Step Operations Workflow
+                </h2>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {[
+                    {
+                      num: '01',
+                      title: 'Format & Upload Data',
+                      desc: 'Ingest daily sales history files in the CSV section. The system validates formatting rules in real-time, preventing corruption.',
+                      link: 'CSV Integration tab'
+                    },
+                    {
+                      num: '02',
+                      title: 'Review Catalog & Stock',
+                      desc: 'Browse product lists, categories, and inventory margins. ClearShelf monitors shelf items and flags low-stock risks.',
+                      link: 'Products & Catalog'
+                    },
+                    {
+                      num: '03',
+                      title: 'Run AI Forecasts',
+                      desc: 'Trigger demand forecasting algorithms over customizable periods (7 to 90 days) utilizing linear regression and agent adjustment modules.',
+                      link: 'AI Predictions'
+                    },
+                    {
+                      num: '04',
+                      title: 'Audit Historical Runs',
+                      desc: 'Browse historical file uploads and prediction runs to audit changes and optimize scheduling over time.',
+                      link: 'Operations History Log'
+                    }
+                  ].map((step) => (
+                    <div key={step.num} className="p-5 rounded-xl border border-border bg-secondary/10 flex flex-col justify-between">
+                      <div>
+                        <div className="text-2xl font-black text-foreground/20 font-mono mb-2">{step.num}</div>
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-foreground mb-1.5">{step.title}</h3>
+                        <p className="text-xs text-muted-foreground leading-relaxed mb-4">{step.desc}</p>
+                      </div>
+                      <span className="text-[9px] uppercase font-bold tracking-widest text-foreground/60 flex items-center gap-1.5">
+                        <Info className="h-3 w-3" /> Related: {step.link}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </motion.div>
             )}
@@ -149,21 +193,36 @@ export default function Documentation() {
                 exit={{ opacity: 0, y: -10 }}
                 className="space-y-6"
               >
-                <h1 className="text-3xl font-black uppercase tracking-tight text-foreground">Security & Workspace Isolation</h1>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-background/50 text-muted-foreground text-[10px] font-bold uppercase tracking-widest">
+                  <Lock className="h-3.5 w-3.5 text-foreground" />
+                  <span>Tenant Isolation Policy</span>
+                </div>
+                
+                <h1 className="text-3xl font-black uppercase tracking-tight text-foreground">
+                  Security & Workspace Isolation
+                </h1>
+                
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  We take workspace security and isolated tenant access seriously. To ensure compliance and zero credential leakage, we implement the following:
+                  ClearShelf guarantees complete database segregation and workspace protection. We utilize industry-standard practices to isolate store inventory parameters, ensuring that zero telemetry leaks outside your account.
                 </p>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="p-5 rounded-lg border border-border bg-secondary/10">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-foreground mb-2">Clerk Token Validation</h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                  <div className="p-5 rounded-xl border border-border bg-secondary/15">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-foreground mb-2 flex items-center gap-2">
+                      <Shield className="h-4 w-4 text-foreground shrink-0" />
+                      Clerk Session Management
+                    </h3>
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      All browser API requests transit via a global interceptor adding RS256 Bearer tokens. Clerk JWKS endpoints are cached to avoid verification overhead.
+                      All browser interactions require authentication via Clerk JWT credentials. Social logins and email OTP verification tokens are cryptographically validated for secure access.
                     </p>
                   </div>
-                  <div className="p-5 rounded-lg border border-border bg-secondary/10">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-foreground mb-2">Database Encryption</h3>
+                  <div className="p-5 rounded-xl border border-border bg-secondary/15">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-foreground mb-2 flex items-center gap-2">
+                      <Database className="h-4 w-4 text-foreground shrink-0" />
+                      Isolated Neon Databases
+                    </h3>
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      Your store's product metadata and forecast runs sit inside isolated tables, encrypted at rest and in transit via secure Neon database connections.
+                      Product metadata, sales records, and forecasting histories are stored inside tenant-isolated database rows. SSL-only connections prevent intercept risks.
                     </p>
                   </div>
                 </div>
@@ -182,46 +241,51 @@ export default function Documentation() {
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border/40 pb-6">
                   <div>
                     <h1 className="text-3xl font-black uppercase tracking-tight text-foreground">CSV Schema & Formatting</h1>
-                    <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">Upload validation parameters</p>
+                    <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">Data Ingestion File Guidelines</p>
                   </div>
                   <button
                     onClick={downloadSampleCSV}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded bg-foreground text-background hover:bg-foreground/90 font-bold uppercase tracking-widest text-[10px] transition-all shadow-brand"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-foreground text-background hover:opacity-90 font-bold uppercase tracking-widest text-[10px] transition-all shadow-brand"
                   >
                     <Download className="h-3.5 w-3.5" />
                     Download Sample CSV
                   </button>
                 </div>
 
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  ClearShelf processes raw transaction logs as comma-separated values. Please ensure your files strictly conform to the following schema definition:
+                <p className="text-xs text-muted-foreground leading-relaxed uppercase tracking-wider">
+                  Ingested sales history sheets must match the following columns exactly. Any missing or malformed values will cause validation failures to protect database integrity.
                 </p>
 
-                <div className="overflow-x-auto rounded-lg border border-border bg-background/50">
-                  <table className="w-full text-left text-xs">
+                <div className="overflow-x-auto rounded-xl border border-border bg-background/50">
+                  <table className="w-full text-left text-xs border-collapse">
                     <thead className="bg-secondary/40 text-foreground font-bold border-b border-border uppercase text-[9px] tracking-widest">
                       <tr>
-                        <th className="p-3">Field</th>
-                        <th className="p-3">Format Type</th>
-                        <th className="p-3">Description</th>
-                        <th className="p-3">Example</th>
+                        <th className="p-4">Column Header</th>
+                        <th className="p-4">Format Type</th>
+                        <th className="p-4">Description</th>
+                        <th className="p-4">Sample Value</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/40 text-muted-foreground font-mono text-[11px]">
                       {[
-                        { field: 'date', type: 'YYYY-MM-DD', desc: 'Transaction record date', val: '2026-07-01' },
-                        { field: 'product_name', type: 'String', desc: 'SKU label / display name', val: 'Leather Jacket' },
-                        { field: 'sku', type: 'String (Unique)', desc: 'Distinct SKU barcode', val: 'SH-001' },
-                        { field: 'category', type: 'String', desc: 'Product inventory category', val: 'Apparel' },
-                        { field: 'price', type: 'Float / Int', desc: 'Unit price in INR (₹)', val: '4500' },
-                        { field: 'quantity_sold', type: 'Int', desc: 'Daily items sold', val: '14' },
-                        { field: 'current_stock', type: 'Int', desc: 'Available shelf items', val: '120' },
+                        { field: 'date', type: 'YYYY-MM-DD', desc: 'Date of daily transaction(s)', val: '2026-07-01' },
+                        { field: 'product_name', type: 'String', desc: 'Display name of product item', val: 'Organic Espresso Beans (1kg)' },
+                        { field: 'sku', type: 'String (Unique)', desc: 'Inventory stock keeping unit identifier', val: 'GP-101' },
+                        { field: 'category', type: 'String', desc: 'Product grouping category', val: 'Beverages' },
+                        { field: 'price', type: 'Float / Integer', desc: 'Retail unit price in INR', val: '1499' },
+                        { field: 'quantity_sold', type: 'Integer', desc: 'Quantity of items sold on that date', val: '24' },
+                        { field: 'current_stock', type: 'Integer', desc: 'Available stock on hand at upload', val: '85' },
+                        { field: 'brand (Optional)', type: 'String', desc: 'Product manufacturer/brand name', val: 'Blue Bottle' },
                       ].map((row) => (
-                        <tr key={row.field}>
-                          <td className="p-3 font-bold text-foreground">{row.field}</td>
-                          <td className="p-3 text-[10px]"><span className="px-1.5 py-0.5 rounded border border-border bg-card font-semibold">{row.type}</span></td>
-                          <td className="p-3 font-sans text-xs">{row.desc}</td>
-                          <td className="p-3 text-foreground">{row.val}</td>
+                        <tr key={row.field} className="hover:bg-secondary/5 transition-colors">
+                          <td className="p-4 font-bold text-foreground">{row.field}</td>
+                          <td className="p-4 text-[10px]">
+                            <span className="px-2 py-0.5 rounded border border-border bg-card font-semibold text-foreground">
+                              {row.type}
+                            </span>
+                          </td>
+                          <td className="p-4 font-sans text-xs">{row.desc}</td>
+                          <td className="p-4 text-foreground">{row.val}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -230,32 +294,35 @@ export default function Documentation() {
 
                 {/* Dummy Data Preview */}
                 <div className="space-y-3 pt-4">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">Live Spreadsheet Template Preview</h3>
-                  <div className="overflow-x-auto border border-border rounded-lg bg-background/80">
-                    <table className="w-full text-left text-[10px] font-mono">
-                      <thead className="bg-secondary/40 text-foreground border-b border-border uppercase tracking-widest text-[9px]">
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-foreground flex items-center gap-2">
+                    <FileSpreadsheet className="h-4 w-4" />
+                    Interactive Sample Template Preview
+                  </h3>
+                  <div className="overflow-x-auto border border-border rounded-xl bg-background/80">
+                    <table className="w-full text-left text-[10px] font-mono border-collapse">
+                      <thead className="bg-secondary/40 text-foreground border-b border-border uppercase tracking-widest text-[8px]">
                         <tr>
-                          <th className="p-2.5">date</th>
-                          <th className="p-2.5">product_name</th>
-                          <th className="p-2.5">sku</th>
-                          <th className="p-2.5">category</th>
-                          <th className="p-2.5">price</th>
-                          <th className="p-2.5">quantity_sold</th>
-                          <th className="p-2.5">current_stock</th>
-                          <th className="p-2.5">brand</th>
+                          <th className="p-3">date</th>
+                          <th className="p-3">product_name</th>
+                          <th className="p-3">sku</th>
+                          <th className="p-3">category</th>
+                          <th className="p-3 text-right">price</th>
+                          <th className="p-3 text-right">quantity_sold</th>
+                          <th className="p-3 text-right">current_stock</th>
+                          <th className="p-3">brand</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border/20 text-muted-foreground">
                         {DUMMY_CSV_DATA.map((row, idx) => (
                           <tr key={idx} className="hover:bg-foreground/5 transition-colors">
-                            <td className="p-2.5">{row.date}</td>
-                            <td className="p-2.5 text-foreground font-sans font-bold">{row.product_name}</td>
-                            <td className="p-2.5">{row.sku}</td>
-                            <td className="p-2.5">{row.category}</td>
-                            <td className="p-2.5">₹{row.price}</td>
-                            <td className="p-2.5 text-foreground font-bold">{row.quantity_sold}</td>
-                            <td className="p-2.5 text-foreground font-bold">{row.current_stock}</td>
-                            <td className="p-2.5 font-sans">{row.brand}</td>
+                            <td className="p-3 whitespace-nowrap">{row.date}</td>
+                            <td className="p-3 text-foreground font-sans font-bold whitespace-nowrap">{row.product_name}</td>
+                            <td className="p-3 whitespace-nowrap">{row.sku}</td>
+                            <td className="p-3 whitespace-nowrap">{row.category}</td>
+                            <td className="p-3 text-right text-foreground whitespace-nowrap">₹{row.price}</td>
+                            <td className="p-3 text-right text-foreground font-bold whitespace-nowrap">{row.quantity_sold}</td>
+                            <td className="p-3 text-right text-foreground font-bold whitespace-nowrap">{row.current_stock}</td>
+                            <td className="p-3 font-sans whitespace-nowrap">{row.brand}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -274,27 +341,47 @@ export default function Documentation() {
                 exit={{ opacity: 0, y: -10 }}
                 className="space-y-6"
               >
-                <h1 className="text-3xl font-black uppercase tracking-tight text-foreground">Forecasting Algorithm Logic</h1>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-background/50 text-muted-foreground text-[10px] font-bold uppercase tracking-widest">
+                  <BrainCircuit className="h-3.5 w-3.5 text-foreground" />
+                  <span>Mathematical Forecasting Overview</span>
+                </div>
+
+                <h1 className="text-3xl font-black uppercase tracking-tight text-foreground">
+                  AI Forecasting Core Logic
+                </h1>
+                
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  ClearShelf processes raw daily records to determine optimal stocking points. The cooperative pipeline runs two primary analytical scripts on the backend:
+                  ClearShelf utilizes a hybrid analytical approach, chaining simple linear trends with multi-factor adjustments to predict stock demand.
                 </p>
+                
                 <div className="space-y-4">
-                  <div className="p-5 rounded-lg border border-border bg-secondary/15">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-foreground mb-2 flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-foreground" /> Linear Regression Engine
-                    </h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      Fits a weekly trendline to historical transaction quantities sold using least-squares regression. This isolates a weekly slope coefficient, extending the predicted demand quantities over a 30-day forecast horizon.
-                    </p>
-                  </div>
-                  <div className="p-5 rounded-lg border border-border bg-secondary/15">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-foreground mb-2 flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-foreground" /> Seasonality Adjuster
-                    </h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      Applies weight coefficients to predictions based on day-of-week demand variations and national holidays, correcting the raw regression lines for seasonal local trends.
-                    </p>
-                  </div>
+                  {[
+                    {
+                      title: 'Linear Regression Engine',
+                      desc: 'Estimates sales trendlines using historical daily transactions. By calculating the slope of quantity sold over time (Ordinary Least Squares), it establishes the baseline demand for the chosen horizon.',
+                      icon: <Layers className="h-4 w-4" />
+                    },
+                    {
+                      title: 'Seasonality Weight Adjuster',
+                      desc: 'Calculates day-of-week demand variance to smooth out raw linear trajectories (e.g. higher pantry sales on weekends). This factor helps correct baseline errors.',
+                      icon: <Zap className="h-4 w-4" />
+                    },
+                    {
+                      title: 'Agent Enrichment Layer',
+                      desc: 'An optional layer that triggers specialized LLM backend agents. These agents review current stock constraints, run heuristics, analyze context, and provide logical adjustments to raw numeric values.',
+                      icon: <BrainCircuit className="h-4 w-4" />
+                    }
+                  ].map((engine) => (
+                    <div key={engine.title} className="p-5 rounded-xl border border-border bg-secondary/10 hover:bg-secondary/15 transition-colors">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-foreground mb-2 flex items-center gap-2">
+                        {engine.icon}
+                        {engine.title}
+                      </h3>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {engine.desc}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </motion.div>
             )}

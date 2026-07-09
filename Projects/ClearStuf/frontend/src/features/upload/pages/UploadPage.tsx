@@ -5,8 +5,8 @@ import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../../store';
 import { fetchProducts } from '../../products/products.slice';
 import {
-  Upload, FileText, CheckCircle2, XCircle, AlertTriangle,
-  Download, Trash2, ArrowRight, Table2, Loader2, RotateCcw,
+  Upload, CheckCircle2, XCircle, AlertTriangle,
+  ArrowRight, Table2, Loader2, RotateCcw,
   Package, BarChart2, CalendarDays, Database, Terminal,
 } from 'lucide-react';
 import { API_BASE_URL } from '../../../services/api';
@@ -62,7 +62,6 @@ export default function UploadPage() {
   const [validation, setValidation] = useState<ValidationResult | null>(null);
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
   const [clearOnImport, setClearOnImport] = useState(true);
-  const [clearing, setClearing] = useState(false);
 
   const handleFile = useCallback(async (f: File) => {
     if (!f.name.endsWith('.csv')) {
@@ -121,17 +120,6 @@ export default function UploadPage() {
       setStep(data.success ? 'done' : 'error');
     } catch {
       setStep('error');
-    }
-  };
-
-  const handleClear = async () => {
-    if (!window.confirm('This will delete ALL products and sales data. Are you sure?')) return;
-    setClearing(true);
-    try {
-      await fetch(`${API_BASE_URL}/api/upload/clear`, { method: 'DELETE' });
-      dispatch(fetchProducts());
-    } finally {
-      setClearing(false);
     }
   };
 
@@ -436,25 +424,6 @@ export default function UploadPage() {
           {/* RIGHT SIDEBAR: Guide */}
           <div className="space-y-5">
 
-            {/* Download template */}
-            <div className="rounded-xl border border-border bg-card/65 p-5 backdrop-blur-md">
-              <div className="flex items-center gap-2 mb-3">
-                <FileText className="h-4 w-4 text-foreground" />
-                <h3 className="text-xs font-bold uppercase tracking-widest text-foreground">Spreadsheet template</h3>
-              </div>
-              <p className="text-xs text-muted-foreground mb-4 uppercase tracking-wider leading-relaxed">
-                Download a pre-filled sample spreadsheet with clothing SKU logs to test the pipeline.
-              </p>
-              <a
-                href={`${API_BASE_URL}/api/upload/template`}
-                download="clearshelf_template.csv"
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-secondary/40 py-2.5 text-xs font-bold uppercase tracking-widest text-foreground hover:bg-secondary transition-colors"
-              >
-                <Download className="h-4 w-4" />
-                Download template
-              </a>
-            </div>
-
             {/* Required columns */}
             <div className="rounded-xl border border-border bg-card/60 p-5">
               <h3 className="text-xs font-bold uppercase tracking-widest text-foreground mb-4 flex items-center gap-2">
@@ -484,25 +453,6 @@ export default function UploadPage() {
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* Danger zone */}
-            <div className="rounded-xl border border-border bg-card/60 p-5">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-foreground mb-2 flex items-center gap-2">
-                <Trash2 className="h-4 w-4" />
-                Danger Zone
-              </h3>
-              <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wider">
-                Manually wipe all product indices and sales tables from Neon replica.
-              </p>
-              <button
-                onClick={handleClear}
-                disabled={clearing}
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-secondary/20 py-2 text-xs font-bold uppercase tracking-widest text-foreground hover:bg-secondary transition-colors"
-              >
-                {clearing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
-                {clearing ? 'Clearing…' : 'Clear Data Tables'}
-              </button>
             </div>
           </div>
         </div>

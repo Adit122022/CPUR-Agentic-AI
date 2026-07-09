@@ -4,9 +4,12 @@ import {
   FileSpreadsheet, TrendingUp, RefreshCw, AlertCircle, Calendar,
   Clock, Hash, Database, CheckCircle, XCircle, ChevronDown, ChevronUp,
   Copy, Check, BrainCircuit, Cpu, Sparkles, Package, Play, X,
-  Zap, BarChart3, ChevronRight
+  Zap, BarChart3, ChevronRight, Trash2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '../../../store';
+import { fetchProducts as fetchProductsAction } from '../../products/products.slice';
 import { API_BASE_URL } from '../../../services/api';
 import { cn } from '../../../lib/utils';
 
@@ -61,11 +64,13 @@ interface ProductPredictionGroup {
 
 export default function HistoryPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const [activeTab, setActiveTab] = useState<'uploads' | 'predictions'>('uploads');
   const [uploads, setUploads] = useState<UploadHistoryItem[]>([]);
   const [predictions, setPredictions] = useState<PredictionHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [clearing, setClearing] = useState(false);
 
   // Expand/collapse state
   const [expandedGroups, setExpandedGroups] = useState<Set<number>>(new Set());
@@ -82,7 +87,6 @@ export default function HistoryPage() {
 
   // Upload Preview and Delete state
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewUploadId, setPreviewUploadId] = useState<number | null>(null);
   const [previewFilename, setPreviewFilename] = useState<string>('');
   const [previewRows, setPreviewRows] = useState<any[]>([]);
   const [previewLoading, setPreviewLoading] = useState(false);
@@ -143,7 +147,6 @@ export default function HistoryPage() {
   }, [showForecastPanel, previewOpen]);
 
   const handlePreviewUpload = async (uploadId: number, filename: string) => {
-    setPreviewUploadId(uploadId);
     setPreviewFilename(filename);
     setPreviewOpen(true);
     setPreviewLoading(true);
@@ -174,6 +177,21 @@ export default function HistoryPage() {
       alert(e.message || 'Failed to delete upload.');
     } finally {
       setDeletingUploadId(null);
+    }
+  };
+
+  const handleClear = async () => {
+    if (!window.confirm('This will delete ALL products and sales data. Are you sure?')) return;
+    setClearing(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/upload/clear`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to clear database');
+      dispatch(fetchProductsAction());
+      await fetchData();
+    } catch (e: any) {
+      alert(e.message || 'Failed to clear database.');
+    } finally {
+      setClearing(false);
     }
   };
 
@@ -297,7 +315,7 @@ export default function HistoryPage() {
           <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-foreground mb-2">System History</h1>
           <p className="text-muted-foreground text-xs tracking-wider uppercase">Audit spreadsheet ingestion and all forecasting predictions.</p>
         </div>
-        <div className="flex items-center gap-2 self-start sm:self-auto">
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
           <motion.button whileTap={{ scale: 0.95 }} onClick={openForecastPanel}
             className="flex items-center gap-2 px-4 py-2.5 bg-foreground text-background text-xs font-bold uppercase tracking-widest rounded-lg hover:opacity-90 transition-all shadow-brand">
             <Zap className="w-3.5 h-3.5" />
@@ -310,6 +328,11 @@ export default function HistoryPage() {
               <RefreshCw className="w-3.5 h-3.5" />
             </motion.div>
             Refresh
+          </motion.button>
+          <motion.button whileTap={{ scale: 0.95 }} onClick={handleClear} disabled={clearing}
+            className="flex items-center gap-2 px-4 py-2.5 bg-red-500/10 border border-red-500/30 rounded-lg text-xs font-bold uppercase tracking-widest text-red-400 hover:bg-red-500/20 transition-all">
+            {clearing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+            Clear Data Tables
           </motion.button>
         </div>
       </motion.div>
