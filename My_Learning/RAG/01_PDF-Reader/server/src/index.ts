@@ -1,23 +1,40 @@
-import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf';
-import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
-import dotenv from "dotenv"
+import express from 'express';
+import path from 'path';
+import apiRoutes from './routes/api';
+import { config, validateConfig } from './config/env';
 
-async function main() {
-  const pdfPath = '../pdf/SD.pdf';
-  const loader = new PDFLoader(pdfPath);
-  const docs = await loader.load();
+// Validate env vars
+validateConfig();
 
-  const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 1000,
-    chunkOverlap: 200,
-  });
+const app = express();
 
-  const chunks = await splitter.splitDocuments(docs);
+// Body parser middleware (supports large PDF base64 payloads)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-  console.log('Total chunks:', chunks.length);
+// Serve frontend UI static files
+const publicDir = path.join(__dirname, '../public');
+app.use(express.static(publicDir));
 
-}
+// Mount RAG API endpoints
+app.use('/api', apiRoutes);
 
-main().catch((err) => {
-  console.error('PDF split failed:', err);
+// Fallback SPA routing compatible with Express 5+
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  res.sendFile(path.join(publicDir, 'index.html'));
+});
+
+// Start Server
+app.listen(config.port, () => {
+  console.log(`
+=====================================================
+🚀 RAG Application Server active!
+🌐 UI Dashboard: http://localhost:${config.port}
+📌 API Status:   http://localhost:${config.port}/api/status
+🌲 Pinecone Index: ${config.pineconeIndexName}
+=====================================================
+  `);
 });
