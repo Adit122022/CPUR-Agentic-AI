@@ -1,11 +1,23 @@
 import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf';
+import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
+import dotenv from "dotenv"
 
 async function main() {
-  const loader = new PDFLoader('../pdf/SD.pdf');
+  const pdfPath = '../pdf/SD.pdf';
+  const loader = new PDFLoader(pdfPath);
   const docs = await loader.load();
-  
-  // Safe access with optional chaining ?.
-  console.log(docs[0]?.pageContent?.slice(0, 500));
+
+  const splitter = new RecursiveCharacterTextSplitter({
+    chunkSize: 1000,
+    chunkOverlap: 200,
+  });
+
+  const chunks = await splitter.splitDocuments(docs);
+
+  console.log('Total chunks:', chunks.length);
+
 }
 
-main(); 
+main().catch((err) => {
+  console.error('PDF split failed:', err);
+});
