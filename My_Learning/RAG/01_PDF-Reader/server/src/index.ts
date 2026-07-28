@@ -59,7 +59,7 @@ async function main() {
 
   // STEP 1: LOAD & SPLIT PDF DOCUMENT
   console.log('📌 STEP 1: Loading PDF file & splitting into text chunks...');
-  const pdfPath = path.resolve(__dirname, '../../pdf/SD.pdf');
+  const pdfPath = path.resolve(__dirname, '../../pdf/sanju.pdf');
   
   const loader = new PDFLoader(pdfPath);
   const docs = await loader.load();
@@ -83,7 +83,7 @@ async function main() {
   
   // Pinecone index name (must exist in Pinecone dashboard with 384 dimensions)
   const indexName = process.env.PINECONE_INDEX_NAME || '01-pdf-reader-rag';
-  const pineconeIndex = pinecone.Index(indexName);
+  const pineconeIndex = pinecone.index(indexName);
 
   // Upload first 20 chunks as a quick demo batch
   const demoChunks = chunks.slice(0, 20);
@@ -125,7 +125,7 @@ ${userQuestion}
 [ANSWER]
 `;
 
-  console.log(finalPrompt);
+  console.log("Final Prompt : ",finalPrompt);
   console.log('✅ RAG Workflow completed successfully!');
 }
 
