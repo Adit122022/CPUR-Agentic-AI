@@ -1,0 +1,1 @@
+1 A software company wants its application to run on Windows, Linux, and Mac without rewriting the code. Explain how Java achieves platform independence.

@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container mt-5">
+    <h2 class="text-primary">Hotel Room Booking</h2>
+    <form asp-action="Calculate" method="post" class="card p-4 shadow">
+        <div class="mb-3">
+            <label>Guest Name</label>
+            <input name="GuestName" class="form-control" required />
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>Room Number</label>
+                <input type="number" name="RoomNumber" class="form-control" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Room Type</label>
+                <select name="RoomType" class="form-select">
+                    <option>Deluxe</option>
+                    <option>Suite</option>
+                    <option>Standard</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label>Nights</label>
+                <input type="number" name="NumberOfNights" class="form-control" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label>Cost/Night</label>
+                <input type="number" name="CostPerNight" class="form-control" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label>Services</label>
+                <input type="number" name="ServiceCharges" class="form-control" />
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success">Generate Bill</button>
+    </form>
+</div>

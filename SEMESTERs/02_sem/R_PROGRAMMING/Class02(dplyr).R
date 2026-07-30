@@ -1,0 +1,95 @@
+# Create DataFrame
+df <- data.frame(
+  id = c(10,11,12,13,14,15,16,17),
+  name = c('sai','ram','deepika','sahithi','kumar','scott','Don','Lin'),
+  gender = c('M','M','F','F','M','M','M','F'),
+  dob = as.Date(c('1990-10-02','1981-3-24','1987-6-14','1985-8-16',
+                  '1995-03-02','1991-6-21','1986-3-24','1990-8-26')),
+  state = c('CA','NY',NA,NA,'DC','DW','AZ','PH'),
+  row.names=c('r1','r2','r3','r4','r5','r6','r7','r8')
+)
+df
+
+#filter() -> filter values based on rows names, columns values 
+dplyr::filter(df, rownames(df) == "r1")
+
+
+
+#For Distinct
+# Create dataframe
+df=data.frame(id=c(11,11,33,44,44),
+              pages=c(32,32,33,22,22),
+              name=c("spark","spark","R","java","jsp"),
+              chapters=c(76,76,11,15,15),
+              price=c(144,144,321,567,567))
+df
+
+# Load library dplyr
+library(dplyr)
+
+# Distinct rows
+df2 <- df %>% distinct()
+df2
+
+# Distinct on selected columns
+df2 <- df %>% distinct(id,pages)
+df2
+
+
+
+
+# use this dataset for arrange
+# Create data frame
+df=data.frame(id=c(11,22,33,44,55),
+              name=c("spark","python","R","jsp","java"),
+              price=c(144,NA,321,567,567),
+              publish_date= as.Date(
+                c("2007-06-22", "2004-02-13", "2006-05-18",
+                  "2010-09-02","2007-07-20"))
+)
+df
+
+
+df2 <- df %>% arrange(desc(publish_date))
+df2
+
+
+
+
+#GROUP BY
+
+students <- data.frame(
+id = c(1,2,3,4),
+name = c("A","B","C","D"),
+dept = c("CS","IT","CS","IT")
+)
+
+marks <- data.frame(
+  id = c(1,2,3,4),
+  subject = c("ML","DBMS","ML","DBMS"),
+  score = c(85,90,78,88)
+)
+marks
+#select names and deprtment of students
+select(students, name,dept)   #select(students,-id)
+
+#GROUP BY SYNTAX -> group_by(data, name of col)
+mean <- marks %>%group_by(subject) %>%summarise(average_score =mean(score))
+mean
+
+#count number of students per department
+stduent_count<- students %>%group_by(dept)%>%summarise(count=n())
+stduent_count
+
+
+
+
+#joins
+#average score by department
+#first join the both data sets and then group_by and summarise
+
+newData <-inner_join(students,marks,by="id")
+newData 
+
+averagescore_ofDept <- newData %>%group_by(dept) %>%summarise(averagescore=mean(score))%>%arrange(desc(averagescore))
+averagescore_ofDept

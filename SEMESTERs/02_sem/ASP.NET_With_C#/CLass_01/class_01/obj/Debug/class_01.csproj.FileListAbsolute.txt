@@ -1,0 +1,7 @@
+C:\Users\Aditya\Desktop\Learning_Languages\CPUR\02_sem\ASP.NET_With_C#\CLass_01\class_01\bin\Debug\class_01.exe.config
+C:\Users\Aditya\Desktop\Learning_Languages\CPUR\02_sem\ASP.NET_With_C#\CLass_01\class_01\bin\Debug\class_01.exe
+C:\Users\Aditya\Desktop\Learning_Languages\CPUR\02_sem\ASP.NET_With_C#\CLass_01\class_01\bin\Debug\class_01.pdb
+C:\Users\Aditya\Desktop\Learning_Languages\CPUR\02_sem\ASP.NET_With_C#\CLass_01\class_01\obj\Debug\class_01.csproj.AssemblyReference.cache
+C:\Users\Aditya\Desktop\Learning_Languages\CPUR\02_sem\ASP.NET_With_C#\CLass_01\class_01\obj\Debug\class_01.csproj.CoreCompileInputs.cache
+C:\Users\Aditya\Desktop\Learning_Languages\CPUR\02_sem\ASP.NET_With_C#\CLass_01\class_01\obj\Debug\class_01.exe
+C:\Users\Aditya\Desktop\Learning_Languages\CPUR\02_sem\ASP.NET_With_C#\CLass_01\class_01\obj\Debug\class_01.pdb

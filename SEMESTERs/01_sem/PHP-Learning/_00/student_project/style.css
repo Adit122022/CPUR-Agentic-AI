@@ -1,0 +1,131 @@
+/* ====== Global Styling ====== */
+*{
+margin: 0;
+padding: 0;
+box-sizing :border-box;
+}
+html{
+width :100%;
+height :100%;
+}
+body {
+    width :100vw;
+    height :100vh;
+    font-family: 'Inter', Arial, sans-serif;
+    background: #0f1115; /* Dark blackish shade */
+    color: #e4e7eb;
+}
+
+/* ====== Container ====== */
+.container {
+    width: 85%;
+    margin: 50px auto;
+    background: rgba(255, 255, 255, 0.05); /* Glassy card */
+    backdrop-filter: blur(8px);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ====== Heading ====== */
+h2 {
+    text-align: center;
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+/* ====== Table ====== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+table th {
+    background: #1a1d23;
+    color: #8ab4f8;
+    padding: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+table td {
+    padding: 14px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    color: #dfe3e8;
+}
+
+table tr:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+/* ====== Buttons ====== */
+.btn-add,
+.btn-edit,
+.btn-delete {
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+/* Add Button */
+.btn-add {
+    background: #4f46e5;
+    color: white;
+    display: inline-block;
+    margin-bottom: 18px;
+}
+
+.btn-add:hover {
+    background: #4338ca;
+    transform: translateY(-2px);
+}
+
+/* Edit Button */
+.btn-edit {
+    background: #10b981;
+    color: white;
+}
+
+.btn-edit:hover {
+    background: #0d9468;
+    transform: scale(1.05);
+}
+
+/* Delete Button */
+.btn-delete {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #dc2626;
+    transform: scale(1.05);
+}
+
+/* ====== Form Fields ====== */
+input, select {
+    width: 100%;
+    padding: 12px;
+    background: #1a1d23;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    color: #e5e7eb;
+    font-size: 15px;
+}
+
+input:focus {
+    border-color: #4f46e5;
+    outline: none;
+}

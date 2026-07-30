@@ -1,0 +1,51 @@
+﻿@model HotelManagementWeb.Models.Booking
+
+@{
+    ViewData["Title"] = "Booking Receipt";
+}
+
+<div class="container mt-5">
+    <div class="card border-success shadow-lg">
+        <div class="card-header bg-success text-white text-center">
+            <h3>🏨 Hotel Invoice</h3>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-6">
+                    <strong>Guest Name:</strong>
+                    <p class="display-6">@Model.GuestName</p>
+                </div>
+                <div class="col-6 text-end">
+                    <strong>Room Number:</strong>
+                    <p class="h4">#@Model.RoomNumber (@Model.RoomType)</p>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="d-flex justify-content-between">
+                <span>Stay Duration:</span>
+                <span>@Model.NumberOfNights Nights</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span>Price per Night:</span>
+                <span>$@Model.CostPerNight</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span>Extra Services:</span>
+                <span>$@Model.ServiceCharges</span>
+            </div>
+
+            <hr />
+
+            <div class="d-flex justify-content-between text-danger h3">
+                <strong>Total Amount:</strong>
+                <strong>$@Model.CalculateTotal()</strong>
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            <a href="/" class="btn btn-primary">Book New Room</a>
+            <button onclick="window.print()" class="btn btn-outline-dark">Print Receipt</button>
+        </div>
+    </div>
+</div>
