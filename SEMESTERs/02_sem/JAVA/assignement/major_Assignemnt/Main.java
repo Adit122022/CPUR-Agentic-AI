@@ -1,5 +1,5 @@
 
-###**1. Write program to print the"welcome to java"**
+// ###**1. Write program to print the"welcome to java"**
 
 public class Welcome {
     public static void main(String[] args) {
@@ -7,16 +7,16 @@ public class Welcome {
     }
 }
 
-###**2.
+// ###**2.
 
-Write a
-program to
-perform addition, subtraction, division, integer division,
-multiplication and
-modulo division
-on two
-integer numbers*
-*
+// Write a
+// program to
+// perform addition, subtraction, division, integer division,
+// multiplication and
+// modulo division
+// on two
+// integer numbers*
+// *
 
 import java.util.Scanner;
 
@@ -36,15 +36,15 @@ public class IntArithmetic {
     }
 }
 
-###**3.
+// ###**3.
 
-Write a
-program to
-perform addition, subtraction, multiplication
-and division
-on two
-floating point numbers*
-*
+// Write a
+// program to
+// perform addition, subtraction, multiplication
+// and division
+// on two
+// floating point numbers*
+// *
 
 import java.util.Scanner;
 
@@ -62,11 +62,7 @@ public class FloatArithmetic {
     }
 }
 
-
-
-
-### **4. Write a program to swap two numbers using a temporary variable**
-
+// ### **4. Write a program to swap two numbers using a temporary variable**
 
 public class SwapTemp {
     public static void main(String[] args) {
@@ -79,11 +75,8 @@ public class SwapTemp {
     }
 }
 
-
-
-
-### **5. Write a program to swap two numbers without using a temporary variable**
-
+// ### **5. Write a program to swap two numbers without using a temporary
+// variable**
 
 public class SwapNoTemp {
     public static void main(String[] args) {
@@ -95,10 +88,7 @@ public class SwapNoTemp {
     }
 }
 
-
-
-
-### **6. Write a program to find the larger of two numbers**
+// ### **6. Write a program to find the larger of two numbers**
 
 import java.util.Scanner;
 
@@ -133,10 +123,8 @@ public class EvenOdd {
     }
 }
 
-
-
-
-### **8. Write a program to input three numbers and then find largest of them using && operator**
+// ### **8. Write a program to input three numbers and then find largest of them
+// using && operator**
 
 import java.util.Scanner;
 
@@ -157,21 +145,21 @@ public class LargestThree {
     }
 }
 
-###**9.
+// ###**9.
 
-Write a
-program to
-enter the
-marks of
-a student
-in four
-subjects then
-calculate the total,
-aggregate and
-display the
-result obtained
-by the student*
-*
+// Write a
+// program to
+// enter the
+// marks of
+// a student
+// in four
+// subjects then
+// calculate the total,
+// aggregate and
+// display the
+// result obtained
+// by the student*
+// *
 
 import java.util.Scanner;
 
@@ -192,10 +180,8 @@ public class StudentResult {
     }
 }
 
-
-
-
-### **10. Write a program to find whether a given year is a leap year or not**
+// ### **10. Write a program to find whether a given year is a leap year or
+// not**
 
 import java.util.Scanner;
 
@@ -212,10 +198,8 @@ public class LeapYear {
     }
 }
 
-
-
-
-### **11. Write a program to determine whether an entered character is a vowel or not with the help of switch case statement**
+// ### **11. Write a program to determine whether an entered character is a
+// vowel or not with the help of switch case statement**
 
 import java.util.Scanner;
 
@@ -235,10 +219,8 @@ public class VowelCheck {
     }
 }
 
-
-
-
- ### **12. Write a program to enter a number from 1 to 7 and display the corresponding day of the week using switch case statement**
+// ### **12. Write a program to enter a number from 1 to 7 and display the
+// corresponding day of the week using switch case statement**
 
 import java.util.Scanner;
 
@@ -275,26 +257,25 @@ public class DayOfWeek {
         }
     }}
 
-    ###**13.
+// ###**13.
 
-    Write a
-    program to
-    list all
-    the leap
-    year from 2000 to 2014 using do-while loop**[cite:1]
+// Write a
+// program to
+// list all
+// the leap
+// year from 2000 to 2014 using do-while loop**[cite:1]
 
-    public class LeapYearRange {
-        public static void main(String[] args) {
-            int year = 2000;
-            System.out.println("Leap years between 2000 and 2014:");
-            do {
-                if ((year % 400 == 0) || (year % 4 == 0 && year % 100 != 0)) {
-                    System.out.println(year);
-                }
-                year++;
-            } while (year <= 2014);
-        }
-    }
+public class LeapYearRange {
+    public static void main(String[] args) {
+        int year = 2000;
+        System.out.println("Leap years between 2000 and 2014:");
+        do {
+            if ((year % 400 == 0) || (year % 4 == 0 && year % 100 != 0)) {
+                System.out.println(year);
+            }
+            year++;
+        } while (year <= 2014);
+    }}
 
     ###**14.
 
@@ -441,15 +422,24 @@ public class P {
     public static void main(String[] args) {
         int n = new Scanner(System.in).nextInt();
         String res = " is Prime";
-        if (n <= 1) res = " is not Prime";
+        if (n <= 1)
+            res = " is not Prime";
         for (int i = 2; i * i <= n; i++) {
-            if (n % i == 0) { res = " is not Prime"; break; }
+            if (n % i == 0) {
+                res = " is not Prime";
+                break;
+            }
         }
         System.out.print(n + res);
     }
 }
 
-###**20.Write a program to input 10 students record (Name, UID, Marks) and display them in ascending order on the output screen.**
+###**20.
+
+Write a
+program to input 10
+
+students record (Name, UID, Marks) and display them in ascending order on the output screen.**
 
 import java.util.Scanner;
 import java.util.Arrays;
@@ -551,8 +541,7 @@ public class TicTacToe {
             return true;
         return false;
     }
-}
-22.
+}22.
 
 A simple
 project in
