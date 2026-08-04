@@ -10,9 +10,9 @@ public class Main {
         }
 
         StringBuilder message = new StringBuilder("Selected items: ");
-        for (int itemNumber = 1; itemNumber <= 3; itemNumber++) {
-            message.append(itemNumber);
-            if (itemNumber < 3) {
+        for (int i = 1; i <= 3; i++) {
+            message.append(i);
+            if (i < 3) {
                 message.append(", ");
             }
         }
