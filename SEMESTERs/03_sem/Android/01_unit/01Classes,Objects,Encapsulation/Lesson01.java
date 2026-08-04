@@ -1,14 +1,9 @@
 // Lesson 1: Classes, Objects, & Encapsulation
 
-import 01Classes,Object,Encapsulation.User;
-import java.util.*;
-
+import com.myapp.User;
 
 public class Lesson01 {
-    //  Main
-    public class Main {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
         // Creating an object (instantiation)
         User user1 = new User(101, "Aditya", "aditya@example.com");
         
@@ -25,5 +20,4 @@ public class Lesson01 {
         System.out.println("Updated Name: " + user1.getName());
         user1.displayUser();
     }
-}
 }

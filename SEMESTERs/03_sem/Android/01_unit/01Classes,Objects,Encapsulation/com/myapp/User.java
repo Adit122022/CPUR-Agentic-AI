@@ -1,4 +1,4 @@
-package 01Classes,Object,Encapsulation/com.myapp;
+package com.myapp;
 
 public class User {
   

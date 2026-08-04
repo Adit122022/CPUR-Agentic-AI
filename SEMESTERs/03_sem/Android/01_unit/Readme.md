@@ -10,7 +10,7 @@ A structured practice checklist of core Java concepts required before diving int
 | :--- | :--- | :--- | :---: |
 | **1. OOP** | Classes & Objects | Instantiating UI elements and holding screen data state (`new Intent()`). | `[✅]` |
 | **1. OOP** | Inheritance (`extends`) | Extending framework classes like `AppCompatActivity` or `Fragment`. | `[✅]` |
-| **1. OOP** | Encapsulation | Creating Data Models (POJOs) with `private` fields and `public` getters/setters. | `[ ]` |
+| **1. OOP** | Encapsulation | Creating Data Models (POJOs) with `private` fields and `public` getters/setters. | `[✅]` |
 | **1. OOP** | Polymorphism & Overriding | Using `@Override` on lifecycle methods like `onCreate()`, `onStart()`, `onPause()`. | `[ ]` |
 | **2. Event Handling** | Interfaces (`implements`) | Defining contracts for UI interactions and listener events. | `[ ]` |
 | **2. Event Handling** | Anonymous Inner Classes | Passing inline implementations (e.g., `button.setOnClickListener(new View.OnClickListener() {...})`). | `[ ]` |
